@@ -867,15 +867,6 @@ def page_react_setup(lang: str) -> None:
                 lang,
             )
         )
-    st.error(
-        _t(
-            "Không thể chỉnh Streamlit native cho giống 100% React. "
-            "Muốn giống hoàn toàn local → phải iframe SPA React thật từ URL công khai.",
-            "Streamlit native cannot be 100% identical to React. "
-            "For a perfect match, iframe the real React SPA from a public URL.",
-            lang,
-        )
-    )
     st.markdown(
         _t(
             """
