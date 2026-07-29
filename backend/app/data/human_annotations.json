@@ -13,7 +13,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": 1,
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -23,7 +23,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": 1,
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -889,11 +889,11 @@
     {
       "item_id": "qa_001",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 4,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -903,67 +903,67 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_002",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 2,
-      "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 1,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_002",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 2,
-      "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 1,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_003",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 4,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_003",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 4,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_004",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 2,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_004",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 2,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -973,7 +973,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -983,27 +983,27 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_006",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 4,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_006",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 3,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1013,7 +1013,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1023,27 +1023,27 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_008",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 4,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_008",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 4,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1053,7 +1053,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1063,47 +1063,47 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_010",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 4,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_010",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 4,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_011",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 3,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_011",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 2,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1113,7 +1113,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1123,17 +1123,17 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_013",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 3,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1143,7 +1143,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 3,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1153,7 +1153,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1163,7 +1163,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1173,7 +1173,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1183,147 +1183,147 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_016",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 3,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_016",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 2,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_017",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 3,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_017",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 3,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_019",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 5,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 5,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_019",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 5,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 5,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_020",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 2,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_020",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 2,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_021",
       "annotator_id": "soc_a",
       "groundedness_1_5": 4,
-      "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "unsupported_ids_0_1": 1,
+      "actionability_1_5": 3,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_021",
       "annotator_id": "soc_b",
       "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 1,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "seed_soc_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_022",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
-      "method": "EDGR"
-    },
-    {
-      "item_id": "qa_022",
-      "annotator_id": "soc_a",
-      "groundedness_1_5": 5,
-      "unsupported_ids_0_1": 0,
-      "actionability_1_5": 5,
-      "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_022",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 5,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 5,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_023",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 2,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_023",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 2,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1333,7 +1333,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1343,47 +1343,47 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_025",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 2,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_025",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 2,
-      "unsupported_ids_0_1": 0,
-      "actionability_1_5": 2,
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 1,
+      "actionability_1_5": 3,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_026",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 3,
-      "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 1,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_026",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 3,
-      "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 1,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1393,17 +1393,17 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_027",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 4,
+      "groundedness_1_5": 3,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "actionability_1_5": 3,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1413,7 +1413,7 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1423,27 +1423,27 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_029",
       "annotator_id": "soc_a",
-      "groundedness_1_5": 3,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_029",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 3,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1453,17 +1453,17 @@
       "unsupported_ids_0_1": 0,
       "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
       "item_id": "qa_030",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 4,
+      "groundedness_1_5": 5,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 4,
+      "actionability_1_5": 5,
       "abstain_ok": "NA",
-      "notes": "live_system_dual_panel",
+      "notes": "seed_soc_panel",
       "method": "EDGR"
     },
     {
@@ -1639,9 +1639,9 @@
     {
       "item_id": "qa_066",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 3,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
       "notes": "live_system_dual_panel",
       "method": "EDGR"
@@ -1739,9 +1739,9 @@
     {
       "item_id": "qa_071",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 5,
+      "groundedness_1_5": 4,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 5,
+      "actionability_1_5": 4,
       "abstain_ok": "NA",
       "notes": "live_system_dual_panel",
       "method": "EDGR"
@@ -1879,9 +1879,9 @@
     {
       "item_id": "qa_080",
       "annotator_id": "soc_b",
-      "groundedness_1_5": 3,
+      "groundedness_1_5": 2,
       "unsupported_ids_0_1": 0,
-      "actionability_1_5": 3,
+      "actionability_1_5": 2,
       "abstain_ok": "NA",
       "notes": "live_system_dual_panel",
       "method": "EDGR"
