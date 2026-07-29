@@ -308,18 +308,15 @@ section[data-testid="stSidebar"] label {
   position: relative;
   overflow: hidden;
   margin: -1rem -1rem 1rem -1rem;
-  background: #071820;
+  background:
+    radial-gradient(800px 320px at 85% 30%, rgba(13, 115, 119, 0.45), transparent 55%),
+    radial-gradient(600px 280px at 10% 80%, rgba(196, 92, 38, 0.22), transparent 50%),
+    linear-gradient(115deg, #071820 0%, #0a3a40 48%, #0d7377 100%);
   box-shadow: 0 8px 24px rgba(15, 28, 36, 0.18);
   isolation: isolate;
 }
 .rx-hero-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 72% center;
-  z-index: 0;
+  display: none;
 }
 .rx-hero::after {
   content: "";
@@ -328,10 +325,9 @@ section[data-testid="stSidebar"] label {
   z-index: 1;
   background: linear-gradient(
     100deg,
-    rgba(6, 22, 28, 0.94) 0%,
-    rgba(8, 40, 48, 0.82) 38%,
-    rgba(10, 55, 62, 0.45) 62%,
-    rgba(12, 40, 48, 0.18) 100%
+    rgba(6, 22, 28, 0.55) 0%,
+    rgba(8, 40, 48, 0.25) 55%,
+    rgba(12, 40, 48, 0.05) 100%
   );
 }
 .rx-hero-body {
@@ -1072,6 +1068,7 @@ def _render_academic(pack: dict[str, Any] | None, lang: str, hide_assess: bool =
 
 
 def _img_data_uri(path: Path) -> str | None:
+    """Unused on Cloud — kept for local experiments only."""
     if not path.is_file():
         return None
     mime = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
@@ -1109,11 +1106,7 @@ def _step_icon_svg(step_id: int, color: str, size: int = 20) -> str:
 
 
 def _hero(lang: str, health_line: str, done: int = 0, total: int = 16, topic: str = "") -> None:
-    """React-parity banner: photo background + overlay copy + progress pill."""
-    banner = PUBLIC / "edgr-topic-banner.png"
-    if not banner.is_file():
-        banner = DIST / "edgr-topic-banner.png"
-    uri = _img_data_uri(banner)
+    """React-parity banner — CSS only (no base64 <img>; Cloud-safe)."""
     desc = topic or _t(
         "Thuật toán truy hồi đồ thị động dựa trên bằng chứng để giảm ảo giác trong LLM "
         "cho phát hiện xâm nhập và tình báo mối đe dọa mạng",
@@ -1121,15 +1114,11 @@ def _hero(lang: str, health_line: str, done: int = 0, total: int = 16, topic: st
         "in Large Language Models for Intrusion Detection and Cyber Threat Intelligence",
         lang,
     )
-    bg = (
-        f'<img class="rx-hero-bg" src="{uri}" alt="" />'
-        if uri
-        else ""
-    )
+    # Never inline large PNGs as data: URIs — that inflates the Streamlit websocket
+    # payload and triggers "Error: not connected to a server!" on Community Cloud.
     st.markdown(
         f"""
         <div class="rx-hero">
-          {bg}
           <div class="rx-hero-body">
             <div>
               <p class="rx-kicker">{_t(
@@ -1226,7 +1215,10 @@ def page_overview(core: dict[str, Any], lang: str) -> None:
 
     process = PUBLIC / ("quy-trinh-a-z-en.png" if lang == "en" else "quy-trinh-a-z.png")
     if process.is_file():
-        st.image(str(process), use_container_width=True)
+        try:
+            st.image(str(process), use_container_width=True)
+        except Exception:  # noqa: BLE001
+            st.caption(_t("(Không tải được ảnh quy trình)", "(Process image unavailable)", lang))
 
     st.markdown(f"### {_t('Giải thích tổng quan', 'Overview explanation', lang)}")
     st.write(
