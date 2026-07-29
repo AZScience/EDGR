@@ -53,7 +53,7 @@ Mỗi tab cha/con (trừ Step 16 app) có khung học thuật: CSDL · Mô hình
 
 ## Streamlit (cùng core Python)
 
-UI Streamlit gọi trực tiếp `pipeline_service` / `ids_cti_app.analyze` (không qua FastAPI).
+UI Streamlit gọi trực tiếp `pipeline_service` / `ids_cti_app.analyze` / alert ingest (không qua FastAPI) — **cùng compute** với React.
 
 ```powershell
 cd d:\DemoTiensi
@@ -64,6 +64,10 @@ python -m streamlit run streamlit_app.py --server.address 127.0.0.1 --server.por
 - Local: http://127.0.0.1:8501  
 - Hoặc: `.\scripts\start-streamlit.ps1`
 
+**Đã gần React:** sidebar step rail (0 + 16 bước), tổng quan 3 phase + jump, task con + khung học thuật 7 khối, run task thật, result review / verify / bảng, Live IDS/CTI (query + Suricata alert ingest/analyze), VI/EN.
+
+**Không pixel-perfect (giới hạn Streamlit):** thiếu sticky hero banner ảnh, StepRail ngang cuộn + icon SVG riêng, AcademicPanel layout document đầy đủ như React (`modelViews` chuyên biệt / KaTeX phức tạp), DataViz SVG graph interactive, footer sticky, auto-poll alert queue, export CSV, và toàn bộ CSS animation SPA. Muốn UI gốc: chạy React (`:5180`) + FastAPI.
+
 ### Deploy Streamlit Community Cloud
 
 1. Repo: https://github.com/AZScience/EDGR (branch `kiemtranoibo` hoặc `main`)
@@ -72,4 +76,4 @@ python -m streamlit run streamlit_app.py --server.address 127.0.0.1 --server.por
 4. Python requirements: `requirements.txt` (root)
 5. Deploy
 
-Gợi ý: tab **Live IDS/CTI** cho demo nhanh; bước 9–11 (evaluate / ablation) có thể chậm trên free tier.
+Gợi ý: chọn **Bước 16** (Live IDS/CTI) cho demo nhanh; bước 9–11 (evaluate / ablation) có thể chậm trên free tier.

@@ -1,16 +1,19 @@
 """
-EDGR Streamlit demo — same Python core as the FastAPI/React workbench.
+EDGR Streamlit workbench — closest practical parity with the React SPA.
 
-Deploy on Streamlit Community Cloud with main file: streamlit_app.py
+Same Python core as FastAPI/React (`pipeline_service`, `EDGREngine`, IDS/CTI analyze).
+Not a pixel-perfect clone: Streamlit replaces SPA layout with sidebar step rail + panels.
 """
 
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
 
+import pandas as pd
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parent
@@ -25,11 +28,318 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-EX_QUERIES = [
+# ── React-aligned step colors ──────────────────────────────────────────
+STEP_COLORS: dict[int, str] = {
+    0: "#0F766E",
+    1: "#2563EB",
+    2: "#EA580C",
+    3: "#0D9488",
+    4: "#16A34A",
+    5: "#7C3AED",
+    6: "#DC2626",
+    7: "#0891B2",
+    8: "#4338CA",
+    9: "#D97706",
+    10: "#059669",
+    11: "#DB2777",
+    12: "#475569",
+    13: "#0284C7",
+    14: "#B45309",
+    15: "#CA8A04",
+    16: "#0F766E",
+}
+
+STEP_OVERVIEW = "__overview__"
+
+SAMPLE_QUERIES = [
     "What is CVE-2021-44228 and how is it exploited?",
     "Which ATT&CK techniques does APT29 commonly use?",
     "How can NIDS detect lateral movement?",
+    "Which CVE did Cl0p exploit in MOVEit campaigns?",
+    "How does EDGR reduce hallucination in CTI answers?",
 ]
+
+QUICK_QUERIES = [
+    {
+        "id": "cve",
+        "q": SAMPLE_QUERIES[0],
+        "label_vi": "CVE-2021-44228",
+        "label_en": "CVE-2021-44228",
+    },
+    {
+        "id": "apt",
+        "q": SAMPLE_QUERIES[1],
+        "label_vi": "TTP APT29",
+        "label_en": "APT29 TTPs",
+    },
+    {
+        "id": "lateral",
+        "q": SAMPLE_QUERIES[2],
+        "label_vi": "Lateral movement",
+        "label_en": "Lateral movement",
+    },
+    {
+        "id": "clop",
+        "q": SAMPLE_QUERIES[3],
+        "label_vi": "Cl0p / MOVEit",
+        "label_en": "Cl0p / MOVEit",
+    },
+]
+
+TOP_K_CHOICES = [3, 5, 8]
+DEFAULT_TOP_K = 5
+
+ACAD_BLOCKS = [
+    ("csdl", "CSDL / Schema", "CSDL / Schema"),
+    ("mo_hinh_toan", "Mô hình toán", "Math model"),
+    ("mo_hinh_thuat_toan", "Mô hình thuật toán", "Algorithm model"),
+    ("mo_hinh_hoat_dong", "Mô hình hoạt động", "Operating model"),
+    ("trich_dan", "Trích dẫn", "Citations"),
+    ("minh_chung", "Minh chứng", "Evidence"),
+    ("nhan_dinh_danh_gia", "Nhận định đánh giá", "Assessment"),
+]
+
+PHASES = [
+    {
+        "color": "#2563EB",
+        "title_vi": "Nền tảng & thiết kế thuật toán",
+        "title_en": "Foundation & algorithm design",
+        "range_vi": "Bước 1–6",
+        "range_en": "Steps 1–6",
+        "items_vi": [
+            "Khảo sát RAG, GraphRAG, hallucination, CTI/IDS–NIDS",
+            "Phân tích khoảng trống và cơ hội đóng góp",
+            "Hình thức hóa bài toán giảm hallucination IDS/CTI",
+            "Đề xuất thuật toán EDGR (6 giai đoạn)",
+            "Thiết kế Dynamic Knowledge Graph",
+            "Mô hình chấm điểm rủi ro ảo giác [0, 1]",
+        ],
+        "items_en": [
+            "Survey RAG, GraphRAG, hallucination, CTI/IDS–NIDS",
+            "Analyze research gaps and contribution opportunities",
+            "Formalize hallucination mitigation for IDS/CTI",
+            "Propose EDGR (6 stages)",
+            "Design Dynamic Knowledge Graph",
+            "Hallucination risk scoring model [0, 1]",
+        ],
+    },
+    {
+        "color": "#0D9488",
+        "title_vi": "Triển khai & đánh giá",
+        "title_en": "Implementation & evaluation",
+        "range_vi": "Bước 7–11",
+        "range_en": "Steps 7–11",
+        "items_vi": [
+            "Dữ liệu MITRE / CVE / CISA / IDS → QA",
+            "Kiến trúc E2E: query → EDGR ↔ KG/vector/LLM",
+            "Thực nghiệm so sánh vs họ RAG baseline",
+            "Đánh giá đa chỉ số (faithfulness, hall, P@k, MRR)",
+            "Ablation study thành phần thuật toán",
+        ],
+        "items_en": [
+            "MITRE / CVE / CISA / IDS → QA dataset",
+            "E2E architecture: query → EDGR ↔ KG/vector/LLM",
+            "Comparative experiments vs RAG baselines",
+            "Multi-metric evaluation (faithfulness, hall, P@k, MRR)",
+            "Ablation study of algorithm components",
+        ],
+    },
+    {
+        "color": "#CA8A04",
+        "title_vi": "Phân tích, công bố & ứng dụng",
+        "title_en": "Analysis, publication & application",
+        "range_vi": "Bước 12–16",
+        "range_en": "Steps 12–16",
+        "items_vi": [
+            "Phân tích độ phức tạp, đúng đắn, scalability",
+            "Công bố 4 trục: EDGR, DKG, scoring, evaluation",
+            "Biên soạn luận án 8 chương",
+            "Bảo vệ luận án",
+            "Ứng dụng IDS/CTI console (live EDGR)",
+        ],
+        "items_en": [
+            "Complexity, correctness, scalability analysis",
+            "Publish on EDGR, DKG, scoring, evaluation",
+            "Dissertation outline (8 chapters)",
+            "Thesis defense",
+            "IDS/CTI console (live EDGR)",
+        ],
+    },
+]
+
+FLOW_VI = [
+    "Ý tưởng",
+    "Tài liệu",
+    "Nghiên cứu",
+    "EDGR",
+    "Thực nghiệm",
+    "Đánh giá",
+    "Công bố",
+    "Luận án",
+    "Bảo vệ",
+]
+FLOW_EN = [
+    "Idea",
+    "Literature",
+    "Research",
+    "EDGR",
+    "Experiment",
+    "Evaluation",
+    "Publication",
+    "Dissertation",
+    "Defense",
+]
+
+RATIO_FIELD = re.compile(
+    r"^(faithfulness|hallucination_rate|confidence|p_at_k|r_at_k|mrr|f1|"
+    r"precision|recall|accuracy|score|score_0_1|reliability|freshness|"
+    r"graph_consistency|semantic_relevance|ent_hit|prefix_stability|"
+    r"delta_faithfulness|delta_hallucination)$",
+    re.I,
+)
+LATEX_HINT = re.compile(r"(\$.*\$|\\frac|\\sum|O\(|\\approx|T\(n\)|=O)")
+
+CUSTOM_CSS = """
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;500;600;700&display=swap");
+
+html, body, [class*="css"] {
+  font-family: "Sora", sans-serif !important;
+}
+h1, h2, h3, .edgr-brand {
+  font-family: "Fraunces", Georgia, serif !important;
+  letter-spacing: -0.02em;
+}
+.stApp {
+  background:
+    radial-gradient(1000px 520px at 8% -8%, rgba(13, 115, 119, 0.14), transparent 55%),
+    radial-gradient(800px 420px at 92% 0%, rgba(196, 92, 38, 0.09), transparent 50%),
+    linear-gradient(180deg, #eef5f7 0%, #f3f7f9 45%, #edf3f5 100%);
+}
+section[data-testid="stSidebar"] {
+  background: linear-gradient(180deg, #0a2a30 0%, #071820 100%) !important;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+section[data-testid="stSidebar"] * {
+  color: rgba(244, 250, 251, 0.92) !important;
+}
+section[data-testid="stSidebar"] .stRadio label,
+section[data-testid="stSidebar"] label {
+  font-size: 0.86rem !important;
+}
+.edgr-hero {
+  background: linear-gradient(120deg, #071820 0%, #0d7377 55%, #c45c26 140%);
+  color: #f4fafb;
+  border-radius: 0 0 18px 18px;
+  padding: 1.1rem 1.35rem 1.25rem;
+  margin: -1rem -1rem 1.25rem -1rem;
+  box-shadow: 0 10px 28px rgba(15, 28, 36, 0.18);
+}
+.edgr-hero .kicker {
+  font-size: 0.78rem;
+  opacity: 0.85;
+  margin: 0 0 0.35rem;
+  font-family: "Sora", sans-serif;
+}
+.edgr-hero h1 {
+  margin: 0;
+  font-size: 1.65rem;
+  color: #fff !important;
+}
+.edgr-hero .meta {
+  margin: 0.45rem 0 0;
+  opacity: 0.88;
+  font-size: 0.88rem;
+}
+.step-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.surface {
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(15, 28, 36, 0.10);
+  border-radius: 14px;
+  padding: 0.95rem 1.05rem;
+  margin-bottom: 0.85rem;
+  box-shadow: 0 10px 28px rgba(15, 28, 36, 0.05);
+}
+.phase-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+  border-bottom: 2px solid var(--phase, #0d7377);
+  padding-bottom: 0.35rem;
+}
+.phase-card ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+  color: #3a5160;
+  font-size: 0.9rem;
+}
+.flow-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #0d7377;
+}
+.flow-line i { opacity: 0.45; font-style: normal; margin: 0 0.15rem; }
+.muted { color: #3a5160; font-size: 0.9rem; }
+.tiny { font-size: 0.8rem; }
+.mono { font-family: "IBM Plex Mono", monospace !important; }
+.review-block {
+  background: #fff;
+  border-left: 4px solid #0d7377;
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  margin: 0.55rem 0;
+}
+.review-block.sci-verify { border-left-color: #059669; }
+.review-block.evidence { border-left-color: #c45c26; }
+.stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.4rem 0;
+}
+.stat-chip {
+  background: #eef5f7;
+  border: 1px solid rgba(15,28,36,0.1);
+  border-radius: 10px;
+  padding: 0.35rem 0.55rem;
+  min-width: 5.5rem;
+}
+.stat-chip span { display:block; font-size:0.72rem; color:#3a5160; }
+.stat-chip strong { font-size:0.95rem; }
+.badge-ok { color: #1f7a4c; font-weight: 700; }
+.badge-fail { color: #b33a3a; font-weight: 700; }
+.honesty {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.84rem;
+  color: #9a3412;
+  margin: 0.4rem 0 0.7rem;
+}
+div[data-testid="stMetric"] {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(15,28,36,0.08);
+  border-radius: 12px;
+  padding: 0.45rem 0.65rem;
+}
+</style>
+"""
 
 
 @st.cache_resource(show_spinner="Loading EDGR core (KG + vector store)…")
@@ -38,7 +348,8 @@ def _load_core() -> dict[str, Any]:
     from app.core.vector_store import vector_store
     from app.data.cti_seed import QA_DATASET
     from app.pipeline.service import pipeline_service
-    from app.services.ids_cti_app import analyze, app_status
+    from app.services import alert_ingest
+    from app.services.ids_cti_app import analyze, analyze_alert, app_status
 
     return {
         "pipeline": pipeline_service,
@@ -46,7 +357,9 @@ def _load_core() -> dict[str, Any]:
         "vector_store": vector_store,
         "qa_n": len(QA_DATASET),
         "analyze": analyze,
+        "analyze_alert": analyze_alert,
         "app_status": app_status,
+        "alert_ingest": alert_ingest,
     }
 
 
@@ -54,133 +367,721 @@ def _t(vi: str, en: str, lang: str) -> str:
     return vi if lang == "vi" else en
 
 
+def _pick(obj: dict[str, Any], vi_key: str, en_key: str, lang: str, default: str = "") -> str:
+    if lang == "vi":
+        return str(obj.get(vi_key) or obj.get(en_key) or default)
+    return str(obj.get(en_key) or obj.get(vi_key) or default)
+
+
+def _init_state() -> None:
+    ss = st.session_state
+    ss.setdefault("lang", "vi")
+    ss.setdefault("step_id", 0)
+    ss.setdefault("task_id", STEP_OVERVIEW)
+    ss.setdefault("result_cache", {})
+    ss.setdefault("last_payload", None)
+    ss.setdefault("ids_result", None)
+    ss.setdefault("ids_mode", "query")
+    ss.setdefault("selected_alert_id", None)
+
+
+def _inject_css() -> None:
+    st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+
+
 def _health_cards(core: dict[str, Any], lang: str) -> None:
     stats = core["kg"].stats()
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric(_t("KG nodes", "KG nodes", lang), stats.nodes)
-    c2.metric(_t("KG edges", "KG edges", lang), stats.edges)
+    c1.metric("KG nodes", stats.nodes)
+    c2.metric("KG edges", stats.edges)
     c3.metric(_t("Evidence", "Evidence chunks", lang), len(core["vector_store"].chunks))
     c4.metric(_t("QA pairs", "QA pairs", lang), core["qa_n"])
 
 
-def _pretty_json(obj: Any) -> None:
-    st.json(obj)
+def _format_metric(key: str | None, v: Any) -> str:
+    if not isinstance(v, (int, float)) or key is None:
+        return ""
+    if re.search(r"(percent|cpu_percent|system_.*_percent)$", key, re.I):
+        return f"{v:.1f}%" if v % 1 else f"{int(v)}%"
+    if RATIO_FIELD.match(key) and abs(float(v)) <= 1.0001:
+        return f"{float(v) * 100:.1f}%"
+    if re.search(r"(rate|ratio|score)$", key, re.I) and abs(float(v)) <= 1.0001:
+        return f"{float(v) * 100:.1f}%"
+    return ""
 
 
-def _result_summary(payload: dict[str, Any], lang: str) -> None:
-    cols = st.columns(4)
-    cols[0].metric("elapsed_ms", payload.get("elapsed_ms"))
-    cols[1].metric(
-        _t("tính toán thật", "real computation", lang),
-        "yes" if payload.get("real_computation") else "no",
+def _cell(v: Any, key: str | None = None) -> str:
+    if v is None:
+        return ""
+    if isinstance(v, bool):
+        return "yes" if v else "no"
+    if isinstance(v, (int, float)):
+        pct = _format_metric(key, v)
+        if pct:
+            return pct
+        if isinstance(v, int) or float(v).is_integer():
+            return str(int(v))
+        return f"{float(v):.4f}".rstrip("0").rstrip(".")
+    if isinstance(v, str):
+        return v
+    if isinstance(v, list):
+        if all(not isinstance(x, (dict, list)) for x in v):
+            return ", ".join(str(x) for x in v)
+        return f"[{len(v)}]"
+    if isinstance(v, dict):
+        if "id" in v:
+            return str(v["id"])
+        try:
+            s = json.dumps(v, ensure_ascii=False)
+            return s[:117] + "…" if len(s) > 120 else s
+        except TypeError:
+            return "[object]"
+    return str(v)
+
+
+def _collect_keys(rows: list[dict[str, Any]], max_cols: int = 10) -> list[str]:
+    preferred = [
+        "id", "method", "variant", "authors", "year", "title", "venue", "apa",
+        "doi", "tags", "catalog", "synthetic", "citable", "faithfulness",
+        "hallucination_rate", "confidence", "latency_ms", "p_at_k", "mrr",
+        "f1", "precision", "recall", "score", "paper_id", "limitation",
+        "text", "source", "severity", "statement", "name", "family", "ready",
+        "item", "step", "probe", "label", "value", "key", "index",
+    ]
+    seen: set[str] = set()
+    keys: list[str] = []
+    for k in preferred:
+        if any(k in r for r in rows) and k not in seen:
+            seen.add(k)
+            keys.append(k)
+    for r in rows[:20]:
+        for k in r:
+            if k in seen or k in {"apa_parts", "metadata", "stages"}:
+                continue
+            seen.add(k)
+            keys.append(k)
+            if len(keys) >= max_cols:
+                return keys
+    return keys[:max_cols]
+
+
+def _render_table(rows: list[dict[str, Any]], caption: str | None = None) -> None:
+    if not rows:
+        st.caption("[]")
+        return
+    keys = _collect_keys(rows)
+    data = [{k: _cell(r.get(k), k) for k in keys} for r in rows]
+    df = pd.DataFrame(data)
+    if caption:
+        st.markdown(f"**{caption}** ({len(rows)})")
+    st.dataframe(df, use_container_width=True, hide_index=True)
+
+
+def _maybe_latex(text: str) -> None:
+    t = (text or "").strip()
+    if not t:
+        return
+    if LATEX_HINT.search(t) and len(t) < 400:
+        try:
+            expr = t.strip("$").strip()
+            st.latex(expr)
+            return
+        except Exception:  # noqa: BLE001
+            pass
+    st.markdown(t)
+
+
+def _render_viz_block(viz: dict[str, Any], lang: str) -> None:
+    kind = viz.get("kind")
+    title = _pick(viz, "title_vi", "title_en", lang)
+    caption = _pick(viz, "caption_vi", "caption_en", lang)
+    if title:
+        st.markdown(f"**{title}**")
+    if caption:
+        st.caption(caption)
+
+    if kind == "bar_chart":
+        bars = viz.get("bars") or []
+        if bars:
+            labels = [_pick(b, "label_vi", "label_en", lang, str(i)) for i, b in enumerate(bars)]
+            vals = [float(b.get("value") or 0) for b in bars]
+            df = pd.DataFrame({"label": labels, "value": vals}).set_index("label")
+            st.bar_chart(df)
+        return
+
+    if kind == "line_chart":
+        points = viz.get("points") or []
+        series = viz.get("series") or []
+        if points and series:
+            df = pd.DataFrame(points)
+            if "x" in df.columns:
+                df = df.set_index("x")
+            cols = [s["key"] for s in series if isinstance(s, dict) and s.get("key") in df.columns]
+            if cols:
+                st.line_chart(df[cols])
+        return
+
+    if kind == "multi_chart":
+        for ch in viz.get("charts") or []:
+            if isinstance(ch, dict):
+                _render_viz_block(ch, lang)
+        return
+
+    if kind == "knowledge_graph":
+        nodes = viz.get("nodes") or []
+        edges = viz.get("edges") or []
+        c1, c2 = st.columns(2)
+        with c1:
+            _render_table(
+                [n if isinstance(n, dict) else {"id": n} for n in nodes[:40]],
+                _t("Nút đồ thị", "Graph nodes", lang),
+            )
+        with c2:
+            _render_table(
+                [e if isinstance(e, dict) else {"edge": e} for e in edges[:40]],
+                _t("Cạnh", "Edges", lang),
+            )
+        return
+
+    if kind == "architecture":
+        layers = viz.get("layers") or viz.get("nodes") or []
+        if isinstance(layers, list) and layers:
+            _render_table(
+                [x if isinstance(x, dict) else {"item": x} for x in layers],
+                _t("Kiến trúc", "Architecture", lang),
+            )
+        else:
+            st.json(viz)
+        return
+
+    st.json(viz)
+
+
+def _gather_viz(data: Any) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    if not isinstance(data, dict):
+        return out
+    viz = data.get("viz")
+    if isinstance(viz, dict):
+        if viz.get("kind") == "multi_chart" and isinstance(viz.get("charts"), list):
+            out.extend(c for c in viz["charts"] if isinstance(c, dict))
+        else:
+            out.append(viz)
+    charts = data.get("charts")
+    if isinstance(charts, list):
+        out.extend(c for c in charts if isinstance(c, dict))
+    # Stage timings fallback
+    stages = data.get("stage_summary") or data.get("stages")
+    if isinstance(stages, list) and stages and all(isinstance(s, dict) for s in stages):
+        if any("duration_ms" in s for s in stages):
+            out.append(
+                {
+                    "kind": "bar_chart",
+                    "title_vi": "Thời gian các giai đoạn EDGR",
+                    "title_en": "EDGR stage timings",
+                    "bars": [
+                        {
+                            "label_vi": s.get("name_vi") or s.get("name") or s.get("stage"),
+                            "label_en": s.get("name") or s.get("stage"),
+                            "value": float(s.get("duration_ms") or 0),
+                        }
+                        for s in stages
+                        if s.get("duration_ms") is not None
+                    ],
+                }
+            )
+    return out
+
+
+def _render_scientific_verify(verification: dict[str, Any], lang: str) -> None:
+    status = verification.get("runtime_status") or "pending"
+    status_label = _pick(verification, "runtime_status_vi", "runtime_status_en", lang)
+    protocol = _pick(verification, "protocol_vi", "protocol_en", lang)
+    st.markdown(
+        f'<div class="review-block sci-verify"><strong>'
+        f'{_t("Xác minh khoa học", "Scientific verification", lang)}</strong> · '
+        f'<code>{status}</code>'
+        f'</div>',
+        unsafe_allow_html=True,
     )
-    cols[2].metric("kind", str(payload.get("computation_kind", "—")))
-    cols[3].metric("action", str(payload.get("action", "—")))
+    if status_label:
+        st.write(status_label)
+    if protocol:
+        st.caption(f"{_t('Giao thức', 'Protocol', lang)}: {protocol}")
+    for c in verification.get("checks") or []:
+        if not isinstance(c, dict):
+            continue
+        ok = bool(c.get("ok"))
+        mark = "✓" if ok else "✗"
+        cls = "badge-ok" if ok else "badge-fail"
+        title = _pick(c, "title_vi", "title_en", lang, c.get("id", ""))
+        detail = _pick(c, "detail_vi", "detail_en", lang)
+        st.markdown(
+            f'<span class="{cls}">{mark}</span> **{title}** — {detail}',
+            unsafe_allow_html=True,
+        )
+    expert = verification.get("expert")
+    if isinstance(expert, dict):
+        st.caption(
+            _pick(expert, "status_vi", "status_en", lang)
+            + (
+                f" · κ={expert['kappa']:.2f}"
+                if isinstance(expert.get("kappa"), (int, float))
+                else ""
+            )
+        )
 
-    review = payload.get("result_review")
-    if isinstance(review, dict) and review:
-        with st.expander(_t("Đánh giá kết quả", "Result review", lang), expanded=True):
-            _pretty_json(review)
 
-    academic = payload.get("academic")
-    if isinstance(academic, dict) and academic:
-        with st.expander(_t("Khung học thuật", "Academic block", lang), expanded=False):
-            _pretty_json(academic)
+def _render_result_review(review: dict[str, Any], lang: str) -> None:
+    if not review:
+        return
+    st.subheader(_t("Đánh giá kết quả", "Result review", lang))
+    ver = review.get("scientific_verification")
+    if isinstance(ver, dict):
+        _render_scientific_verify(ver, lang)
 
-    with st.expander(_t("Kết quả đầy đủ", "Full result", lang), expanded=True):
-        _pretty_json(payload.get("result", payload))
+    bullets = review.get("bullets_vi") if lang == "vi" else review.get("bullets_en")
+    if not bullets:
+        bullets = review.get("bullets_vi") or review.get("bullets_en") or []
+    explain = _pick(review, "explain_vi", "explain_en", lang)
+    how = _pick(review, "how_to_read_vi", "how_to_read_en", lang)
+
+    st.markdown('<div class="review-block">', unsafe_allow_html=True)
+    st.markdown(f"**{_t('Giải thích', 'Explanation', lang)}**")
+    if bullets:
+        for b in bullets:
+            st.markdown(f"- {b}")
+    elif explain:
+        st.write(explain)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    ev = review.get("evidence")
+    if isinstance(ev, dict):
+        claim = _pick(ev, "claim_vi", "claim_en", lang)
+        scalars = ev.get("scalars") if isinstance(ev.get("scalars"), dict) else {}
+        if claim or scalars:
+            st.markdown('<div class="review-block evidence">', unsafe_allow_html=True)
+            st.markdown(f"**{_t('Minh chứng', 'Evidence', lang)}**")
+            if claim:
+                st.write(claim)
+            if scalars:
+                chips = " ".join(
+                    f'<span class="stat-chip"><span>{k}</span><strong>{_cell(v, k)}</strong></span>'
+                    for k, v in scalars.items()
+                )
+                st.markdown(f'<div class="stat-row">{chips}</div>', unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+
+    if how:
+        st.caption(f"{_t('Cách đọc', 'How to read', lang)}: {how}")
+
+    assessment = review.get("assessment")
+    if isinstance(assessment, dict) and assessment:
+        with st.expander(_t("Đánh giá runtime", "Runtime assessment", lang)):
+            _render_generic_value(assessment, lang, depth=1)
+
+
+def _render_generic_value(data: Any, lang: str, depth: int = 0) -> None:
+    if data is None:
+        st.caption("—")
+        return
+    if isinstance(data, (str, int, float, bool)):
+        if isinstance(data, str) and LATEX_HINT.search(data):
+            _maybe_latex(data)
+        else:
+            st.write(data)
+        return
+    if isinstance(data, list):
+        if not data:
+            st.caption("[]")
+            return
+        if isinstance(data[0], dict):
+            _render_table(data, None)
+            return
+        if all(not isinstance(x, (dict, list)) for x in data):
+            _render_table(
+                [{"index": i + 1, "value": x} for i, x in enumerate(data)],
+                None,
+            )
+            return
+        for i, item in enumerate(data[:30]):
+            if depth == 0:
+                with st.expander(f"[{i}]"):
+                    _render_generic_value(item, lang, depth + 1)
+            else:
+                st.markdown(f"**[{i}]**")
+                _render_generic_value(item, lang, depth + 1)
+        return
+
+    if isinstance(data, dict):
+        # Honesty badges
+        impl = data.get("implementation")
+        if isinstance(impl, str) and "stub" in impl.lower():
+            st.markdown(
+                f'<div class="honesty">{_t("Baseline stub trên cùng store demo.", "Stub baseline on the same demo store.", lang)}'
+                f" · <code>{impl}</code></div>",
+                unsafe_allow_html=True,
+            )
+        note = _pick(data, "note_vi", "note_en", lang) or str(data.get("note") or "")
+        if data.get("mode") in {"seed_replay", "seed_inventory"}:
+            st.markdown(
+                f'<div class="honesty">{_t("Seed replay trên corpus demo — không crawl API live.", "Seed replay on demo corpus — not a live API crawl.", lang)}</div>',
+                unsafe_allow_html=True,
+            )
+        if note and depth == 0:
+            st.caption(note)
+
+        for viz in _gather_viz(data):
+            _render_viz_block(viz, lang)
+
+        scalars: list[tuple[str, Any]] = []
+        tables: list[tuple[str, list[dict[str, Any]]]] = []
+        nested: list[tuple[str, Any]] = []
+        skip = {
+            "viz", "charts", "note", "note_vi", "note_en", "implementation",
+            "policy_steps", "mode", "stages",
+        }
+        for k, v in data.items():
+            if k in skip or v is None:
+                continue
+            if isinstance(v, (str, int, float, bool)):
+                scalars.append((k, v))
+            elif (
+                isinstance(v, list)
+                and v
+                and isinstance(v[0], dict)
+            ):
+                tables.append((k, v))
+            elif isinstance(v, list) and all(not isinstance(x, (dict, list)) for x in v):
+                tables.append((k, [{"index": i + 1, "value": x} for i, x in enumerate(v)]))
+            elif isinstance(v, dict):
+                inner = v
+                if inner and all(
+                    isinstance(iv, (str, int, float, bool)) or iv is None
+                    for iv in inner.values()
+                ):
+                    tables.append(
+                        (k, [{"key": ik, "value": iv} for ik, iv in inner.items()])
+                    )
+                else:
+                    nested.append((k, v))
+            else:
+                nested.append((k, v))
+
+        if scalars:
+            _render_table(
+                [{"field": k, "value": _cell(v, k)} for k, v in scalars],
+                _t("Chỉ số", "Scalars", lang),
+            )
+        for key, rows in tables:
+            _render_table(rows, key)
+        for key, val in nested:
+            # Streamlit forbids nested expanders — only top-level uses them.
+            if depth == 0:
+                with st.expander(key, expanded=len(nested) <= 3):
+                    _render_generic_value(val, lang, depth + 1)
+            else:
+                st.markdown(f"**{key}**")
+                _render_generic_value(val, lang, depth + 1)
+
+
+def _render_academic(pack: dict[str, Any] | None, lang: str) -> None:
+    if not pack:
+        st.caption(_t("Chưa có khung học thuật.", "No academic package.", lang))
+        return
+    st.markdown(f"### {_t('Khung học thuật', 'Academic framework', lang)}")
+    summary = _pick(pack, "summary_vi", "summary_en", lang)
+    if summary:
+        st.write(summary)
+    blocks = pack.get("blocks") if isinstance(pack.get("blocks"), dict) else {}
+    for key, title_vi, title_en in ACAD_BLOCKS:
+        block = blocks.get(key)
+        if block is None:
+            continue
+        with st.expander(_t(title_vi, title_en, lang), expanded=False):
+            if isinstance(block, dict):
+                # Prefer bilingual text fields
+                for tk in ("title_vi", "title_en", "body_vi", "body_en", "latex", "formula"):
+                    if block.get(tk):
+                        if tk in {"latex", "formula"} or "body" in tk:
+                            val = block[tk]
+                            if isinstance(val, str):
+                                _maybe_latex(val) if ("latex" in tk or LATEX_HINT.search(val)) else st.write(val)
+                # Render remaining structured content (depth=1 → no nested expanders)
+                rest = {
+                    k: v
+                    for k, v in block.items()
+                    if k
+                    not in {
+                        "title_vi",
+                        "title_en",
+                        "body_vi",
+                        "body_en",
+                        "latex",
+                        "formula",
+                        "subtitle_vi",
+                        "subtitle_en",
+                    }
+                }
+                if rest:
+                    _render_generic_value(rest, lang, depth=1)
+            else:
+                _render_generic_value(block, lang, depth=1)
+    viz = pack.get("viz")
+    if isinstance(viz, dict):
+        with st.expander(_t("Hình minh họa học thuật", "Academic visualization", lang)):
+            _render_viz_block(viz, lang)
+
+
+def _hero(lang: str, health_line: str) -> None:
+    st.markdown(
+        f"""
+        <div class="edgr-hero">
+          <p class="kicker">{_t(
+            "Truy hồi đồ thị động dựa trên bằng chứng · IDS / CTI",
+            "Evidence-driven dynamic graph retrieval · IDS / CTI",
+            lang,
+          )}</p>
+          <h1 class="edgr-brand">EDGR — {_t("Pipeline nghiên cứu A→Z", "Research pipeline A→Z", lang)}</h1>
+          <p class="meta">{health_line}</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _step_badge(step_id: int, title: str) -> None:
+    color = STEP_COLORS.get(step_id, "#0d7377")
+    st.markdown(
+        f'<div class="step-chip" style="color:{color};border-color:{color}55;background:{color}14">'
+        f"◈ {_t(f'Bước {step_id}', f'Step {step_id}', st.session_state.lang)}. {title}"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
 
 
 def page_overview(core: dict[str, Any], lang: str) -> None:
-    st.subheader(_t("Tổng quan", "Overview", lang))
-    st.markdown(
-        _t(
-            "UI Streamlit gọi **cùng** core Python (`pipeline_service`, `EDGREngine`) "
-            "như API FastAPI / React — không mock.",
-            "This Streamlit UI calls the **same** Python core "
-            "(`pipeline_service`, `EDGREngine`) as the FastAPI / React app — no mocks.",
-            lang,
-        )
-    )
-    _health_cards(core, lang)
     definition = core["pipeline"].definition()
-    st.caption(
+    topic = _pick(definition, "topic_vi", "topic", lang, definition.get("topic", ""))
+    _step_badge(0, _t("Quy trình nghiên cứu", "Research process", lang))
+    st.markdown(f'<div class="surface"><p class="muted">{topic}</p></div>', unsafe_allow_html=True)
+
+    st.markdown(f"### {_t('Giải thích tổng quan', 'Overview explanation', lang)}")
+    st.write(
         _t(
-            f"Chủ đề: {definition.get('topic_vi') or definition.get('topic')}",
-            f"Topic: {definition.get('topic')}",
+            "Sơ đồ trình bày khung nghiên cứu tiến sĩ theo ba giai đoạn: "
+            "(i) nền tảng lý thuyết và thiết kế thuật toán; "
+            "(ii) triển khai hệ thống cùng thực nghiệm–đánh giá; "
+            "(iii) phân tích thuật toán, công bố khoa học và chuyển giao kết quả. "
+            "Trục đóng góp là EDGR (Evidence-Driven Dynamic Graph Retrieval).",
+            "The diagram presents the PhD research frame in three phases: "
+            "(i) theoretical foundation and algorithm design; "
+            "(ii) system implementation with experiments–evaluation; "
+            "(iii) algorithm analysis, scientific publication and transfer. "
+            "The contribution axis is EDGR (Evidence-Driven Dynamic Graph Retrieval).",
             lang,
         )
     )
+    st.write(
+        _t(
+            "Đóng góp khoa học tập trung ở các bước 4–6: EDGR tích hợp mở rộng đồ thị thích ứng, "
+            "lọc thời gian, xếp hạng bằng chứng và cổng tin cậy trước Trusted Answer cho IDS/CTI.",
+            "Scientific contribution centers on steps 4–6: EDGR integrates adaptive graph expansion, "
+            "temporal filtering, evidence ranking and a trust gate before Trusted Answers for IDS/CTI.",
+            lang,
+        )
+    )
+
+    cols = st.columns(3)
+    for col, phase in zip(cols, PHASES):
+        with col:
+            items = phase["items_vi"] if lang == "vi" else phase["items_en"]
+            lis = "".join(f"<li>{x}</li>" for x in items)
+            st.markdown(
+                f"""
+                <div class="surface phase-card" style="--phase:{phase['color']}">
+                  <header>
+                    <strong>{phase['title_vi' if lang=='vi' else 'title_en']}</strong>
+                    <span>{phase['range_vi' if lang=='vi' else 'range_en']}</span>
+                  </header>
+                  <ul>{lis}</ul>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    flow = FLOW_VI if lang == "vi" else FLOW_EN
+    flow_html = " <i>→</i> ".join(f"<span>{n}</span>" for n in flow)
+    st.markdown(
+        f'<div class="surface"><h4>{_t("A→Z: Từ ý tưởng đến đóng góp khoa học", "A→Z: From idea to scientific contribution", lang)}</h4>'
+        f'<div class="flow-line">{flow_html}</div></div>',
+        unsafe_allow_html=True,
+    )
+
+    _health_cards(core, lang)
+
+    st.markdown(f"### {_t('Đi tới từng bước nghiên cứu', 'Jump to research steps', lang)}")
     steps = definition.get("steps") or []
+    grid = st.columns(4)
+    for i, s in enumerate(steps):
+        sid = int(s["id"])
+        color = STEP_COLORS.get(sid, "#0d7377")
+        label = s.get("title") if lang == "vi" else s.get("title_en")
+        with grid[i % 4]:
+            if st.button(
+                f"{sid}. {label}",
+                key=f"jump_{sid}",
+                use_container_width=True,
+            ):
+                st.session_state.step_id = sid
+                st.session_state.task_id = STEP_OVERVIEW
+                st.session_state.last_payload = None
+                st.rerun()
+            st.markdown(
+                f'<div style="height:4px;border-radius:4px;background:{color};margin:-0.35rem 0 0.65rem"></div>',
+                unsafe_allow_html=True,
+            )
+
     rows = []
     for s in steps:
-        tasks = s.get("tasks") or []
         rows.append(
             {
                 "#": s.get("id"),
                 _t("Bước", "Step", lang): s.get("title") if lang == "vi" else s.get("title_en"),
-                _t("Số task", "Tasks", lang): len(tasks),
+                _t("Số task", "Tasks", lang): len(s.get("tasks") or []),
                 "score": s.get("assessment_score"),
             }
         )
     st.dataframe(rows, use_container_width=True, hide_index=True)
 
 
-def page_pipeline(core: dict[str, Any], lang: str) -> None:
-    st.subheader(_t("Pipeline 16 bước", "16-step pipeline", lang))
+def page_step(core: dict[str, Any], lang: str, step_id: int) -> None:
     definition = core["pipeline"].definition()
     steps = definition.get("steps") or []
-    if not steps:
-        st.error("Pipeline definition empty")
+    step = next((s for s in steps if s.get("id") == step_id), None)
+    if not step:
+        st.error(f"Unknown step {step_id}")
         return
 
-    labels = [
-        f"{s['id']}. {s.get('title') if lang == 'vi' else s.get('title_en')}"
-        for s in steps
-    ]
-    step_idx = st.selectbox(
-        _t("Chọn bước", "Select step", lang),
-        options=list(range(len(steps))),
-        format_func=lambda i: labels[i],
-    )
-    step = steps[step_idx]
-    st.markdown(
-        f"**{_t('Mục tiêu', 'Goal', lang)}:** "
-        f"{step.get('goal') if lang == 'vi' else step.get('goal_en')}"
+    title = step.get("title") if lang == "vi" else step.get("title_en")
+    goal = step.get("goal") if lang == "vi" else step.get("goal_en")
+    _step_badge(step_id, str(title))
+    st.write(goal or "")
+    st.caption(
+        _t(
+            "Trình tự khoa học: Tổng quan bước → từng công việc con (mô hình → chạy → minh chứng).",
+            "Scientific sequence: step overview → child tasks (model → run → evidence).",
+            lang,
+        )
     )
 
     tasks = step.get("tasks") or []
-    task_labels = [
-        f"{t['id']} — {t.get('title') if lang == 'vi' else t.get('title_en')}"
-        for t in tasks
-    ]
-    task_idx = st.selectbox(
-        _t("Chọn task", "Select task", lang),
-        options=list(range(len(tasks))),
-        format_func=lambda i: task_labels[i],
-    )
-    task = tasks[task_idx]
+    task_options = [STEP_OVERVIEW] + [t["id"] for t in tasks]
+    labels = {
+        STEP_OVERVIEW: _t("▸ Tổng quan bước", "▸ Step overview", lang),
+        **{
+            t["id"]: f"{i+1}. {t.get('title') if lang == 'vi' else t.get('title_en')}"
+            for i, t in enumerate(tasks)
+        },
+    }
+    # Preserve task selection across reruns
+    current = st.session_state.task_id
+    if current not in task_options:
+        current = STEP_OVERVIEW
+        st.session_state.task_id = current
 
-    if step.get("id") == 16:
-        st.info(
+    picked = st.radio(
+        _t("Công việc trong bước", "Tasks in this step", lang),
+        options=task_options,
+        format_func=lambda x: labels.get(x, x),
+        horizontal=True,
+        key=f"task_radio_{step_id}",
+        index=task_options.index(current),
+    )
+    if picked != st.session_state.task_id:
+        st.session_state.task_id = picked
+        st.session_state.last_payload = st.session_state.result_cache.get(f"{step_id}:{picked}")
+        st.rerun()
+
+    task_id = st.session_state.task_id
+    is_overview = task_id == STEP_OVERVIEW
+
+    # Child sequence status
+    if tasks:
+        done = sum(
+            1 for t in tasks if f"{step_id}:{t['id']}" in st.session_state.result_cache
+        )
+        st.caption(
             _t(
-                "Bước 16 nên dùng tab **Live IDS/CTI** (analyze) thay vì task console.",
-                "For step 16 prefer the **Live IDS/CTI** tab (analyze) over the console task.",
+                f"Tiến độ bước: {done}/{len(tasks)} công việc đã chạy",
+                f"Step progress: {done}/{len(tasks)} tasks run",
                 lang,
             )
         )
 
-    with st.form("run_task_form"):
-        query = st.selectbox(
-            _t("Query mẫu (tuỳ task)", "Example query (optional per task)", lang),
-            options=EX_QUERIES,
+    if is_overview:
+        st.markdown(f"#### {_t('Các công việc con theo trình tự', 'Child tasks in order', lang)}")
+        for i, t in enumerate(tasks, 1):
+            ran = f"{step_id}:{t['id']}" in st.session_state.result_cache
+            status = _t("đã chạy", "done", lang) if ran else _t("chưa chạy", "pending", lang)
+            ttitle = t.get("title") if lang == "vi" else t.get("title_en")
+            st.markdown(f"{i}. **{ttitle}** · `{status}` · `{t['id']}`")
+        st.info(
+            _t(
+                "Chọn một công việc ở trên để xem khung học thuật và chạy thực nghiệm.",
+                "Select a child task above to view the academic frame and run the experiment.",
+                lang,
+            )
+        )
+        # Step-level academic
+        try:
+            pack = core["pipeline"].academic(step_id, None)
+            _render_academic(pack if isinstance(pack, dict) else None, lang)
+        except Exception as e:  # noqa: BLE001
+            st.warning(str(e))
+        return
+
+    task = next((t for t in tasks if t["id"] == task_id), None)
+    if not task:
+        st.error("Unknown task")
+        return
+
+    ttitle = task.get("title") if lang == "vi" else task.get("title_en")
+    st.markdown(
+        f"**{_t(f'Công việc {task_options.index(task_id)}/{len(tasks)}', f'Task {task_options.index(task_id)}/{len(tasks)}', lang)}:** {ttitle}"
+    )
+
+    # Academic for this task
+    try:
+        pack = core["pipeline"].academic(step_id, task_id)
+        _render_academic(pack if isinstance(pack, dict) else None, lang)
+    except Exception as e:  # noqa: BLE001
+        st.warning(str(e))
+
+    # Auto-run catalog/matrix like React
+    cache_key = f"{step_id}:{task_id}"
+    if (
+        step_id == 1
+        and task_id in {"catalog", "matrix"}
+        and cache_key not in st.session_state.result_cache
+    ):
+        with st.spinner(_t("Đang tải catalog/matrix…", "Loading catalog/matrix…", lang)):
+            try:
+                payload = core["pipeline"].run_task(step_id, task_id, {})
+                st.session_state.result_cache[cache_key] = payload
+                st.session_state.last_payload = payload
+            except Exception as e:  # noqa: BLE001
+                st.error(str(e))
+
+    with st.form(f"run_{step_id}_{task_id}"):
+        st.markdown(f"#### {_t('Chạy thực nghiệm', 'Run experiment', lang)}")
+        q_choice = st.selectbox(
+            _t("Query mẫu", "Sample query", lang),
+            SAMPLE_QUERIES,
             index=0,
         )
-        custom = st.text_input(
-            _t("Hoặc nhập query tuỳ chỉnh", "Or custom query", lang),
-            value="",
-        )
-        top_k = st.slider("top_k", 1, 10, 5)
+        custom = st.text_input(_t("Hoặc query tuỳ chỉnh", "Or custom query", lang), "")
+        top_k = st.select_slider("top_k", options=TOP_K_CHOICES, value=DEFAULT_TOP_K)
         c1, c2, c3 = st.columns(3)
         enable_temporal = c1.checkbox("temporal", value=True)
         enable_graph = c2.checkbox("graph", value=True)
@@ -192,132 +1093,272 @@ def page_pipeline(core: dict[str, Any], lang: str) -> None:
         )
 
     if submitted:
-        q = (custom or query).strip()
         params = {
-            "query": q,
-            "top_k": top_k,
+            "query": (custom or q_choice).strip(),
+            "top_k": int(top_k),
             "enable_temporal": enable_temporal,
             "enable_graph": enable_graph,
             "enable_trust_score": enable_trust,
         }
-        heavy = step.get("id") in {9, 10, 11}
+        heavy = step_id in {9, 10, 11}
         spinner = (
-            _t(
-                "Đang chạy (bước đánh giá có thể lâu)…",
-                "Running (evaluation steps can take a while)…",
-                lang,
-            )
+            _t("Đang chạy (bước đánh giá có thể lâu)…", "Running (evaluation may take a while)…", lang)
             if heavy
             else _t("Đang chạy…", "Running…", lang)
         )
         try:
             with st.spinner(spinner):
-                payload = core["pipeline"].run_task(step["id"], task["id"], params)
+                payload = core["pipeline"].run_task(step_id, task_id, params)
+            st.session_state.result_cache[cache_key] = payload
+            st.session_state.last_payload = payload
             st.success(
                 _t(
-                    f"Xong: bước {payload.get('step_id')} / {payload.get('task_id')}",
-                    f"Done: step {payload.get('step_id')} / {payload.get('task_id')}",
+                    f"Xong: bước {payload.get('step_id')} / {payload.get('task_id')} · {payload.get('elapsed_ms')} ms",
+                    f"Done: step {payload.get('step_id')} / {payload.get('task_id')} · {payload.get('elapsed_ms')} ms",
                     lang,
                 )
             )
-            _result_summary(payload, lang)
         except Exception as e:  # noqa: BLE001
             st.error(str(e))
             st.exception(e)
 
+    payload = st.session_state.last_payload or st.session_state.result_cache.get(cache_key)
+    if not payload:
+        return
 
-def page_analyze(core: dict[str, Any], lang: str) -> None:
-    st.subheader(_t("Ứng dụng IDS/CTI (live EDGR)", "Live IDS/CTI console", lang))
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("elapsed_ms", payload.get("elapsed_ms"))
+    m2.metric(
+        _t("tính toán thật", "real computation", lang),
+        "yes" if payload.get("real_computation") else "no",
+    )
+    m3.metric("kind", str(payload.get("computation_kind", "—")))
+    m4.metric("action", str(payload.get("action", "—")))
+
+    review = payload.get("result_review")
+    if isinstance(review, dict):
+        _render_result_review(review, lang)
+
+    # Prefer runtime academic attached to payload (no wrapper expander —
+    # _render_academic already uses expanders for each block).
+    acad = payload.get("academic")
+    if isinstance(acad, dict):
+        st.markdown(f"#### {_t('Khung học thuật (sau chạy)', 'Academic (post-run)', lang)}")
+        _render_academic(acad, lang)
+
+    st.markdown(f"### {_t('Kết quả', 'Result', lang)}")
+    _render_generic_value(payload.get("result", payload), lang)
+
+
+def page_ids_cti(core: dict[str, Any], lang: str) -> None:
+    _step_badge(16, _t("Ứng dụng IDS/CTI (live EDGR)", "Live IDS/CTI application", lang))
     status = core["app_status"]()
     st.caption(status.get("note_vi") if lang == "vi" else status.get("note_en"))
     _health_cards(core, lang)
 
-    with st.form("analyze_form"):
-        query = st.selectbox(_t("Query mẫu", "Example query", lang), EX_QUERIES, index=0)
-        custom = st.text_area(
-            _t("Query tuỳ chỉnh", "Custom query", lang),
-            value="",
-            height=80,
+    mode = st.radio(
+        _t("Chế độ nhập", "Input mode", lang),
+        options=["query", "alert"],
+        format_func=lambda m: _t("Truy vấn CTI", "CTI query", lang)
+        if m == "query"
+        else _t("Alert realtime (Suricata)", "Realtime alert (Suricata)", lang),
+        horizontal=True,
+        key="ids_mode_radio",
+    )
+    st.session_state.ids_mode = mode
+
+    top_k = st.select_slider(
+        "top_k",
+        options=TOP_K_CHOICES,
+        value=DEFAULT_TOP_K,
+        key="ids_topk",
+    )
+
+    if mode == "query":
+        if "ids_query_area" not in st.session_state:
+            st.session_state.ids_query_area = SAMPLE_QUERIES[0]
+        qc = st.columns(len(QUICK_QUERIES))
+        for col, item in zip(qc, QUICK_QUERIES):
+            with col:
+                if st.button(
+                    item["label_vi"] if lang == "vi" else item["label_en"],
+                    key=f"qq_{item['id']}",
+                    use_container_width=True,
+                ):
+                    st.session_state.ids_query_area = item["q"]
+                    st.rerun()
+
+        with st.form("analyze_form"):
+            query = st.text_area(
+                _t("Query", "Query", lang),
+                height=90,
+                key="ids_query_area",
+            )
+            c1, c2, c3, c4 = st.columns(4)
+            enable_temporal = c1.checkbox("temporal", value=True, key="a_t")
+            enable_graph = c2.checkbox("graph", value=True, key="a_g")
+            enable_trust = c3.checkbox("trust_score", value=True, key="a_s")
+            live_enrich = c4.checkbox("NVD live enrich", value=True, key="a_n")
+            submitted = st.form_submit_button(
+                _t("Phân tích (live EDGR)", "Analyze (live EDGR)", lang),
+                type="primary",
+                use_container_width=True,
+            )
+        if submitted:
+            try:
+                with st.spinner(_t("Đang chạy EDGR…", "Running EDGR…", lang)):
+                    out = core["analyze"](
+                        query.strip(),
+                        top_k=int(top_k),
+                        enable_temporal=enable_temporal,
+                        enable_graph=enable_graph,
+                        enable_trust_score=enable_trust,
+                        live_enrich=live_enrich,
+                    )
+                st.session_state.ids_result = out
+            except Exception as e:  # noqa: BLE001
+                st.error(str(e))
+                st.exception(e)
+    else:
+        ai = core["alert_ingest"]
+        sample = ai.sample_alert_payload()
+        default_json = json.dumps(sample.get("alert") or {}, ensure_ascii=False, indent=2)
+        alert_json = st.text_area(
+            _t("JSON alert (Suricata eve-style)", "Alert JSON (Suricata eve-style)", lang),
+            value=st.session_state.get("alert_json_text", default_json),
+            height=220,
+            key="alert_json_area",
         )
-        top_k = st.slider("top_k", 1, 10, 5, key="analyze_topk")
-        c1, c2, c3, c4 = st.columns(4)
-        enable_temporal = c1.checkbox("temporal", value=True, key="a_t")
-        enable_graph = c2.checkbox("graph", value=True, key="a_g")
-        enable_trust = c3.checkbox("trust_score", value=True, key="a_s")
-        live_enrich = c4.checkbox("NVD live enrich", value=True, key="a_n")
-        submitted = st.form_submit_button(
-            _t("Phân tích", "Analyze", lang),
+        b1, b2, b3 = st.columns(3)
+        if b1.button(_t("Nạp mẫu", "Load sample", lang), use_container_width=True):
+            st.session_state.alert_json_text = default_json
+            st.rerun()
+        ingest_only = b2.button(_t("Ingest", "Ingest", lang), use_container_width=True)
+        ingest_run = b3.button(
+            _t("Ingest + Analyze", "Ingest + Analyze", lang),
             type="primary",
             use_container_width=True,
         )
 
-    if submitted:
-        q = (custom or query).strip()
-        try:
-            with st.spinner(_t("Đang chạy EDGR…", "Running EDGR…", lang)):
-                out = core["analyze"](
-                    q,
-                    top_k=top_k,
-                    enable_temporal=enable_temporal,
-                    enable_graph=enable_graph,
-                    enable_trust_score=enable_trust,
-                    live_enrich=live_enrich,
+        if ingest_only or ingest_run:
+            try:
+                payload = json.loads(alert_json)
+                ing = ai.ingest_alerts(payload)
+                st.success(
+                    _t(
+                        f"Đã nạp · queue={ing.get('queue_size')}",
+                        f"Ingested · queue={ing.get('queue_size')}",
+                        lang,
+                    )
                 )
-            m1, m2, m3, m4 = st.columns(4)
-            m1.metric("confidence", round(float(out.get("confidence") or 0), 3))
-            m2.metric("faithfulness", round(float(out.get("faithfulness") or 0), 3))
-            m3.metric("hallucination", round(float(out.get("hallucination_rate") or 0), 3))
-            m4.metric("latency_ms", out.get("latency_ms"))
-
-            if out.get("abstained"):
-                st.warning(
-                    out.get("abstain_reason_vi")
-                    if lang == "vi"
-                    else out.get("abstain_reason_en")
-                )
-
-            st.markdown(f"**{_t('Câu trả lời', 'Answer', lang)}**")
-            st.write(out.get("answer") or "—")
-
-            evid = out.get("evidence") or []
-            if evid:
-                st.markdown(f"**{_t('Bằng chứng', 'Evidence', lang)}** ({len(evid)})")
-                for i, e in enumerate(evid[: top_k + 2], 1):
-                    if isinstance(e, dict):
-                        st.markdown(
-                            f"{i}. score=`{e.get('score', e.get('trust_score', '—'))}` — "
-                            f"{e.get('text') or e.get('content') or e.get('id') or e}"
+                alerts = (ing.get("alerts") or [])
+                if alerts:
+                    st.session_state.selected_alert_id = alerts[0].get("id")
+                if ingest_run and st.session_state.selected_alert_id:
+                    with st.spinner(_t("Đang analyze alert…", "Analyzing alert…", lang)):
+                        st.session_state.ids_result = core["analyze_alert"](
+                            st.session_state.selected_alert_id,
+                            top_k=int(top_k),
+                            live_enrich=True,
                         )
-                    else:
-                        st.markdown(f"{i}. {e}")
+            except Exception as e:  # noqa: BLE001
+                st.error(str(e))
 
-            stages = out.get("stage_summary") or out.get("stages") or []
-            if stages:
-                with st.expander(_t("Các giai đoạn EDGR", "EDGR stages", lang)):
-                    _pretty_json(stages)
+        listed = ai.list_alerts(limit=40)
+        alerts = listed.get("alerts") or []
+        st.caption(
+            _t(
+                f"Hàng đợi alert: {listed.get('queue_size', 0)}",
+                f"Alert queue: {listed.get('queue_size', 0)}",
+                lang,
+            )
+        )
+        if alerts:
+            labels = {
+                a["id"]: f"{a.get('id','')[:8]}… · {str(a.get('query') or a.get('signature') or '')[:60]}"
+                for a in alerts
+                if a.get("id")
+            }
+            ids = list(labels.keys())
+            sel = st.selectbox(
+                _t("Chọn alert", "Select alert", lang),
+                options=ids,
+                format_func=lambda i: labels.get(i, i),
+                index=ids.index(st.session_state.selected_alert_id)
+                if st.session_state.selected_alert_id in ids
+                else 0,
+            )
+            st.session_state.selected_alert_id = sel
+            if st.button(_t("Analyze alert đã chọn", "Analyze selected alert", lang), type="primary"):
+                try:
+                    with st.spinner(_t("Đang analyze alert…", "Analyzing alert…", lang)):
+                        st.session_state.ids_result = core["analyze_alert"](
+                            sel, top_k=int(top_k), live_enrich=True
+                        )
+                except Exception as e:  # noqa: BLE001
+                    st.error(str(e))
 
-            with st.expander(_t("Payload đầy đủ", "Full payload", lang)):
-                st.code(json.dumps(out, ensure_ascii=False, indent=2)[:120_000])
-        except Exception as e:  # noqa: BLE001
-            st.error(str(e))
-            st.exception(e)
+    out = st.session_state.ids_result
+    if not out:
+        return
+
+    is_live = out.get("simulated") is False or out.get("mode") == "live_edgr"
+    if is_live:
+        st.success(_t("Live EDGR · không phải đáp án giả lập", "Live EDGR · not a scripted answer", lang))
+
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("confidence", _cell(out.get("confidence"), "confidence") or "—")
+    m2.metric("faithfulness", _cell(out.get("faithfulness"), "faithfulness") or "—")
+    m3.metric("hallucination", _cell(out.get("hallucination_rate"), "hallucination_rate") or "—")
+    m4.metric("latency_ms", out.get("latency_ms"))
+
+    if out.get("abstained"):
+        st.warning(_pick(out, "abstain_reason_vi", "abstain_reason_en", lang))
+
+    st.markdown(f"**{_t('Câu trả lời', 'Answer', lang)}**")
+    st.write(out.get("answer") or "—")
+
+    ents = out.get("entities") or []
+    if ents:
+        st.caption("Entities: " + ", ".join(map(str, ents[:16])))
+
+    evid = out.get("evidence") or []
+    if evid:
+        st.markdown(f"**{_t('Bằng chứng', 'Evidence', lang)}** ({len(evid)})")
+        for i, e in enumerate(evid[: top_k + 3], 1):
+            if isinstance(e, dict):
+                st.markdown(
+                    f"{i}. score=`{_cell(e.get('score', e.get('trust_score')), 'score')}` — "
+                    f"{e.get('text') or e.get('content') or e.get('id') or e}"
+                )
+            else:
+                st.markdown(f"{i}. {e}")
+
+    for viz in _gather_viz(out):
+        _render_viz_block(viz, lang)
+
+    enrich = out.get("live_enrichment")
+    if isinstance(enrich, dict) and enrich.get("attempted"):
+        with st.expander("NVD live enrichment"):
+            st.json(enrich)
+
+    with st.expander(_t("Payload đầy đủ", "Full payload", lang)):
+        st.code(json.dumps(out, ensure_ascii=False, indent=2, default=str)[:120_000])
 
 
 def main() -> None:
+    _init_state()
+    _inject_css()
+
     lang = st.sidebar.radio(
-        "Language / Ngôn ngữ",
+        _t("Ngôn ngữ", "Language", st.session_state.lang),
         options=["vi", "en"],
         format_func=lambda x: "Tiếng Việt" if x == "vi" else "English",
         horizontal=True,
+        index=0 if st.session_state.lang == "vi" else 1,
+        key="lang_radio",
     )
-    st.title(_t("EDGR — Pipeline nghiên cứu", "EDGR — Research pipeline", lang))
-    st.caption(
-        _t(
-            "Evidence-Driven Dynamic Graph Retrieval · bản Streamlit (cùng core Python)",
-            "Evidence-Driven Dynamic Graph Retrieval · Streamlit wrap (same Python core)",
-            lang,
-        )
-    )
+    st.session_state.lang = lang
 
     try:
         core = _load_core()
@@ -326,40 +1367,76 @@ def main() -> None:
         st.exception(e)
         return
 
-    with st.sidebar:
-        st.markdown("---")
-        st.markdown(_t("**Trạng thái store**", "**Store status**", lang))
-        stats = core["kg"].stats()
-        st.write(
-            {
-                "kg_nodes": stats.nodes,
-                "kg_edges": stats.edges,
-                "evidence": len(core["vector_store"].chunks),
-                "qa_pairs": core["qa_n"],
-            }
-        )
-        st.markdown("---")
-        st.caption(
-            _t(
-                "React UI: `npm run dev` · API: FastAPI `/docs`",
-                "React UI: `npm run dev` · API: FastAPI `/docs`",
-                lang,
-            )
-        )
-
-    tab_ov, tab_pipe, tab_app = st.tabs(
-        [
-            _t("Tổng quan", "Overview", lang),
-            _t("Pipeline", "Pipeline", lang),
-            _t("Live IDS/CTI", "Live IDS/CTI", lang),
-        ]
+    definition = core["pipeline"].definition()
+    steps = definition.get("steps") or []
+    stats = core["kg"].stats()
+    health_line = _t(
+        f"{len(steps)} bước · {stats.nodes} nút · {len(core['vector_store'].chunks)} bằng chứng",
+        f"{len(steps)} steps · {stats.nodes} nodes · {len(core['vector_store'].chunks)} evidence",
+        lang,
     )
-    with tab_ov:
+    _hero(lang, health_line)
+
+    # Sidebar step rail
+    st.sidebar.markdown("---")
+    st.sidebar.markdown(
+        f"**{_t('Quy trình nghiên cứu', 'Research pipeline', lang)}**"
+    )
+    nav_labels = [_t("0 · Tổng quan", "0 · Overview", lang)]
+    nav_ids = [0]
+    for s in steps:
+        sid = int(s["id"])
+        ttitle = s.get("title") if lang == "vi" else s.get("title_en")
+        short = (ttitle or "")[:28]
+        nav_labels.append(f"{sid} · {short}")
+        nav_ids.append(sid)
+
+    try:
+        idx = nav_ids.index(st.session_state.step_id)
+    except ValueError:
+        idx = 0
+
+    choice = st.sidebar.radio(
+        _t("Chọn bước", "Select step", lang),
+        options=nav_ids,
+        format_func=lambda i: nav_labels[nav_ids.index(i)],
+        index=idx,
+        key="step_rail",
+    )
+    if choice != st.session_state.step_id:
+        st.session_state.step_id = choice
+        st.session_state.task_id = STEP_OVERVIEW
+        st.session_state.last_payload = None
+        st.rerun()
+
+    st.sidebar.markdown("---")
+    st.sidebar.markdown(_t("**Trạng thái store**", "**Store status**", lang))
+    st.sidebar.write(
+        {
+            "kg_nodes": stats.nodes,
+            "kg_edges": stats.edges,
+            "evidence": len(core["vector_store"].chunks),
+            "qa_pairs": core["qa_n"],
+            "cached_tasks": len(st.session_state.result_cache),
+        }
+    )
+    st.sidebar.caption(
+        _t(
+            "Cùng core Python với React/FastAPI — không mock. "
+            "UI Streamlit ≠ pixel-perfect SPA.",
+            "Same Python core as React/FastAPI — no mocks. "
+            "Streamlit UI ≠ pixel-perfect SPA.",
+            lang,
+        )
+    )
+
+    step_id = st.session_state.step_id
+    if step_id == 0:
         page_overview(core, lang)
-    with tab_pipe:
-        page_pipeline(core, lang)
-    with tab_app:
-        page_analyze(core, lang)
+    elif step_id == 16:
+        page_ids_cti(core, lang)
+    else:
+        page_step(core, lang, step_id)
 
 
 main()
