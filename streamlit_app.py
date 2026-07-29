@@ -1366,46 +1366,128 @@ def _step_rail_html(
     active: int,
     completed: set[int],
 ) -> None:
-    """Step cards via st.button — same Streamlit page (no <a href>)."""
+    """React-like horizontal step cards (scroll) — st.button keeps same-page session."""
+    items: list[dict[str, Any]] = [
+        {
+            "id": 0,
+            "title": _t("Tổng quan", "Overview", lang),
+            "color": STEP_COLORS[0],
+            "badge": None,
+            "overview": True,
+        }
+    ]
+    for s in steps:
+        sid = int(s["id"])
+        title = str(s.get("title") if lang == "vi" else s.get("title_en") or "")
+        badge = s.get("badge") if lang == "vi" else (s.get("badge_en") or s.get("badge"))
+        items.append(
+            {
+                "id": sid,
+                "title": title,
+                "color": STEP_COLORS.get(sid, "#0d7377"),
+                "badge": badge,
+                "overview": False,
+            }
+        )
+
     st.markdown(
         """
         <style>
-          div[data-testid="stHorizontalBlock"] button {
+          .st-key-edgr_step_rail [data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            gap: 8px !important;
+            padding: 2px 2px 10px !important;
+            scrollbar-width: thin;
+          }
+          .st-key-edgr_step_rail [data-testid="column"] {
+            flex: 0 0 128px !important;
+            width: 128px !important;
+            min-width: 128px !important;
+          }
+          .st-key-edgr_step_rail [data-testid="column"] button {
+            width: 100% !important;
+            min-height: 2.6rem !important;
             white-space: normal !important;
-            height: auto !important;
-            min-height: 3.6rem;
-            font-size: 0.72rem !important;
+            font-size: 0.68rem !important;
+            font-weight: 600 !important;
             line-height: 1.2 !important;
-            border-radius: 12px !important;
+            border-radius: 0 0 12px 12px !important;
+            margin-top: 0 !important;
+          }
+          .rx-card-head {
+            border-radius: 12px 12px 0 0;
+            padding: 8px 8px 4px;
+            border: 1px solid;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 40px;
+            box-sizing: border-box;
+          }
+          .rx-card-head .num {
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 1.25rem;
+            font-weight: 800;
+            line-height: 1;
+          }
+          .rx-card-badge {
+            display: inline-block;
+            margin: 0 0 2px;
+            font-size: 0.58rem;
+            background: #c45c26;
+            color: #fff;
+            border-radius: 999px;
+            padding: 1px 6px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
         </style>
         """,
         unsafe_allow_html=True,
     )
-    items: list[tuple[int, str]] = [
-        (0, _t("0 · Tổng quan", "0 · Overview", lang)),
-    ]
-    for s in steps:
-        sid = int(s["id"])
-        title = str(s.get("title") if lang == "vi" else s.get("title_en") or "")
-        short = title if len(title) <= 22 else title[:20] + "…"
-        mark = "✓ " if sid in completed else ""
-        items.append((sid, f"{mark}{sid} · {short}"))
 
-    for row_i, start in enumerate((0, 9)):
-        chunk = items[start : start + 9]
-        if not chunk:
-            continue
-        cols = st.columns(len(chunk))
-        for col, (sid, label) in zip(cols, chunk):
+    with st.container(key="edgr_step_rail"):
+        cols = st.columns(len(items))
+        for col, item in zip(cols, items):
+            sid = int(item["id"])
+            color = str(item["color"])
+            title = str(item["title"])
+            short = title if len(title) <= 28 else title[:26] + "…"
+            is_active = active == sid
+            done = sid in completed and sid != 0
+            icon_color = "#ffffff" if is_active else color
+            head_bg = color if is_active else "rgba(255,255,255,0.92)"
+            head_border = color if is_active else f"{color}55"
+            num_color = "#fff" if is_active else color
+            dash = "dashed" if item.get("overview") else "solid"
+            badge = item.get("badge")
             with col:
+                st.markdown(
+                    f"""
+                    <div class="rx-card-head" style="background:{head_bg};border-color:{head_border};border-style:{dash}">
+                      <span>{_step_icon_svg(sid, icon_color, 18)}</span>
+                      <span class="num" style="color:{num_color}">{sid}</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                if badge:
+                    st.markdown(
+                        f'<div class="rx-card-badge" title="{badge}">{badge}</div>',
+                        unsafe_allow_html=True,
+                    )
+                btn_label = ("✓ " if done and not is_active else "") + short
                 if st.button(
-                    label,
-                    key=f"rail_btn_{row_i}_{sid}",
+                    btn_label,
+                    key=f"rail_btn_{sid}",
                     use_container_width=True,
-                    type="primary" if active == sid else "secondary",
-                    help=label,
-                ) and sid != active:
+                    type="primary" if is_active else "secondary",
+                    help=title,
+                ) and not is_active:
                     _goto_step(sid)
                     st.rerun()
 
