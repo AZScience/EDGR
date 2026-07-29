@@ -1,8 +1,8 @@
 """
-EDGR Streamlit workbench — closest practical parity with the React SPA.
+EDGR Streamlit entry.
 
-Same Python core as FastAPI/React (`pipeline_service`, `EDGREngine`, IDS/CTI analyze).
-Not a pixel-perfect clone: Streamlit replaces SPA layout with sidebar step rail + panels.
+Default: embed the **real React SPA** (pixel-perfect) via iframe of FastAPI `/ui/`.
+Fallback: native Streamlit panels (approximate parity only).
 """
 
 from __future__ import annotations
@@ -10,17 +10,28 @@ from __future__ import annotations
 import json
 import re
 import sys
+import threading
+import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 import streamlit_parity as parity
 
 ROOT = Path(__file__).resolve().parent
 BACKEND = ROOT / "backend"
 PUBLIC = ROOT / "frontend" / "public"
+DIST = ROOT / "frontend" / "dist"
+API_HOST = "127.0.0.1"
+API_PORT = 8016
+API_BASE = f"http://{API_HOST}:{API_PORT}"
+UI_URL = f"{API_BASE}/ui/"
+
 if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 ABLATION_STEPS = {4, 6, 8, 9, 11}
@@ -29,7 +40,7 @@ st.set_page_config(
     page_title="EDGR — Research Pipeline",
     page_icon="◈",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 # ── React-aligned step colors ──────────────────────────────────────────
@@ -400,6 +411,7 @@ def _pick(obj: dict[str, Any], vi_key: str, en_key: str, lang: str, default: str
 def _init_state() -> None:
     ss = st.session_state
     ss.setdefault("lang", "vi")
+    ss.setdefault("ui_mode", "react")  # react | native
     ss.setdefault("step_id", 0)
     ss.setdefault("task_id", STEP_OVERVIEW)
     ss.setdefault("result_cache", {})
@@ -407,6 +419,118 @@ def _init_state() -> None:
     ss.setdefault("ids_result", None)
     ss.setdefault("ids_mode", "alert")
     ss.setdefault("selected_alert_id", None)
+    ss.setdefault("_backend_started", False)
+
+
+def _api_healthy() -> bool:
+    try:
+        with urllib.request.urlopen(f"{API_BASE}/api/health", timeout=2) as resp:
+            return int(getattr(resp, "status", 200) or 200) == 200
+    except (urllib.error.URLError, TimeoutError, OSError):
+        return False
+
+
+def _ensure_backend() -> bool:
+    """Reuse running FastAPI or start one in a daemon thread."""
+    if _api_healthy():
+        return True
+    if st.session_state.get("_backend_started"):
+        for _ in range(40):
+            if _api_healthy():
+                return True
+            time.sleep(0.25)
+        return _api_healthy()
+
+    def _run() -> None:
+        import uvicorn
+
+        uvicorn.run(
+            "app.main:app",
+            host=API_HOST,
+            port=API_PORT,
+            reload=False,
+            log_level="warning",
+        )
+
+    threading.Thread(target=_run, name="edgr-fastapi", daemon=True).start()
+    st.session_state._backend_started = True
+    for _ in range(60):
+        if _api_healthy():
+            return True
+        time.sleep(0.25)
+    return False
+
+
+def page_react_embed(lang: str) -> None:
+    """Fullscreen iframe of the real React SPA (same CSS/layout/behavior)."""
+    st.markdown(
+        """
+        <style>
+          [data-testid="stHeader"],
+          [data-testid="stToolbar"],
+          [data-testid="stDecoration"] { display: none !important; }
+          .block-container { padding: 0.4rem 0.6rem 0.2rem !important; max-width: 100% !important; }
+          iframe { border: none !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    if not DIST.is_dir() or not (DIST / "index.html").is_file():
+        st.error(
+            _t(
+                "Chưa có bản build React (`frontend/dist`). Chạy: cd frontend && npm run build",
+                "React build missing (`frontend/dist`). Run: cd frontend && npm run build",
+                lang,
+            )
+        )
+        st.code("cd frontend\nnpm run build", language="bash")
+        return
+
+    ok = _ensure_backend()
+    if not ok:
+        st.error(
+            _t(
+                f"Không khởi động được API tại {API_BASE}. Hãy chạy backend thủ công.",
+                f"Cannot start API at {API_BASE}. Start the backend manually.",
+                lang,
+            )
+        )
+        st.code(
+            f"cd backend\npython -m uvicorn app.main:app --host {API_HOST} --port {API_PORT}",
+            language="bash",
+        )
+        return
+
+    # Prefer built SPA on FastAPI; also offer live Vite if running
+    src = UI_URL
+    try:
+        with urllib.request.urlopen(UI_URL, timeout=2) as resp:
+            if int(getattr(resp, "status", 200) or 200) >= 400:
+                src = "http://127.0.0.1:5180/"
+    except (urllib.error.URLError, TimeoutError, OSError):
+        # Fallback to Vite dev server if SPA mount not ready
+        try:
+            with urllib.request.urlopen("http://127.0.0.1:5180/", timeout=1):
+                src = "http://127.0.0.1:5180/"
+        except (urllib.error.URLError, TimeoutError, OSError):
+            st.warning(
+                _t(
+                    "API chạy nhưng /ui/ chưa sẵn sàng — restart backend sau khi npm run build.",
+                    "API is up but /ui/ is not ready — restart backend after npm run build.",
+                    lang,
+                )
+            )
+            return
+
+    st.caption(
+        _t(
+            f"Đang nhúng UI React gốc · {src}  (đây là cùng SPA với :5180, không phải mock Streamlit)",
+            f"Embedding real React UI · {src}  (same SPA as :5180 — not a Streamlit mock)",
+            lang,
+        )
+    )
+    components.iframe(src, height=920, scrolling=True)
 
 
 def _inject_css() -> None:
@@ -1287,7 +1411,6 @@ def page_ids_cti(core: dict[str, Any], lang: str) -> None:
 
 def main() -> None:
     _init_state()
-    _inject_css()
 
     lang = st.sidebar.radio(
         _t("Ngôn ngữ", "Language", st.session_state.lang),
@@ -1298,6 +1421,36 @@ def main() -> None:
         key="lang_radio",
     )
     st.session_state.lang = lang
+
+    mode = st.sidebar.radio(
+        _t("Chế độ UI", "UI mode", lang),
+        options=["react", "native"],
+        format_func=lambda m: _t(
+            "React gốc (y hệt SPA)",
+            "Real React (pixel-perfect SPA)",
+            lang,
+        )
+        if m == "react"
+        else _t("Streamlit native (gần đúng)", "Streamlit native (approximate)", lang),
+        index=0 if st.session_state.ui_mode == "react" else 1,
+        key="ui_mode_radio",
+    )
+    st.session_state.ui_mode = mode
+
+    st.sidebar.caption(
+        _t(
+            "Mặc định nhúng React qua iframe FastAPI `/ui/` — layout/CSS/chức năng như bản cũ.",
+            "Default embeds React via FastAPI `/ui/` iframe — same layout/CSS/behavior as the SPA.",
+            lang,
+        )
+    )
+
+    if mode == "react":
+        page_react_embed(lang)
+        return
+
+    # ── Native Streamlit path (approximate) ───────────────────────────
+    _inject_css()
 
     try:
         core = _load_core()

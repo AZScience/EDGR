@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path as FsPath
 from typing import Annotated, Any, Optional
 
 from fastapi import Body, FastAPI, HTTPException, Path, Request
@@ -598,3 +599,28 @@ def add_edge(edge: GraphEdge) -> dict[str, Any]:
 @app.get("/api/qa")
 def list_qa() -> dict[str, Any]:
     return {"count": len(QA_DATASET), "items": QA_DATASET}
+
+
+# ── React SPA (built: frontend/dist) at /ui/ ─────────────────────────
+# Used by Streamlit iframe embed for pixel-perfect React UI.
+_DIST = FsPath(__file__).resolve().parents[2] / "frontend" / "dist"
+if _DIST.is_dir():
+    from fastapi.responses import FileResponse
+    from fastapi.staticfiles import StaticFiles
+
+    _ui_assets = _DIST / "assets"
+    if _ui_assets.is_dir():
+        app.mount("/ui/assets", StaticFiles(directory=str(_ui_assets)), name="ui-assets")
+
+    @app.get("/ui")
+    @app.get("/ui/")
+    def ui_index() -> FileResponse:
+        return FileResponse(_DIST / "index.html")
+
+    @app.get("/ui/{asset_path:path}")
+    def ui_spa(asset_path: str) -> FileResponse:
+        candidate = _DIST / asset_path
+        if candidate.is_file():
+            return FileResponse(candidate)
+        return FileResponse(_DIST / "index.html")
+

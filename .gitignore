@@ -5,7 +5,8 @@ venv/
 .env.local
 node_modules/
 dist/
+!frontend/dist/
+!frontend/dist/**
 .DS_Store
 *.log
 .vite/
-frontend/dist/

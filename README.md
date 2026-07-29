@@ -51,31 +51,32 @@ POST /api/app/alerts
 
 Mỗi tab cha/con (trừ Step 16 app) có khung học thuật: CSDL · Mô hình toán · Mô hình thuật toán · Mô hình hoạt động · Trích dẫn · Minh chứng · Nhận định đánh giá.
 
-## Streamlit (cùng core Python)
+## Streamlit
 
-UI Streamlit gọi trực tiếp `pipeline_service` / `ids_cti_app.analyze` / alert ingest (không qua FastAPI) — **cùng compute** với React.
+**Mặc định:** Streamlit **nhúng UI React gốc** (iframe FastAPI `/ui/`) — layout/CSS/chức năng **y hệt** SPA.  
+**Tuỳ chọn sidebar:** «Streamlit native» = bản widget gần đúng (không pixel-perfect).
 
 ```powershell
+cd d:\DemoTiensi\frontend
+npx vite build
+
+cd d:\DemoTiensi\backend
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8016
+
 cd d:\DemoTiensi
-python -m pip install -r requirements.txt
 python -m streamlit run streamlit_app.py --server.address 127.0.0.1 --server.port 8501
 ```
 
-- Local: http://127.0.0.1:8501  
-- Hoặc: `.\scripts\start-streamlit.ps1`
+- Streamlit (React embed): http://127.0.0.1:8501  
+- React SPA trực tiếp: http://127.0.0.1:8016/ui/ hoặc Vite http://127.0.0.1:5180  
+- API docs: http://127.0.0.1:8016/docs  
 
-**Đã gần React:** sidebar step rail (0 + 16 bước), tổng quan 3 phase + jump, task con + khung học thuật 7 khối, run task thật, result review / verify / bảng, Live IDS/CTI (query + Suricata alert ingest/analyze), VI/EN.
+> Streamlit Community Cloud **không** công khai cổng FastAPI đi kèm → với chế độ React embed, dùng local / Docker / Railway (API+`/ui/`). Trên Cloud hãy chọn sidebar **Streamlit native**.
 
-**Parity mục tiêu (đã cải tiến):** khung học thuật dạng document (theory/purpose + block typed: CSDL/toán/thuật toán/ops/cite/evidence/assess), heatmap coverage_matrix + Plotly KG, Run-all task, ablation chỉ bước 4/6/8/9/11, banner/ảnh quy trình, rail bước trên cùng, CSV download, IDS mặc định alert + timeline stages.
+### Deploy Streamlit Community Cloud (native UI)
 
-**Không pixel-perfect (giới hạn Streamlit):** sticky SPA layout, StepIcon SVG/3D tilt, AcademicPanel pair layout CSS đầy đủ, auto-poll queue 4s, footer sticky — muốn UI gốc: React (`:5180`) + FastAPI.
-
-### Deploy Streamlit Community Cloud
-
-1. Repo: https://github.com/AZScience/EDGR (branch `kiemtranoibo` hoặc `main`)
+1. Repo: https://github.com/AZScience/EDGR (branch `kiemtranoibo`)
 2. [share.streamlit.io](https://share.streamlit.io) → **New app**
 3. Main file: `streamlit_app.py`
 4. Python requirements: `requirements.txt` (root)
-5. Deploy
-
-Gợi ý: chọn **Bước 16** (Live IDS/CTI) cho demo nhanh; bước 9–11 (evaluate / ablation) có thể chậm trên free tier.
+5. Deploy — mở sidebar chọn **Streamlit native**
