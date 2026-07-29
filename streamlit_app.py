@@ -8,6 +8,7 @@ Fallback: native Streamlit panels (approximate parity only).
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 import threading
@@ -214,6 +215,14 @@ RATIO_FIELD = re.compile(
 )
 LATEX_HINT = re.compile(r"(\$.*\$|\\frac|\\sum|O\(|\\approx|T\(n\)|=O)")
 
+
+def _is_streamlit_cloud() -> bool:
+    return bool(
+        os.getenv("STREAMLIT_SHARING_MODE")
+        or os.getenv("STREAMLIT_CLOUD")
+        or os.getenv("STREAMLIT_RUNTIME")
+    )
+
 CUSTOM_CSS = """
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;500;600;700&display=swap");
@@ -411,7 +420,7 @@ def _pick(obj: dict[str, Any], vi_key: str, en_key: str, lang: str, default: str
 def _init_state() -> None:
     ss = st.session_state
     ss.setdefault("lang", "vi")
-    ss.setdefault("ui_mode", "react")  # react | native
+    ss.setdefault("ui_mode", "native" if _is_streamlit_cloud() else "react")  # react | native
     ss.setdefault("step_id", 0)
     ss.setdefault("task_id", STEP_OVERVIEW)
     ss.setdefault("result_cache", {})
@@ -463,6 +472,16 @@ def _ensure_backend() -> bool:
 
 def page_react_embed(lang: str) -> None:
     """Fullscreen iframe of the real React SPA (same CSS/layout/behavior)."""
+    if _is_streamlit_cloud():
+        st.info(
+            _t(
+                "Streamlit Cloud không public FastAPI `/ui/`, nên app tự chuyển sang giao diện Streamlit native.",
+                "Streamlit Cloud cannot expose the FastAPI `/ui/` app, so this deployment uses the native Streamlit UI.",
+                lang,
+            )
+        )
+        return
+
     st.markdown(
         """
         <style>
