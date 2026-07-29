@@ -624,3 +624,16 @@ if _DIST.is_dir():
             return FileResponse(candidate)
         return FileResponse(_DIST / "index.html")
 
+    # React public assets referenced as absolute paths (e.g. /edgr-topic-banner.png,
+    # /quy-trinh-a-z.png) are NOT prefixed with /ui/ in the source. Serve them from root.
+    _PUBLIC_EXTS = {".png", ".jpg", ".jpeg", ".svg", ".webp", ".ico", ".gif", ".woff", ".woff2", ".ttf"}
+
+    @app.get("/{pub_file:path}")
+    def public_asset(pub_file: str) -> FileResponse:
+        candidate = _DIST / pub_file
+        if candidate.is_file() and candidate.suffix.lower() in _PUBLIC_EXTS:
+            return FileResponse(candidate)
+        # 404 for anything else (don't shadow /api/*)
+        from fastapi import HTTPException as _HTTPException
+        raise _HTTPException(status_code=404)
+
