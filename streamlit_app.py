@@ -340,15 +340,20 @@ section[data-testid="stSidebar"] label {
   position: relative;
   overflow: hidden;
   margin: -1rem -1rem 1rem -1rem;
-  background:
-    radial-gradient(800px 320px at 85% 30%, rgba(13, 115, 119, 0.45), transparent 55%),
-    radial-gradient(600px 280px at 10% 80%, rgba(196, 92, 38, 0.22), transparent 50%),
-    linear-gradient(115deg, #071820 0%, #0a3a40 48%, #0d7377 100%);
+  min-height: 168px;
+  background: #071820;
   box-shadow: 0 8px 24px rgba(15, 28, 36, 0.18);
   isolation: isolate;
 }
 .rx-hero-bg {
-  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% center;
+  z-index: 0;
+  pointer-events: none;
 }
 .rx-hero::after {
   content: "";
@@ -357,9 +362,10 @@ section[data-testid="stSidebar"] label {
   z-index: 1;
   background: linear-gradient(
     100deg,
-    rgba(6, 22, 28, 0.55) 0%,
-    rgba(8, 40, 48, 0.25) 55%,
-    rgba(12, 40, 48, 0.05) 100%
+    rgba(6, 22, 28, 0.94) 0%,
+    rgba(8, 40, 48, 0.82) 38%,
+    rgba(10, 55, 62, 0.45) 62%,
+    rgba(12, 40, 48, 0.18) 100%
   );
 }
 .rx-hero-body {
@@ -1288,8 +1294,20 @@ def _step_icon_svg(step_id: int, color: str, size: int = 20) -> str:
     )
 
 
+def _banner_image_url() -> str:
+    """Public URL for hero background (Cloud-safe — no base64 in websocket)."""
+    custom = _secret_or_env("EDGR_BANNER_URL")
+    if custom:
+        return custom
+    # Tracked in repo; browser loads directly (same asset as React /edgr-topic-banner.png)
+    return (
+        "https://raw.githubusercontent.com/AZScience/EDGR/kiemtranoibo/"
+        "frontend/public/edgr-topic-banner.png"
+    )
+
+
 def _hero(lang: str, health_line: str, done: int = 0, total: int = 16, topic: str = "") -> None:
-    """React-parity banner — CSS only (no base64 <img>; Cloud-safe)."""
+    """React-parity banner with photo background (URL img, not inline base64)."""
     desc = topic or _t(
         "Thuật toán truy hồi đồ thị động dựa trên bằng chứng để giảm ảo giác trong LLM "
         "cho phát hiện xâm nhập và tình báo mối đe dọa mạng",
@@ -1297,11 +1315,11 @@ def _hero(lang: str, health_line: str, done: int = 0, total: int = 16, topic: st
         "in Large Language Models for Intrusion Detection and Cyber Threat Intelligence",
         lang,
     )
-    # Never inline large PNGs as data: URIs — that inflates the Streamlit websocket
-    # payload and triggers "Error: not connected to a server!" on Community Cloud.
+    banner_src = _banner_image_url()
     st.markdown(
         f"""
         <div class="rx-hero">
+          <img class="rx-hero-bg" src="{banner_src}" alt="" />
           <div class="rx-hero-body">
             <div>
               <p class="rx-kicker">{_t(
