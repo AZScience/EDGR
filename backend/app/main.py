@@ -109,6 +109,19 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def allow_streamlit_iframe(request: Request, call_next):  # type: ignore[no-untyped-def]
+    """Allow embedding /ui/ inside Streamlit Cloud (and local) iframes."""
+    response = await call_next(request)
+    # Prefer CSP frame-ancestors; drop legacy deny headers if present.
+    response.headers["Content-Security-Policy"] = (
+        "frame-ancestors 'self' https://*.streamlit.app https://*.streamlitusercontent.com http://127.0.0.1:* http://localhost:*"
+    )
+    if "x-frame-options" in response.headers:
+        del response.headers["x-frame-options"]
+    return response
+
+
 class TaskRunRequest(BaseModel):
     """Body dùng chung cho chạy task pipeline và /api/app/analyze."""
 

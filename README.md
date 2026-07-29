@@ -53,8 +53,9 @@ Mỗi tab cha/con (trừ Step 16 app) có khung học thuật: CSDL · Mô hình
 
 ## Streamlit
 
-**Mặc định:** Streamlit **nhúng UI React gốc** (iframe FastAPI `/ui/`) — layout/CSS/chức năng **y hệt** SPA.  
-**Tuỳ chọn sidebar:** «Streamlit native» = bản widget gần đúng (không pixel-perfect).
+**Mục tiêu:** UI **giống hệt React local** → Streamlit chỉ iframe SPA thật (không mock widget).
+
+### Local (pixel-perfect)
 
 ```powershell
 cd d:\DemoTiensi\frontend
@@ -67,19 +68,33 @@ cd d:\DemoTiensi
 python -m streamlit run streamlit_app.py --server.address 127.0.0.1 --server.port 8501
 ```
 
-- Streamlit (React embed): http://127.0.0.1:8501  
-- React SPA trực tiếp: http://127.0.0.1:8016/ui/ hoặc Vite http://127.0.0.1:5180  
+- Streamlit (React iframe): http://127.0.0.1:8501  
+- React trực tiếp: http://127.0.0.1:8016/ui/ hoặc Vite http://127.0.0.1:5180  
 - API docs: http://127.0.0.1:8016/docs  
 
-> Streamlit Community Cloud **không** công khai cổng FastAPI đi kèm → với chế độ React embed, dùng local / Docker / Railway (API+`/ui/`). Trên Cloud hãy chọn sidebar **Streamlit native**.
+### Streamlit Cloud — giống React local (bắt buộc host `/ui/` công khai)
 
-### Deploy Streamlit Community Cloud (native UI)
+Streamlit Cloud **không** mở được `127.0.0.1`. Cần 2 bước:
 
-1. Repo: https://github.com/AZScience/EDGR (branch `kiemtranoibo`)
-2. [share.streamlit.io](https://share.streamlit.io) → **New app**
-3. Main file: `streamlit_app.py`
-4. Python requirements: `requirements.txt` (root)
-5. **Advanced settings → Python version: chọn 3.11 hoặc 3.12** (không dùng 3.14 — `numpy`/`scikit-learn` dễ treo lúc `uv pip install`)
-6. Deploy — Cloud tự dùng **Streamlit native** (React iframe cần FastAPI localhost, không public được)
+**1) Deploy FastAPI + React (`Dockerfile` ở root)** lên Railway / Render / Fly:
 
-> `runtime.txt` / `.python-version` **không** đổi Python trên Community Cloud — chỉ đổi trong dashboard Settings → Advanced.
+```powershell
+cd d:\DemoTiensi\frontend
+npx vite build
+# Commit frontend/dist nếu chưa có, rồi deploy Docker image từ root Dockerfile
+```
+
+Kiểm tra: `https://YOUR-HOST/ui/` phải giống UI React local, `https://YOUR-HOST/api/health` → `ok`.
+
+**2) Streamlit Cloud → Settings → Secrets:**
+
+```toml
+EDGR_PUBLIC_UI_URL = "https://YOUR-HOST/ui/"
+```
+
+Reboot app → Streamlit nhúng đúng SPA React (cùng CSS/layout/API).
+
+> Python trên Cloud: Advanced settings chọn **3.11 hoặc 3.12** (tránh 3.14).  
+> Fallback tạm: sidebar «Streamlit native» nếu chưa có `EDGR_PUBLIC_UI_URL`.
+
+Ví dụ secrets: xem `.streamlit/secrets.toml.example`.

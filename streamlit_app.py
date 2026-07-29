@@ -34,6 +34,38 @@ API_PORT = 8016
 API_BASE = f"http://{API_HOST}:{API_PORT}"
 UI_URL = f"{API_BASE}/ui/"
 
+
+def _secret_or_env(key: str) -> str | None:
+    """Read Streamlit secrets then environment."""
+    try:
+        secrets = getattr(st, "secrets", None)
+        if secrets is not None and key in secrets:
+            val = secrets.get(key)
+            if val:
+                return str(val).strip()
+    except Exception:  # noqa: BLE001
+        pass
+    val = os.getenv(key)
+    return val.strip() if val else None
+
+
+def _public_ui_url() -> str | None:
+    """
+    Public React SPA URL for Cloud iframe (same UI as local :5180 / :8016/ui/).
+
+    Secrets / env:
+      EDGR_PUBLIC_UI_URL = https://your-api-host.example/ui/
+    """
+    raw = _secret_or_env("EDGR_PUBLIC_UI_URL")
+    if not raw:
+        return None
+    url = raw.rstrip("/") + "/"
+    # Allow bare host → append /ui/
+    if "/ui/" not in url and not url.rstrip("/").endswith("/ui"):
+        url = url.rstrip("/") + "/ui/"
+    return url
+
+
 if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 ABLATION_STEPS = {4, 6, 8, 9, 11}
@@ -620,9 +652,14 @@ def _pick(obj: dict[str, Any], vi_key: str, en_key: str, lang: str, default: str
 def _init_state() -> None:
     ss = st.session_state
     ss.setdefault("lang", "vi")
-    ss.setdefault("ui_mode", "native" if _is_streamlit_cloud() else "react")  # react | native
-    # Cloud cannot expose localhost FastAPI to the browser — always force native.
-    if _is_streamlit_cloud():
+    # Prefer React whenever we can embed it (local FastAPI or public URL).
+    public_ui = _public_ui_url()
+    default_mode = "react" if (public_ui or not _is_streamlit_cloud()) else "native"
+    ss.setdefault("ui_mode", default_mode)
+    if public_ui:
+        ss.ui_mode = "react"
+    elif _is_streamlit_cloud():
+        # Cloud without public UI URL cannot reach localhost FastAPI.
         ss.ui_mode = "native"
     ss.setdefault("step_id", 0)
     ss.setdefault("task_id", STEP_OVERVIEW)
@@ -634,16 +671,17 @@ def _init_state() -> None:
     ss.setdefault("_backend_started", False)
 
 
-def _api_healthy() -> bool:
+def _api_healthy(base: str | None = None) -> bool:
+    root = (base or API_BASE).rstrip("/")
     try:
-        with urllib.request.urlopen(f"{API_BASE}/api/health", timeout=2) as resp:
+        with urllib.request.urlopen(f"{root}/api/health", timeout=3) as resp:
             return int(getattr(resp, "status", 200) or 200) == 200
     except (urllib.error.URLError, TimeoutError, OSError):
         return False
 
 
 def _ensure_backend() -> bool:
-    """Reuse running FastAPI or start one in a daemon thread."""
+    """Reuse running FastAPI or start one in a daemon thread (local only)."""
     if _api_healthy():
         return True
     if st.session_state.get("_backend_started"):
@@ -673,9 +711,7 @@ def _ensure_backend() -> bool:
     return False
 
 
-def page_react_embed(lang: str) -> None:
-    """Fullscreen iframe of the real React SPA (same CSS/layout/behavior)."""
-    # Strip Streamlit chrome so banner + step rail are full-bleed like standalone React.
+def _strip_streamlit_chrome() -> None:
     st.markdown(
         """
         <style>
@@ -708,6 +744,111 @@ def page_react_embed(lang: str) -> None:
         unsafe_allow_html=True,
     )
 
+
+def _embed_iframe(src: str) -> None:
+    components.html(
+        f"""
+        <style>
+          html, body {{
+            margin: 0; padding: 0; overflow: hidden;
+            background: #071820; height: 100%;
+          }}
+        </style>
+        <iframe
+          src="{src}"
+          title="EDGR React UI"
+          style="border:0;width:100%;height:100vh;display:block;background:#071820;"
+          allow="clipboard-read; clipboard-write"
+        ></iframe>
+        """,
+        height=980,
+        scrolling=False,
+    )
+
+
+def page_react_setup(lang: str) -> None:
+    """Cloud without EDGR_PUBLIC_UI_URL — explain how to get pixel-perfect React."""
+    st.title("EDGR — React (giống local)")
+    st.error(
+        _t(
+            "Streamlit Cloud không chạy được FastAPI localhost. "
+            "Để UI giống hệt React local, hãy host API + `/ui/` công khai rồi gắn secret.",
+            "Streamlit Cloud cannot reach a localhost FastAPI. "
+            "To match the local React UI, host API + `/ui/` publicly and set a secret.",
+            lang,
+        )
+    )
+    st.markdown(
+        _t(
+            """
+### Cách làm (pixel-perfect)
+
+1. Build React: `cd frontend && npm run build`
+2. Deploy Docker (file `Dockerfile` ở root) lên **Railway / Render / Fly.io**  
+   → nhận URL kiểu `https://edgr-xxxx.onrender.com`
+3. Kiểm tra: mở `https://…/ui/` phải thấy đúng UI React local
+4. Trên Streamlit Cloud → **Settings → Secrets**:
+```toml
+EDGR_PUBLIC_UI_URL = "https://edgr-xxxx.onrender.com/ui/"
+```
+5. Reboot app → Streamlit sẽ iframe đúng SPA React (cùng CSS/layout/chức năng)
+""",
+            """
+### How to get pixel-perfect React
+
+1. Build React: `cd frontend && npm run build`
+2. Deploy the root `Dockerfile` to **Railway / Render / Fly.io**  
+   → get a URL like `https://edgr-xxxx.onrender.com`
+3. Check: open `https://…/ui/` — must match local React
+4. Streamlit Cloud → **Settings → Secrets**:
+```toml
+EDGR_PUBLIC_UI_URL = "https://edgr-xxxx.onrender.com/ui/"
+```
+5. Reboot — Streamlit iframes the real React SPA
+""",
+            lang,
+        )
+    )
+    if st.button(_t("Tạm dùng Streamlit native", "Use native Streamlit for now", lang)):
+        st.session_state.ui_mode = "native"
+        st.rerun()
+
+
+def page_react_embed(lang: str) -> None:
+    """Fullscreen iframe of the real React SPA (same CSS/layout/behavior)."""
+    _strip_streamlit_chrome()
+
+    public = _public_ui_url()
+    if public:
+        # Pixel-perfect path for Streamlit Cloud (and optional local override).
+        try:
+            with urllib.request.urlopen(public, timeout=5) as resp:
+                if int(getattr(resp, "status", 200) or 200) >= 400:
+                    raise urllib.error.URLError(f"HTTP {resp.status}")
+        except (urllib.error.URLError, TimeoutError, OSError) as e:
+            st.error(
+                _t(
+                    f"Không mở được UI React công khai: {public}",
+                    f"Cannot open public React UI: {public}",
+                    lang,
+                )
+            )
+            st.caption(str(e))
+            st.info(
+                _t(
+                    "Kiểm tra host API còn sống và Secrets `EDGR_PUBLIC_UI_URL` đúng đường `/ui/`.",
+                    "Check the API host is up and Secrets `EDGR_PUBLIC_UI_URL` points to `/ui/`.",
+                    lang,
+                )
+            )
+            return
+        _embed_iframe(public)
+        return
+
+    if _is_streamlit_cloud():
+        page_react_setup(lang)
+        return
+
     if not DIST.is_dir() or not (DIST / "index.html").is_file():
         st.error(
             _t(
@@ -734,14 +875,12 @@ def page_react_embed(lang: str) -> None:
         )
         return
 
-    # Prefer built SPA on FastAPI; also offer live Vite if running
     src = UI_URL
     try:
         with urllib.request.urlopen(UI_URL, timeout=2) as resp:
             if int(getattr(resp, "status", 200) or 200) >= 400:
                 src = "http://127.0.0.1:5180/"
     except (urllib.error.URLError, TimeoutError, OSError):
-        # Fallback to Vite dev server if SPA mount not ready
         try:
             with urllib.request.urlopen("http://127.0.0.1:5180/", timeout=1):
                 src = "http://127.0.0.1:5180/"
@@ -755,25 +894,7 @@ def page_react_embed(lang: str) -> None:
             )
             return
 
-    # Full-viewport iframe (no Streamlit caption/padding) — matches React :5180 layout.
-    components.html(
-        f"""
-        <style>
-          html, body {{
-            margin: 0; padding: 0; overflow: hidden;
-            background: #071820; height: 100%;
-          }}
-        </style>
-        <iframe
-          src="{src}"
-          title="EDGR React UI"
-          style="border:0;width:100%;height:100vh;display:block;background:#071820;"
-          allow="clipboard-read; clipboard-write"
-        ></iframe>
-        """,
-        height=980,
-        scrolling=False,
-    )
+    _embed_iframe(src)
 
 
 def _inject_css() -> None:
@@ -1766,6 +1887,7 @@ def page_ids_cti(core: dict[str, Any], lang: str) -> None:
 def main() -> None:
     _init_state()
     on_cloud = _is_streamlit_cloud()
+    public_ui = _public_ui_url()
 
     lang = st.sidebar.radio(
         _t("Ngôn ngữ", "Language", st.session_state.lang),
@@ -1777,13 +1899,41 @@ def main() -> None:
     )
     st.session_state.lang = lang
 
-    if on_cloud:
-        mode = "native"
-        st.session_state.ui_mode = "native"
+    if public_ui:
+        # Pixel-perfect React via public FastAPI /ui/ (Cloud or local override)
+        mode = "react"
+        st.session_state.ui_mode = "react"
         st.sidebar.caption(
             _t(
-                "Streamlit Cloud: dùng UI native (React iframe cần FastAPI localhost — không public được).",
-                "Streamlit Cloud: native UI only (React iframe needs local FastAPI — not publicly reachable).",
+                f"React gốc (iframe) · {public_ui}",
+                f"Real React (iframe) · {public_ui}",
+                lang,
+            )
+        )
+    elif on_cloud:
+        # No public UI yet — default native, but allow choosing React to see setup guide
+        mode = st.sidebar.radio(
+            _t("Chế độ UI", "UI mode", lang),
+            options=["native", "react"],
+            format_func=lambda m: _t(
+                "Streamlit native (tạm)",
+                "Streamlit native (temporary)",
+                lang,
+            )
+            if m == "native"
+            else _t(
+                "React giống local (cần host /ui/)",
+                "React like local (needs hosted /ui/)",
+                lang,
+            ),
+            index=0 if st.session_state.ui_mode == "native" else 1,
+            key="ui_mode_radio_cloud",
+        )
+        st.session_state.ui_mode = mode
+        st.sidebar.caption(
+            _t(
+                "Muốn y hệt React: deploy Dockerfile → Secrets EDGR_PUBLIC_UI_URL",
+                "For pixel-perfect React: deploy Dockerfile → Secrets EDGR_PUBLIC_UI_URL",
                 lang,
             )
         )
