@@ -16,10 +16,14 @@ from typing import Any
 import pandas as pd
 import streamlit as st
 
+import streamlit_parity as parity
+
 ROOT = Path(__file__).resolve().parent
 BACKEND = ROOT / "backend"
+PUBLIC = ROOT / "frontend" / "public"
 if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
+ABLATION_STEPS = {4, 6, 8, 9, 11}
 
 st.set_page_config(
     page_title="EDGR — Research Pipeline",
@@ -338,6 +342,26 @@ div[data-testid="stMetric"] {
   border-radius: 12px;
   padding: 0.45rem 0.65rem;
 }
+.crumb { color:#3a5160; font-size:0.86rem; margin:0 0 0.55rem; }
+.progress-pill {
+  display:inline-block; background:#0d737722; color:#085456;
+  border:1px solid #0d737755; border-radius:999px;
+  padding:0.2rem 0.65rem; font-size:0.78rem; font-weight:600;
+}
+.step-rail-top {
+  background: rgba(255,255,255,0.65);
+  border: 1px solid rgba(15,28,36,0.1);
+  border-radius: 14px;
+  padding: 0.55rem 0.65rem 0.2rem;
+  margin-bottom: 0.85rem;
+}
+.stage-row {
+  display:flex; flex-wrap:wrap; gap:0.4rem; margin:0.5rem 0 0.8rem;
+}
+.stage-pill {
+  background:#fff; border:1px solid rgba(15,28,36,0.12);
+  border-radius:10px; padding:0.35rem 0.55rem; font-size:0.78rem;
+}
 </style>
 """
 
@@ -381,7 +405,7 @@ def _init_state() -> None:
     ss.setdefault("result_cache", {})
     ss.setdefault("last_payload", None)
     ss.setdefault("ids_result", None)
-    ss.setdefault("ids_mode", "query")
+    ss.setdefault("ids_mode", "alert")
     ss.setdefault("selected_alert_id", None)
 
 
@@ -466,132 +490,19 @@ def _collect_keys(rows: list[dict[str, Any]], max_cols: int = 10) -> list[str]:
 
 
 def _render_table(rows: list[dict[str, Any]], caption: str | None = None) -> None:
-    if not rows:
-        st.caption("[]")
-        return
-    keys = _collect_keys(rows)
-    data = [{k: _cell(r.get(k), k) for k in keys} for r in rows]
-    df = pd.DataFrame(data)
-    if caption:
-        st.markdown(f"**{caption}** ({len(rows)})")
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    parity.render_table(rows, caption, lang=st.session_state.get("lang", "vi"))
 
 
 def _maybe_latex(text: str) -> None:
-    t = (text or "").strip()
-    if not t:
-        return
-    if LATEX_HINT.search(t) and len(t) < 400:
-        try:
-            expr = t.strip("$").strip()
-            st.latex(expr)
-            return
-        except Exception:  # noqa: BLE001
-            pass
-    st.markdown(t)
+    parity.maybe_latex(text)
 
 
 def _render_viz_block(viz: dict[str, Any], lang: str) -> None:
-    kind = viz.get("kind")
-    title = _pick(viz, "title_vi", "title_en", lang)
-    caption = _pick(viz, "caption_vi", "caption_en", lang)
-    if title:
-        st.markdown(f"**{title}**")
-    if caption:
-        st.caption(caption)
-
-    if kind == "bar_chart":
-        bars = viz.get("bars") or []
-        if bars:
-            labels = [_pick(b, "label_vi", "label_en", lang, str(i)) for i, b in enumerate(bars)]
-            vals = [float(b.get("value") or 0) for b in bars]
-            df = pd.DataFrame({"label": labels, "value": vals}).set_index("label")
-            st.bar_chart(df)
-        return
-
-    if kind == "line_chart":
-        points = viz.get("points") or []
-        series = viz.get("series") or []
-        if points and series:
-            df = pd.DataFrame(points)
-            if "x" in df.columns:
-                df = df.set_index("x")
-            cols = [s["key"] for s in series if isinstance(s, dict) and s.get("key") in df.columns]
-            if cols:
-                st.line_chart(df[cols])
-        return
-
-    if kind == "multi_chart":
-        for ch in viz.get("charts") or []:
-            if isinstance(ch, dict):
-                _render_viz_block(ch, lang)
-        return
-
-    if kind == "knowledge_graph":
-        nodes = viz.get("nodes") or []
-        edges = viz.get("edges") or []
-        c1, c2 = st.columns(2)
-        with c1:
-            _render_table(
-                [n if isinstance(n, dict) else {"id": n} for n in nodes[:40]],
-                _t("Nút đồ thị", "Graph nodes", lang),
-            )
-        with c2:
-            _render_table(
-                [e if isinstance(e, dict) else {"edge": e} for e in edges[:40]],
-                _t("Cạnh", "Edges", lang),
-            )
-        return
-
-    if kind == "architecture":
-        layers = viz.get("layers") or viz.get("nodes") or []
-        if isinstance(layers, list) and layers:
-            _render_table(
-                [x if isinstance(x, dict) else {"item": x} for x in layers],
-                _t("Kiến trúc", "Architecture", lang),
-            )
-        else:
-            st.json(viz)
-        return
-
-    st.json(viz)
+    parity.render_viz_block(viz, lang)
 
 
 def _gather_viz(data: Any) -> list[dict[str, Any]]:
-    out: list[dict[str, Any]] = []
-    if not isinstance(data, dict):
-        return out
-    viz = data.get("viz")
-    if isinstance(viz, dict):
-        if viz.get("kind") == "multi_chart" and isinstance(viz.get("charts"), list):
-            out.extend(c for c in viz["charts"] if isinstance(c, dict))
-        else:
-            out.append(viz)
-    charts = data.get("charts")
-    if isinstance(charts, list):
-        out.extend(c for c in charts if isinstance(c, dict))
-    # Stage timings fallback
-    stages = data.get("stage_summary") or data.get("stages")
-    if isinstance(stages, list) and stages and all(isinstance(s, dict) for s in stages):
-        if any("duration_ms" in s for s in stages):
-            out.append(
-                {
-                    "kind": "bar_chart",
-                    "title_vi": "Thời gian các giai đoạn EDGR",
-                    "title_en": "EDGR stage timings",
-                    "bars": [
-                        {
-                            "label_vi": s.get("name_vi") or s.get("name") or s.get("stage"),
-                            "label_en": s.get("name") or s.get("stage"),
-                            "value": float(s.get("duration_ms") or 0),
-                        }
-                        for s in stages
-                        if s.get("duration_ms") is not None
-                    ],
-                }
-            )
-    return out
-
+    return parity.gather_viz(data)
 
 def _render_scientific_verify(verification: dict[str, Any], lang: str) -> None:
     status = verification.get("runtime_status") or "pending"
@@ -785,55 +696,14 @@ def _render_generic_value(data: Any, lang: str, depth: int = 0) -> None:
                 _render_generic_value(val, lang, depth + 1)
 
 
-def _render_academic(pack: dict[str, Any] | None, lang: str) -> None:
-    if not pack:
-        st.caption(_t("Chưa có khung học thuật.", "No academic package.", lang))
-        return
-    st.markdown(f"### {_t('Khung học thuật', 'Academic framework', lang)}")
-    summary = _pick(pack, "summary_vi", "summary_en", lang)
-    if summary:
-        st.write(summary)
-    blocks = pack.get("blocks") if isinstance(pack.get("blocks"), dict) else {}
-    for key, title_vi, title_en in ACAD_BLOCKS:
-        block = blocks.get(key)
-        if block is None:
-            continue
-        with st.expander(_t(title_vi, title_en, lang), expanded=False):
-            if isinstance(block, dict):
-                # Prefer bilingual text fields
-                for tk in ("title_vi", "title_en", "body_vi", "body_en", "latex", "formula"):
-                    if block.get(tk):
-                        if tk in {"latex", "formula"} or "body" in tk:
-                            val = block[tk]
-                            if isinstance(val, str):
-                                _maybe_latex(val) if ("latex" in tk or LATEX_HINT.search(val)) else st.write(val)
-                # Render remaining structured content (depth=1 → no nested expanders)
-                rest = {
-                    k: v
-                    for k, v in block.items()
-                    if k
-                    not in {
-                        "title_vi",
-                        "title_en",
-                        "body_vi",
-                        "body_en",
-                        "latex",
-                        "formula",
-                        "subtitle_vi",
-                        "subtitle_en",
-                    }
-                }
-                if rest:
-                    _render_generic_value(rest, lang, depth=1)
-            else:
-                _render_generic_value(block, lang, depth=1)
-    viz = pack.get("viz")
-    if isinstance(viz, dict):
-        with st.expander(_t("Hình minh họa học thuật", "Academic visualization", lang)):
-            _render_viz_block(viz, lang)
+def _render_academic(pack: dict[str, Any] | None, lang: str, hide_assess: bool = False) -> None:
+    parity.render_academic(pack, lang, hide_assess=hide_assess)
 
 
-def _hero(lang: str, health_line: str) -> None:
+def _hero(lang: str, health_line: str, done: int = 0, total: int = 16) -> None:
+    banner = PUBLIC / "edgr-topic-banner.png"
+    if banner.is_file():
+        st.image(str(banner), use_container_width=True)
     st.markdown(
         f"""
         <div class="edgr-hero">
@@ -843,7 +713,9 @@ def _hero(lang: str, health_line: str) -> None:
             lang,
           )}</p>
           <h1 class="edgr-brand">EDGR — {_t("Pipeline nghiên cứu A→Z", "Research pipeline A→Z", lang)}</h1>
-          <p class="meta">{health_line}</p>
+          <p class="meta">{health_line}
+            · <span class="progress-pill">{done}/{total} {_t('đã chạy', 'done', lang)}</span>
+          </p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -865,6 +737,10 @@ def page_overview(core: dict[str, Any], lang: str) -> None:
     topic = _pick(definition, "topic_vi", "topic", lang, definition.get("topic", ""))
     _step_badge(0, _t("Quy trình nghiên cứu", "Research process", lang))
     st.markdown(f'<div class="surface"><p class="muted">{topic}</p></div>', unsafe_allow_html=True)
+
+    process = PUBLIC / ("quy-trinh-a-z-en.png" if lang == "en" else "quy-trinh-a-z.png")
+    if process.is_file():
+        st.image(str(process), use_container_width=True)
 
     st.markdown(f"### {_t('Giải thích tổng quan', 'Overview explanation', lang)}")
     st.write(
@@ -965,6 +841,11 @@ def page_step(core: dict[str, Any], lang: str, step_id: int) -> None:
 
     title = step.get("title") if lang == "vi" else step.get("title_en")
     goal = step.get("goal") if lang == "vi" else step.get("goal_en")
+    st.markdown(
+        f'<p class="crumb">{_t("Tổng quan", "Overview", lang)} → '
+        f'{_t(f"Bước {step_id}", f"Step {step_id}", lang)} · {title}</p>',
+        unsafe_allow_html=True,
+    )
     _step_badge(step_id, str(title))
     st.write(goal or "")
     st.caption(
@@ -979,12 +860,12 @@ def page_step(core: dict[str, Any], lang: str, step_id: int) -> None:
     task_options = [STEP_OVERVIEW] + [t["id"] for t in tasks]
     labels = {
         STEP_OVERVIEW: _t("▸ Tổng quan bước", "▸ Step overview", lang),
-        **{
-            t["id"]: f"{i+1}. {t.get('title') if lang == 'vi' else t.get('title_en')}"
-            for i, t in enumerate(tasks)
-        },
     }
-    # Preserve task selection across reruns
+    for i, t in enumerate(tasks):
+        tid = t["id"]
+        done_mark = "✓ " if f"{step_id}:{tid}" in st.session_state.result_cache else ""
+        ttitle = t.get("title") if lang == "vi" else t.get("title_en")
+        labels[tid] = f"{done_mark}{i+1}. {ttitle}"
     current = st.session_state.task_id
     if current not in task_options:
         current = STEP_OVERVIEW
@@ -1006,7 +887,6 @@ def page_step(core: dict[str, Any], lang: str, step_id: int) -> None:
     task_id = st.session_state.task_id
     is_overview = task_id == STEP_OVERVIEW
 
-    # Child sequence status
     if tasks:
         done = sum(
             1 for t in tasks if f"{step_id}:{t['id']}" in st.session_state.result_cache
@@ -1018,6 +898,29 @@ def page_step(core: dict[str, Any], lang: str, step_id: int) -> None:
                 lang,
             )
         )
+        if is_overview and st.button(
+            _t("▶ Chạy tất cả task trong bước", "▶ Run all tasks in step", lang),
+            use_container_width=True,
+        ):
+            params = {
+                "query": SAMPLE_QUERIES[0],
+                "top_k": DEFAULT_TOP_K,
+                "enable_temporal": True,
+                "enable_graph": True,
+                "enable_trust_score": True,
+            }
+            prog = st.progress(0.0)
+            for i, tsk in enumerate(tasks):
+                tid = tsk["id"]
+                ck = f"{step_id}:{tid}"
+                try:
+                    payload = core["pipeline"].run_task(step_id, tid, params)
+                    st.session_state.result_cache[ck] = payload
+                except Exception as e:  # noqa: BLE001
+                    st.warning(f"{tid}: {e}")
+                prog.progress((i + 1) / max(len(tasks), 1))
+            st.success(_t("Đã chạy xong các task trong bước.", "Finished running step tasks.", lang))
+            st.rerun()
 
     if is_overview:
         st.markdown(f"#### {_t('Các công việc con theo trình tự', 'Child tasks in order', lang)}")
@@ -1033,7 +936,6 @@ def page_step(core: dict[str, Any], lang: str, step_id: int) -> None:
                 lang,
             )
         )
-        # Step-level academic
         try:
             pack = core["pipeline"].academic(step_id, None)
             _render_academic(pack if isinstance(pack, dict) else None, lang)
@@ -1051,14 +953,13 @@ def page_step(core: dict[str, Any], lang: str, step_id: int) -> None:
         f"**{_t(f'Công việc {task_options.index(task_id)}/{len(tasks)}', f'Task {task_options.index(task_id)}/{len(tasks)}', lang)}:** {ttitle}"
     )
 
-    # Academic for this task
     try:
         pack = core["pipeline"].academic(step_id, task_id)
-        _render_academic(pack if isinstance(pack, dict) else None, lang)
+        hide = f"{step_id}:{task_id}" in st.session_state.result_cache
+        _render_academic(pack if isinstance(pack, dict) else None, lang, hide_assess=hide)
     except Exception as e:  # noqa: BLE001
         st.warning(str(e))
 
-    # Auto-run catalog/matrix like React
     cache_key = f"{step_id}:{task_id}"
     if (
         step_id == 1
@@ -1082,10 +983,20 @@ def page_step(core: dict[str, Any], lang: str, step_id: int) -> None:
         )
         custom = st.text_input(_t("Hoặc query tuỳ chỉnh", "Or custom query", lang), "")
         top_k = st.select_slider("top_k", options=TOP_K_CHOICES, value=DEFAULT_TOP_K)
-        c1, c2, c3 = st.columns(3)
-        enable_temporal = c1.checkbox("temporal", value=True)
-        enable_graph = c2.checkbox("graph", value=True)
-        enable_trust = c3.checkbox("trust_score", value=True)
+        if step_id in ABLATION_STEPS:
+            c1, c2, c3 = st.columns(3)
+            enable_temporal = c1.checkbox("temporal", value=True)
+            enable_graph = c2.checkbox("graph", value=True)
+            enable_trust = c3.checkbox("trust_score", value=True)
+        else:
+            enable_temporal, enable_graph, enable_trust = True, True, True
+            st.caption(
+                _t(
+                    "Ablation (temporal/graph/trust) chỉ hiện ở bước 4/6/8/9/11 — giống React.",
+                    "Ablation toggles only on steps 4/6/8/9/11 — matching React.",
+                    lang,
+                )
+            )
         submitted = st.form_submit_button(
             _t("Chạy task", "Run task", lang),
             type="primary",
@@ -1139,15 +1050,17 @@ def page_step(core: dict[str, Any], lang: str, step_id: int) -> None:
     if isinstance(review, dict):
         _render_result_review(review, lang)
 
-    # Prefer runtime academic attached to payload (no wrapper expander —
-    # _render_academic already uses expanders for each block).
     acad = payload.get("academic")
     if isinstance(acad, dict):
         st.markdown(f"#### {_t('Khung học thuật (sau chạy)', 'Academic (post-run)', lang)}")
-        _render_academic(acad, lang)
+        _render_academic(acad, lang, hide_assess=True)
 
     st.markdown(f"### {_t('Kết quả', 'Result', lang)}")
-    _render_generic_value(payload.get("result", payload), lang)
+    parity.render_result_payload(
+        payload.get("result", payload),
+        lang,
+        review if isinstance(review, dict) else None,
+    )
 
 
 def page_ids_cti(core: dict[str, Any], lang: str) -> None:
@@ -1158,12 +1071,13 @@ def page_ids_cti(core: dict[str, Any], lang: str) -> None:
 
     mode = st.radio(
         _t("Chế độ nhập", "Input mode", lang),
-        options=["query", "alert"],
-        format_func=lambda m: _t("Truy vấn CTI", "CTI query", lang)
-        if m == "query"
-        else _t("Alert realtime (Suricata)", "Realtime alert (Suricata)", lang),
+        options=["alert", "query"],
+        format_func=lambda m: _t("Alert realtime (Suricata)", "Realtime alert (Suricata)", lang)
+        if m == "alert"
+        else _t("Truy vấn CTI", "CTI query", lang),
         horizontal=True,
         key="ids_mode_radio",
+        index=0 if st.session_state.ids_mode == "alert" else 1,
     )
     st.session_state.ids_mode = mode
 
@@ -1314,6 +1228,31 @@ def page_ids_cti(core: dict[str, Any], lang: str) -> None:
 
     if out.get("abstained"):
         st.warning(_pick(out, "abstain_reason_vi", "abstain_reason_en", lang))
+        if out.get("apply") == 0 or out.get("trusted") is False:
+            st.info(
+                _t(
+                    "Apply = 0 · cổng tin cậy từ chối Trusted Answer (giống React).",
+                    "Apply = 0 · trust gate refused Trusted Answer (matches React).",
+                    lang,
+                )
+            )
+
+    stages = out.get("stage_summary") or out.get("stages")
+    if isinstance(stages, list) and stages:
+        pills = []
+        for i, s in enumerate(stages, 1):
+            if isinstance(s, dict):
+                name = s.get("name_vi" if lang == "vi" else "name") or s.get("name") or s.get("stage") or i
+                dur = s.get("duration_ms")
+                extra = f" · {dur}ms" if dur is not None else ""
+                pills.append(f'<span class="stage-pill">{i}. {name}{extra}</span>')
+            else:
+                pills.append(f'<span class="stage-pill">{i}. {s}</span>')
+        st.markdown(
+            f"**{_t('Giai đoạn EDGR', 'EDGR stages', lang)}**"
+            f'<div class="stage-row">{"".join(pills)}</div>',
+            unsafe_allow_html=True,
+        )
 
     st.markdown(f"**{_t('Câu trả lời', 'Answer', lang)}**")
     st.write(out.get("answer") or "—")
@@ -1375,7 +1314,58 @@ def main() -> None:
         f"{len(steps)} steps · {stats.nodes} nodes · {len(core['vector_store'].chunks)} evidence",
         lang,
     )
-    _hero(lang, health_line)
+    # Count unique step completions (any task cached for that step)
+    completed_steps = set()
+    for key in st.session_state.result_cache:
+        try:
+            completed_steps.add(int(str(key).split(":", 1)[0]))
+        except ValueError:
+            pass
+    _hero(lang, health_line, done=len(completed_steps), total=len(steps))
+
+    # Top step rail (closer to React StepRail) + sidebar
+    st.markdown('<div class="step-rail-top">', unsafe_allow_html=True)
+    rail_cols = st.columns(min(9, len(steps) + 1))
+    # Overview button
+    with rail_cols[0]:
+        if st.button("0", key="rail_0", help=_t("Tổng quan", "Overview", lang), use_container_width=True):
+            st.session_state.step_id = 0
+            st.session_state.task_id = STEP_OVERVIEW
+            st.session_state.last_payload = None
+            st.rerun()
+    for i, s in enumerate(steps[:8]):
+        sid = int(s["id"])
+        with rail_cols[(i + 1) % len(rail_cols)]:
+            mark = "✓" if sid in completed_steps else str(sid)
+            if st.button(
+                mark,
+                key=f"rail_{sid}",
+                help=(s.get("title") if lang == "vi" else s.get("title_en")),
+                use_container_width=True,
+                type="primary" if st.session_state.step_id == sid else "secondary",
+            ):
+                st.session_state.step_id = sid
+                st.session_state.task_id = STEP_OVERVIEW
+                st.session_state.last_payload = None
+                st.rerun()
+    if len(steps) > 8:
+        rail2 = st.columns(min(8, len(steps) - 8))
+        for i, s in enumerate(steps[8:]):
+            sid = int(s["id"])
+            with rail2[i % len(rail2)]:
+                mark = "✓" if sid in completed_steps else str(sid)
+                if st.button(
+                    mark,
+                    key=f"rail2_{sid}",
+                    help=(s.get("title") if lang == "vi" else s.get("title_en")),
+                    use_container_width=True,
+                    type="primary" if st.session_state.step_id == sid else "secondary",
+                ):
+                    st.session_state.step_id = sid
+                    st.session_state.task_id = STEP_OVERVIEW
+                    st.session_state.last_payload = None
+                    st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # Sidebar step rail
     st.sidebar.markdown("---")
@@ -1388,7 +1378,8 @@ def main() -> None:
         sid = int(s["id"])
         ttitle = s.get("title") if lang == "vi" else s.get("title_en")
         short = (ttitle or "")[:28]
-        nav_labels.append(f"{sid} · {short}")
+        done = "✓ " if sid in completed_steps else ""
+        nav_labels.append(f"{done}{sid} · {short}")
         nav_ids.append(sid)
 
     try:
@@ -1423,9 +1414,9 @@ def main() -> None:
     st.sidebar.caption(
         _t(
             "Cùng core Python với React/FastAPI — không mock. "
-            "UI Streamlit ≠ pixel-perfect SPA.",
+            "UI Streamlit bám React tối đa trong giới hạn widget (không pixel-perfect SPA).",
             "Same Python core as React/FastAPI — no mocks. "
-            "Streamlit UI ≠ pixel-perfect SPA.",
+            "Streamlit UI mirrors React as far as widgets allow (not pixel-perfect SPA).",
             lang,
         )
     )

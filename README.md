@@ -66,7 +66,9 @@ python -m streamlit run streamlit_app.py --server.address 127.0.0.1 --server.por
 
 **Đã gần React:** sidebar step rail (0 + 16 bước), tổng quan 3 phase + jump, task con + khung học thuật 7 khối, run task thật, result review / verify / bảng, Live IDS/CTI (query + Suricata alert ingest/analyze), VI/EN.
 
-**Không pixel-perfect (giới hạn Streamlit):** thiếu sticky hero banner ảnh, StepRail ngang cuộn + icon SVG riêng, AcademicPanel layout document đầy đủ như React (`modelViews` chuyên biệt / KaTeX phức tạp), DataViz SVG graph interactive, footer sticky, auto-poll alert queue, export CSV, và toàn bộ CSS animation SPA. Muốn UI gốc: chạy React (`:5180`) + FastAPI.
+**Parity mục tiêu (đã cải tiến):** khung học thuật dạng document (theory/purpose + block typed: CSDL/toán/thuật toán/ops/cite/evidence/assess), heatmap coverage_matrix + Plotly KG, Run-all task, ablation chỉ bước 4/6/8/9/11, banner/ảnh quy trình, rail bước trên cùng, CSV download, IDS mặc định alert + timeline stages.
+
+**Không pixel-perfect (giới hạn Streamlit):** sticky SPA layout, StepIcon SVG/3D tilt, AcademicPanel pair layout CSS đầy đủ, auto-poll queue 4s, footer sticky — muốn UI gốc: React (`:5180`) + FastAPI.
 
 ### Deploy Streamlit Community Cloud
 

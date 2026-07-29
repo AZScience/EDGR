@@ -1,6 +1,7 @@
 # Streamlit Community Cloud + local `streamlit run streamlit_app.py`
 streamlit==1.42.0
 pandas==2.2.3
+plotly==6.5.0
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
 pydantic==2.10.4
