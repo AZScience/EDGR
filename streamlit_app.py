@@ -1327,57 +1327,69 @@ def _hero(lang: str, health_line: str, done: int = 0, total: int = 16, topic: st
     )
 
 
+def _goto_step(sid: int) -> None:
+    """In-app step switch — no browser navigation / new page."""
+    st.session_state.step_id = int(sid)
+    st.session_state.task_id = STEP_OVERVIEW
+    st.session_state.last_payload = None
+    st.query_params.from_dict({"step": str(sid)})
+
+
+def _goto_task(step_id: int, tid: str) -> None:
+    """In-app child-task switch — no browser navigation / new page."""
+    st.session_state.task_id = tid
+    st.session_state.last_payload = st.session_state.result_cache.get(f"{step_id}:{tid}")
+    st.query_params.from_dict({"step": str(step_id), "task": tid})
+
+
 def _step_rail_html(
     lang: str,
     steps: list[dict[str, Any]],
     active: int,
     completed: set[int],
 ) -> None:
-    """Horizontal step cards matching React StepRail (query-param navigation)."""
-    chips: list[str] = []
-    overview_color = STEP_COLORS[0]
-    ov_active = active == 0
-    ov_cls = "rx-chip overview active" if ov_active else "rx-chip overview"
-    ov_icon_color = "#ffffff" if ov_active else overview_color
-    chips.append(
-        f'<a class="{ov_cls}" href="?step=0" style="--step-color:{overview_color}">'
-        f'<span class="rx-chip-head">'
-        f'<span class="rx-icon" style="background:{overview_color}18;border-color:{overview_color}55">'
-        f"{_step_icon_svg(0, ov_icon_color)}</span>"
-        f'<span class="rx-num">{0}</span></span>'
-        f'<span class="rx-label">{_t("Tổng quan", "Overview", lang)}</span></a>'
-    )
-    for s in steps:
-        sid = int(s["id"])
-        color = STEP_COLORS.get(sid, "#0d7377")
-        title = str(s.get("title") if lang == "vi" else s.get("title_en") or "")
-        title_esc = (
-            title.replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace('"', "&quot;")
-        )
-        badge = s.get("badge") if lang == "vi" else (s.get("badge_en") or s.get("badge"))
-        is_active = active == sid
-        cls = "rx-chip active" if is_active else "rx-chip"
-        if sid in completed and not is_active:
-            cls += " done"
-        badge_html = (
-            f'<span class="rx-mini">{str(badge).replace("<", "&lt;")}</span>' if badge else ""
-        )
-        icon_color = "#ffffff" if is_active else color
-        chips.append(
-            f'<a class="{cls}" href="?step={sid}" style="--step-color:{color}" title="{title_esc}">'
-            f'<span class="rx-chip-head">'
-            f'<span class="rx-icon" style="background:{color}18;border-color:{color}55">'
-            f"{_step_icon_svg(sid, icon_color)}</span>"
-            f'<span class="rx-num">{sid}</span></span>'
-            f'<span class="rx-label">{title_esc}</span>{badge_html}</a>'
-        )
+    """Step cards via st.button — same Streamlit page (no <a href>)."""
     st.markdown(
-        f'<div class="rx-rail-wrap"><nav class="rx-rail">{"".join(chips)}</nav></div>',
+        """
+        <style>
+          div[data-testid="stHorizontalBlock"] button {
+            white-space: normal !important;
+            height: auto !important;
+            min-height: 3.6rem;
+            font-size: 0.72rem !important;
+            line-height: 1.2 !important;
+            border-radius: 12px !important;
+          }
+        </style>
+        """,
         unsafe_allow_html=True,
     )
+    items: list[tuple[int, str]] = [
+        (0, _t("0 · Tổng quan", "0 · Overview", lang)),
+    ]
+    for s in steps:
+        sid = int(s["id"])
+        title = str(s.get("title") if lang == "vi" else s.get("title_en") or "")
+        short = title if len(title) <= 22 else title[:20] + "…"
+        mark = "✓ " if sid in completed else ""
+        items.append((sid, f"{mark}{sid} · {short}"))
+
+    for row_i, start in enumerate((0, 9)):
+        chunk = items[start : start + 9]
+        if not chunk:
+            continue
+        cols = st.columns(len(chunk))
+        for col, (sid, label) in zip(cols, chunk):
+            with col:
+                if st.button(
+                    label,
+                    key=f"rail_btn_{row_i}_{sid}",
+                    use_container_width=True,
+                    type="primary" if active == sid else "secondary",
+                    help=label,
+                ) and sid != active:
+                    _goto_step(sid)
+                    st.rerun()
 
 
 def _step_badge(step_id: int, title: str) -> None:
@@ -1396,46 +1408,34 @@ def _task_rail_html(
     tasks: list[dict[str, Any]],
     active_task: str,
 ) -> None:
-    """Child-task pills matching React `.task-rail` / `.task-chip`."""
-    color = STEP_COLORS.get(step_id, "#0d7377")
-    chips: list[str] = []
-    ov_active = active_task == STEP_OVERVIEW
-    ov_cls = "rx-task-chip overview active" if ov_active else "rx-task-chip overview"
-    ov_label = _t("Tổng quan bước", "Step overview", lang)
-    chips.append(
-        f'<a class="{ov_cls}" href="?step={step_id}&task={STEP_OVERVIEW}" '
-        f'style="--step-color:{color}" title="{ov_label}">'
-        f'<span class="rx-task-dot">Σ</span>'
-        f'<span class="rx-task-label">{ov_label}</span></a>'
-    )
+    """Child-task pills via st.button — same page, no browser navigation."""
+    items: list[tuple[str, str]] = [
+        (STEP_OVERVIEW, "Σ " + _t("Tổng quan bước", "Step overview", lang)),
+    ]
     for i, t in enumerate(tasks):
         tid = str(t.get("id") or "")
-        raw_title = t.get("title") if lang == "vi" else t.get("title_en")
-        label = f"{i + 1}. {raw_title}"
-        label_esc = (
-            str(label)
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace('"', "&quot;")
-        )
+        raw = t.get("title") if lang == "vi" else t.get("title_en")
         done = f"{step_id}:{tid}" in st.session_state.result_cache
-        is_active = active_task == tid
-        cls = "rx-task-chip active" if is_active else "rx-task-chip"
-        if done and not is_active:
-            cls += " done"
-        mark = "✓" if done else str(i + 1)
-        chips.append(
-            f'<a class="{cls}" href="?step={step_id}&task={tid}" '
-            f'style="--step-color:{color}" title="{label_esc}">'
-            f'<span class="rx-task-dot">{mark}</span>'
-            f'<span class="rx-task-label">{label_esc}</span></a>'
-        )
-    st.markdown(
-        f'<nav class="rx-task-rail" aria-label="{_t("Công việc trong bước", "Tasks in this step", lang)}">'
-        f'{"".join(chips)}</nav>',
-        unsafe_allow_html=True,
-    )
+        prefix = "✓ " if done else f"{i + 1}. "
+        label = f"{prefix}{raw}"
+        if len(label) > 36:
+            label = label[:34] + "…"
+        items.append((tid, label))
+
+    for row_i in range(0, len(items), 4):
+        chunk = items[row_i : row_i + 4]
+        cols = st.columns(len(chunk))
+        for col, (tid, label) in zip(cols, chunk):
+            with col:
+                if st.button(
+                    label,
+                    key=f"task_btn_{step_id}_{row_i}_{tid}",
+                    use_container_width=True,
+                    type="primary" if active_task == tid else "secondary",
+                    help=label,
+                ) and tid != active_task:
+                    _goto_task(step_id, tid)
+                    st.rerun()
 
 
 def page_overview(core: dict[str, Any], lang: str) -> None:
@@ -1505,27 +1505,56 @@ def page_overview(core: dict[str, Any], lang: str) -> None:
 
     _health_cards(core, lang)
 
-    st.markdown(f"### {_t('Đi tới từng bước nghiên cứu', 'Jump to research steps', lang)}")
+    # Match React OverviewTab jump-grid: "Bước N" only, ~5 columns, colored border
+    st.markdown(
+        f"""
+        <div class="surface overview-jump">
+          <h3 style="margin-top:0">{_t('Đi tới từng bước nghiên cứu', 'Jump to research steps', lang)}</h3>
+        </div>
+        <style>
+          .jump-row div[data-testid="column"] button {{
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            border-width: 1.5px !important;
+          }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
     steps = definition.get("steps") or []
-    grid = st.columns(4)
-    for i, s in enumerate(steps):
-        sid = int(s["id"])
-        color = STEP_COLORS.get(sid, "#0d7377")
-        label = s.get("title") if lang == "vi" else s.get("title_en")
-        with grid[i % 4]:
-            if st.button(
-                f"{sid}. {label}",
-                key=f"jump_{sid}",
-                use_container_width=True,
-            ):
-                st.session_state.step_id = sid
-                st.session_state.task_id = STEP_OVERVIEW
-                st.session_state.last_payload = None
-                st.rerun()
-            st.markdown(
-                f'<div style="height:4px;border-radius:4px;background:{color};margin:-0.35rem 0 0.65rem"></div>',
-                unsafe_allow_html=True,
-            )
+    for row_i in range(0, 16, 5):
+        chunk = list(range(row_i + 1, min(row_i + 6, 17)))
+        cols = st.columns(5)
+        for col_i, sid in enumerate(chunk):
+            color = STEP_COLORS.get(sid, "#0d7377")
+            label = _t(f"Bước {sid}", f"Step {sid}", lang)
+            with cols[col_i]:
+                st.markdown(
+                    f'<div class="jump-row" style="--c:{color}"></div>',
+                    unsafe_allow_html=True,
+                )
+                if st.button(
+                    label,
+                    key=f"jump_{sid}",
+                    use_container_width=True,
+                    help=str(
+                        next(
+                            (
+                                (s.get("title") if lang == "vi" else s.get("title_en"))
+                                for s in steps
+                                if int(s["id"]) == sid
+                            ),
+                            label,
+                        )
+                    ),
+                ):
+                    _goto_step(sid)
+                    st.rerun()
+                st.markdown(
+                    f'<div style="height:3px;border-radius:3px;background:{color};'
+                    f'margin:-0.45rem 0 0.55rem;opacity:0.85"></div>',
+                    unsafe_allow_html=True,
+                )
 
     rows = []
     for s in steps:
