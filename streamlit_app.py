@@ -741,13 +741,16 @@ def _init_state() -> None:
     if public_ui:
         default_mode = "react"
     elif _is_streamlit_cloud():
-        # Cloud: show React setup guide by default (native cannot be 100% local).
-        default_mode = "react"
+        # Cloud without public /ui/: use native UI (no setup wall).
+        default_mode = "native"
     else:
         default_mode = "react"
     ss.setdefault("ui_mode", default_mode)
     if public_ui:
         ss.ui_mode = "react"
+    elif _is_streamlit_cloud() and not public_ui and ss.get("ui_mode") == "react":
+        # Old sessions stuck on setup guide → switch to native
+        ss.ui_mode = "native"
     ss.setdefault("step_id", 0)
     ss.setdefault("task_id", STEP_OVERVIEW)
     ss.setdefault("result_cache", {})
@@ -854,71 +857,9 @@ def _embed_iframe(src: str) -> None:
 
 
 def page_react_setup(lang: str) -> None:
-    """Cloud without EDGR_PUBLIC_UI_URL — explain how to get pixel-perfect React."""
-    st.title(_t("Cần host React giống local", "Host React to match local", lang))
-    raw_secret = _secret_or_env("EDGR_PUBLIC_UI_URL")
-    if raw_secret and _public_ui_url() is None:
-        st.warning(
-            _t(
-                f"Secrets hiện có giá trị mẫu/không hợp lệ: `{raw_secret}`. "
-                "Phải thay bằng URL thật từ Render (không dùng xxxx / YOUR-HOST).",
-                f"Secrets currently has a placeholder/invalid value: `{raw_secret}`. "
-                "Replace it with the real Render URL (do not use xxxx / YOUR-HOST).",
-                lang,
-            )
-        )
-    st.markdown(
-        _t(
-            """
-### Cách làm (giống local 100%)
-
-**A. Deploy API + React `/ui/` (một lần)**
-
-1. Vào [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**
-2. Connect repo `AZScience/EDGR`, branch `kiemtranoibo` (file `render.yaml` đã có sẵn)
-3. Deploy service `edgr-api-ui` → nhận URL dạng `https://edgr-api-ui-xxxx.onrender.com`
-4. Kiểm tra:
-   - `https://…/ui/` → phải **y hệt** UI React local
-   - `https://…/api/health` → `{"status":"ok",…}`
-
-**B. Gắn vào Streamlit Cloud**
-
-App settings → **Secrets**:
-```toml
-EDGR_PUBLIC_UI_URL = "https://edgr-api-ui-xxxx.onrender.com/ui/"
-```
-→ **Reboot** app Streamlit → sẽ nhúng đúng SPA React (banner, tab cha/con, CSS — như local).
-
-> Local vẫn dùng FastAPI `:8016/ui/` tự động — không cần secret.
-""",
-            """
-### How to match local 100%
-
-**A. Deploy API + React `/ui/` (once)**
-
-1. Open [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**
-2. Connect `AZScience/EDGR`, branch `kiemtranoibo` (`render.yaml` is in the repo)
-3. Deploy `edgr-api-ui` → URL like `https://edgr-api-ui-xxxx.onrender.com`
-4. Check:
-   - `https://…/ui/` → must match local React
-   - `https://…/api/health` → `{"status":"ok",…}`
-
-**B. Wire Streamlit Cloud**
-
-App settings → **Secrets**:
-```toml
-EDGR_PUBLIC_UI_URL = "https://edgr-api-ui-xxxx.onrender.com/ui/"
-```
-→ **Reboot** Streamlit → iframes the real React SPA (same as local).
-
-> Local still auto-uses FastAPI `:8016/ui/` — no secret needed.
-""",
-            lang,
-        )
-    )
-    if st.button(_t("Tạm dùng Streamlit native (không giống 100%)", "Use native Streamlit (not 100%)", lang)):
-        st.session_state.ui_mode = "native"
-        st.rerun()
+    """Deprecated: Cloud now defaults to native UI. Kept as no-op redirect."""
+    st.session_state.ui_mode = "native"
+    st.rerun()
 
 
 def page_react_embed(lang: str) -> None:
@@ -941,20 +882,16 @@ def page_react_embed(lang: str) -> None:
                 )
             )
             st.caption(str(e))
-            st.info(
-                _t(
-                    "Kiểm tra host API còn sống và Secrets `EDGR_PUBLIC_UI_URL` đúng đường `/ui/`.",
-                    "Check the API host is up and Secrets `EDGR_PUBLIC_UI_URL` points to `/ui/`.",
-                    lang,
-                )
-            )
+            if st.button(_t("Dùng Streamlit native", "Use Streamlit native", lang)):
+                st.session_state.ui_mode = "native"
+                st.rerun()
             return
         _embed_iframe(public)
         return
 
     if _is_streamlit_cloud():
-        page_react_setup(lang)
-        return
+        st.session_state.ui_mode = "native"
+        st.rerun()
 
     if not DIST.is_dir() or not (DIST / "index.html").is_file():
         st.error(
@@ -1615,34 +1552,126 @@ def _task_rail_html(
     tasks: list[dict[str, Any]],
     active_task: str,
 ) -> None:
-    """Child-task pills via st.button — same page, no browser navigation."""
-    items: list[tuple[str, str]] = [
-        (STEP_OVERVIEW, "Σ " + _t("Tổng quan bước", "Step overview", lang)),
+    """React-like child-task pills — fixed height, ellipsis, same-page clicks."""
+    color = STEP_COLORS.get(step_id, "#0d7377")
+    items: list[tuple[str, str, str]] = [
+        (STEP_OVERVIEW, "Σ", _t("Tổng quan bước", "Step overview", lang)),
     ]
     for i, t in enumerate(tasks):
         tid = str(t.get("id") or "")
-        raw = t.get("title") if lang == "vi" else t.get("title_en")
+        raw = str(t.get("title") if lang == "vi" else t.get("title_en") or "")
         done = f"{step_id}:{tid}" in st.session_state.result_cache
-        prefix = "✓ " if done else f"{i + 1}. "
-        label = f"{prefix}{raw}"
-        if len(label) > 36:
-            label = label[:34] + "…"
-        items.append((tid, label))
+        mark = "✓" if done else str(i + 1)
+        items.append((tid, mark, raw))
 
-    for row_i in range(0, len(items), 4):
-        chunk = items[row_i : row_i + 4]
-        cols = st.columns(len(chunk))
-        for col, (tid, label) in zip(cols, chunk):
-            with col:
-                if st.button(
-                    label,
-                    key=f"task_btn_{step_id}_{row_i}_{tid}",
-                    use_container_width=True,
-                    type="primary" if active_task == tid else "secondary",
-                    help=label,
-                ) and tid != active_task:
-                    _goto_task(step_id, tid)
-                    st.rerun()
+    st.markdown(
+        f"""
+        <style>
+          .st-key-edgr_task_rail [data-testid="stHorizontalBlock"] {{
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+            align-items: center !important;
+            padding-bottom: 10px !important;
+            border-bottom: 1px dashed rgba(15,23,42,0.18);
+            margin-bottom: 8px !important;
+          }}
+          .st-key-edgr_task_rail [data-testid="column"] {{
+            flex: 0 1 auto !important;
+            width: auto !important;
+            min-width: 0 !important;
+            max-width: 340px !important;
+            position: relative !important;
+          }}
+          .rx-task {{
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 340px;
+            padding: 8px 12px 8px 8px;
+            border-radius: 999px;
+            border: 1px solid {color}4d;
+            background: #fff;
+            box-sizing: border-box;
+            overflow: hidden;
+            white-space: nowrap;
+          }}
+          .rx-task.active {{
+            background: {color};
+            border-color: {color};
+            color: #fff;
+          }}
+          .rx-task .mark {{
+            display: inline-grid;
+            place-items: center;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: {color};
+            color: #fff;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 0.65rem;
+            font-weight: 700;
+            flex-shrink: 0;
+          }}
+          .rx-task.active .mark {{
+            background: rgba(255,255,255,0.22);
+            color: #fff;
+          }}
+          .rx-task .lbl {{
+            font-size: 0.82rem;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+          }}
+          .st-key-edgr_task_rail [data-testid="column"] .stButton {{
+            position: absolute !important;
+            inset: 0 !important;
+            z-index: 2 !important;
+            margin: 0 !important;
+          }}
+          .st-key-edgr_task_rail [data-testid="column"] .stButton > button {{
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 38px !important;
+            opacity: 0.01 !important;
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+          }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    with st.container(key="edgr_task_rail"):
+        for row_i in range(0, len(items), 4):
+            chunk = items[row_i : row_i + 4]
+            cols = st.columns(len(chunk))
+            for col, (tid, mark, label) in zip(cols, chunk):
+                is_active = active_task == tid
+                active_cls = " active" if is_active else ""
+                label_esc = html.escape(label)
+                with col:
+                    st.markdown(
+                        f"""
+                        <div class="rx-task{active_cls}" title="{label_esc}">
+                          <span class="mark">{html.escape(mark)}</span>
+                          <span class="lbl">{label_esc}</span>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                    if st.button(
+                        f"task {tid}",
+                        key=f"task_btn_{step_id}_{row_i}_{tid}",
+                        use_container_width=True,
+                        help=label,
+                    ) and tid != active_task:
+                        _goto_task(step_id, tid)
+                        st.rerun()
 
 
 def page_overview(core: dict[str, Any], lang: str) -> None:
@@ -2250,29 +2279,29 @@ def main() -> None:
             )
         )
     elif on_cloud:
-        # Without public React host, prefer setup guide (pixel-perfect path)
+        # Native by default (no setup wall with code chips)
         mode = st.sidebar.radio(
             _t("Chế độ UI", "UI mode", lang),
-            options=["react", "native"],
+            options=["native", "react"],
             format_func=lambda m: _t(
-                "React giống local 100% (cần Render)",
-                "React = local 100% (needs Render)",
+                "Streamlit native",
+                "Streamlit native",
                 lang,
             )
-            if m == "react"
+            if m == "native"
             else _t(
-                "Streamlit native (không giống 100%)",
-                "Streamlit native (not 100%)",
+                "React iframe (cần EDGR_PUBLIC_UI_URL)",
+                "React iframe (needs EDGR_PUBLIC_UI_URL)",
                 lang,
             ),
-            index=0 if st.session_state.ui_mode != "native" else 1,
+            index=0 if st.session_state.ui_mode != "react" else 1,
             key="ui_mode_radio_cloud",
         )
         st.session_state.ui_mode = mode
         st.sidebar.caption(
             _t(
-                "Giống hoàn toàn local chỉ khi có Secrets EDGR_PUBLIC_UI_URL.",
-                "Exact local match only with Secrets EDGR_PUBLIC_UI_URL.",
+                "Tab cha/con bám giao diện React. Giống 100% local khi có URL /ui/ công khai.",
+                "Parent/child tabs mirror React. Exact local match needs a public /ui/ URL.",
                 lang,
             )
         )
