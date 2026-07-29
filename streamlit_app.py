@@ -7,6 +7,7 @@ Fallback: native Streamlit panels (approximate parity only).
 
 from __future__ import annotations
 
+import base64
 import json
 import os
 import re
@@ -302,6 +303,193 @@ section[data-testid="stSidebar"] label {
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
+/* React-parity banner + step rail */
+.rx-hero {
+  position: relative;
+  overflow: hidden;
+  margin: -1rem -1rem 1rem -1rem;
+  background: #071820;
+  box-shadow: 0 8px 24px rgba(15, 28, 36, 0.18);
+  isolation: isolate;
+}
+.rx-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% center;
+  z-index: 0;
+}
+.rx-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    100deg,
+    rgba(6, 22, 28, 0.94) 0%,
+    rgba(8, 40, 48, 0.82) 38%,
+    rgba(10, 55, 62, 0.45) 62%,
+    rgba(12, 40, 48, 0.18) 100%
+  );
+}
+.rx-hero-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px 24px;
+  flex-wrap: wrap;
+  padding: 18px 18px 16px;
+}
+.rx-kicker {
+  margin: 0 0 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(180, 230, 230, 0.88);
+}
+.rx-title {
+  margin: 0 0 6px;
+  font-family: "Fraunces", Georgia, serif !important;
+  font-size: clamp(1.7rem, 3.2vw, 2.35rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: #f7fcfd !important;
+}
+.rx-desc {
+  margin: 0 0 6px;
+  color: rgba(244, 250, 251, 0.94);
+  font-size: clamp(0.84rem, 1.3vw, 0.98rem);
+  line-height: 1.4;
+  max-width: 40rem;
+}
+.rx-meta {
+  margin: 0;
+  color: rgba(244, 250, 251, 0.75);
+  font-size: 0.88rem;
+}
+.rx-aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+}
+.rx-progress {
+  background: rgba(255,255,255,0.92);
+  color: #0f1c24;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.rx-rail-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin: 0 0 1rem;
+  min-width: 0;
+}
+.rx-rail {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 6px;
+  scrollbar-width: thin;
+}
+.rx-chip {
+  --step-color: #0d7377;
+  border: 1px solid color-mix(in srgb, var(--step-color) 35%, rgba(15,28,36,0.12));
+  background: rgba(255,255,255,0.92);
+  border-radius: 12px;
+  padding: 10px 10px 8px;
+  text-decoration: none !important;
+  color: #0f1c24 !important;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  flex: 0 0 128px;
+  width: 128px;
+  min-height: 104px;
+  box-sizing: border-box;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.rx-chip:hover {
+  transform: translateY(-1px);
+  border-color: var(--step-color);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--step-color) 22%, transparent);
+}
+.rx-chip.active {
+  background: var(--step-color);
+  color: #f8fafc !important;
+  border-color: var(--step-color);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--step-color) 35%, transparent);
+}
+.rx-chip.overview { border-style: dashed; }
+.rx-chip-head {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.rx-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  flex-shrink: 0;
+}
+.rx-chip.active .rx-icon {
+  background: rgba(255,255,255,0.22) !important;
+  border-color: rgba(255,255,255,0.55) !important;
+}
+.rx-num {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--step-color);
+}
+.rx-chip.active .rx-num { color: #fff !important; }
+.rx-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.25;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+.rx-mini {
+  font-size: 0.58rem;
+  background: #c45c26;
+  color: #fff;
+  border-radius: 999px;
+  padding: 2px 6px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rx-chip.active .rx-mini {
+  background: rgba(255,255,255,0.92);
+  color: #0f1c24;
+}
 .surface {
   background: rgba(255,255,255,0.72);
   border: 1px solid rgba(15, 28, 36, 0.10);
@@ -491,14 +679,34 @@ def _ensure_backend() -> bool:
 
 def page_react_embed(lang: str) -> None:
     """Fullscreen iframe of the real React SPA (same CSS/layout/behavior)."""
+    # Strip Streamlit chrome so banner + step rail are full-bleed like standalone React.
     st.markdown(
         """
         <style>
-          [data-testid="stHeader"],
+          header[data-testid="stHeader"],
           [data-testid="stToolbar"],
-          [data-testid="stDecoration"] { display: none !important; }
-          .block-container { padding: 0.4rem 0.6rem 0.2rem !important; max-width: 100% !important; }
-          iframe { border: none !important; }
+          [data-testid="stDecoration"],
+          [data-testid="stStatusWidget"],
+          #MainMenu, footer { display: none !important; }
+          [data-testid="stSidebar"],
+          [data-testid="stSidebarCollapsedControl"],
+          section[data-testid="stSidebar"] { display: none !important; }
+          .stApp, .stApp > header { background: #071820 !important; }
+          .stApp [data-testid="stAppViewContainer"] {
+            background: #071820 !important;
+          }
+          .stApp [data-testid="stAppViewContainer"] > .main {
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+          .block-container {
+            padding: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
+          }
+          div[data-testid="stVerticalBlock"] { gap: 0 !important; }
+          iframe { border: 0 !important; display: block !important; }
         </style>
         """,
         unsafe_allow_html=True,
@@ -551,14 +759,25 @@ def page_react_embed(lang: str) -> None:
             )
             return
 
-    st.caption(
-        _t(
-            f"Đang nhúng UI React gốc · {src}  (đây là cùng SPA với :5180, không phải mock Streamlit)",
-            f"Embedding real React UI · {src}  (same SPA as :5180 — not a Streamlit mock)",
-            lang,
-        )
+    # Full-viewport iframe (no Streamlit caption/padding) — matches React :5180 layout.
+    components.html(
+        f"""
+        <style>
+          html, body {{
+            margin: 0; padding: 0; overflow: hidden;
+            background: #071820; height: 100%;
+          }}
+        </style>
+        <iframe
+          src="{src}"
+          title="EDGR React UI"
+          style="border:0;width:100%;height:100vh;display:block;background:#071820;"
+          allow="clipboard-read; clipboard-write"
+        ></iframe>
+        """,
+        height=980,
+        scrolling=False,
     )
-    components.iframe(src, height=920, scrolling=True)
 
 
 def _inject_css() -> None:
@@ -852,24 +1071,139 @@ def _render_academic(pack: dict[str, Any] | None, lang: str, hide_assess: bool =
     parity.render_academic(pack, lang, hide_assess=hide_assess)
 
 
-def _hero(lang: str, health_line: str, done: int = 0, total: int = 16) -> None:
+def _img_data_uri(path: Path) -> str | None:
+    if not path.is_file():
+        return None
+    mime = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
+    b64 = base64.b64encode(path.read_bytes()).decode("ascii")
+    return f"data:{mime};base64,{b64}"
+
+
+def _step_icon_svg(step_id: int, color: str, size: int = 20) -> str:
+    """Compact SVG icons aligned with React StepIcon."""
+    s = size
+    icons = {
+        0: f'<rect x="3" y="4" width="18" height="16" rx="2" fill="{color}22" stroke="{color}" stroke-width="1.6"/><path d="M7 8h4M7 12h10M7 16h7" stroke="{color}" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="8" r="2.2" fill="{color}"/>',
+        1: f'<rect x="3" y="4" width="18" height="16" rx="2" fill="{color}" opacity="0.2"/><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H12v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z" fill="{color}"/><path d="M12 4h6.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H12V4Z" fill="{color}" opacity="0.75"/>',
+        2: f'<circle cx="10.5" cy="10.5" r="6" stroke="{color}" stroke-width="2.2" fill="{color}22"/><path d="M15.5 15.5 20 20" stroke="{color}" stroke-width="2.4" stroke-linecap="round"/>',
+        3: f'<path d="M9 3.5a2 2 0 0 1 2 2V7h2.5a2 2 0 1 1 0 4H11v2.5a2 2 0 1 1-4 0V11H4.5a2 2 0 1 1 0-4H7V5.5a2 2 0 0 1 2-2Z" fill="{color}"/>',
+        4: f'<circle cx="12" cy="12" r="3.2" fill="{color}"/><circle cx="12" cy="12" r="7" stroke="{color}" stroke-width="1.6" fill="{color}33"/>',
+        5: f'<circle cx="6" cy="7" r="2.4" fill="{color}"/><circle cx="18" cy="6" r="2.4" fill="{color}"/><circle cx="12" cy="14" r="2.6" fill="{color}"/><path d="M8 8.2 10.5 12.5M16.2 7.5 13.5 12.2" stroke="{color}" stroke-width="1.6"/>',
+        6: f'<rect x="4" y="12" width="3.5" height="8" rx="1" fill="{color}" opacity="0.7"/><rect x="10" y="7" width="3.5" height="13" rx="1" fill="{color}"/><rect x="16" y="4" width="3.5" height="16" rx="1" fill="{color}" opacity="0.85"/>',
+        7: f'<ellipse cx="12" cy="6" rx="7" ry="2.8" fill="{color}"/><path d="M5 6v8c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6" stroke="{color}" stroke-width="1.8" fill="{color}22"/>',
+        8: f'<rect x="3" y="4" width="18" height="12" rx="2" fill="{color}"/><rect x="5" y="6" width="14" height="8" rx="1" fill="#fff" opacity="0.9"/><path d="M9 19h6M12 16v3" stroke="{color}" stroke-width="1.8" stroke-linecap="round"/>',
+        9: f'<path d="M9 3h6M10 3v5.2L5.5 18.5A2 2 0 0 0 7.3 21h9.4a2 2 0 0 0 1.8-2.5L14 8.2V3" stroke="{color}" stroke-width="1.8" fill="{color}28"/>',
+        10: f'<path d="M4 16 10 10l4 4 6-8" stroke="{color}" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M14 6h6v6" stroke="{color}" stroke-width="2" fill="none"/>',
+        11: f'<path d="M8 4v7M8 7h5" stroke="{color}" stroke-width="2" stroke-linecap="round"/><circle cx="14.5" cy="12.5" r="3.2" stroke="{color}" stroke-width="1.8" fill="{color}30"/>',
+        12: f'<rect x="3" y="3" width="18" height="18" rx="3" fill="{color}22" stroke="{color}" stroke-width="1.6"/><path d="M8 16c1.2-4 2-6 4-6s2.8 2 4 6" stroke="{color}" stroke-width="2" fill="none"/>',
+        13: f'<path d="M7 3h7l4 4v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" fill="{color}"/>',
+        14: f'<path d="M5 4h11a2 2 0 0 1 2 2v13H7a2 2 0 0 0-2 2V4Z" fill="{color}"/>',
+        15: f'<path d="M2.5 10 12 5l9.5 5L12 15 2.5 10Z" fill="{color}"/>',
+        16: f'<path d="M12 3 5 6v5.5c0 4.2 2.7 7.2 7 8.5 4.3-1.3 7-4.3 7-8.5V6L12 3Z" fill="{color}28" stroke="{color}" stroke-width="1.7"/>',
+    }
+    body = icons.get(step_id, f'<circle cx="12" cy="12" r="7" fill="{color}"/>')
+    return (
+        f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" '
+        f'xmlns="http://www.w3.org/2000/svg">{body}</svg>'
+    )
+
+
+def _hero(lang: str, health_line: str, done: int = 0, total: int = 16, topic: str = "") -> None:
+    """React-parity banner: photo background + overlay copy + progress pill."""
     banner = PUBLIC / "edgr-topic-banner.png"
-    if banner.is_file():
-        st.image(str(banner), use_container_width=True)
+    if not banner.is_file():
+        banner = DIST / "edgr-topic-banner.png"
+    uri = _img_data_uri(banner)
+    desc = topic or _t(
+        "Thuật toán truy hồi đồ thị động dựa trên bằng chứng để giảm ảo giác trong LLM "
+        "cho phát hiện xâm nhập và tình báo mối đe dọa mạng",
+        "An Evidence-Driven Dynamic Graph Retrieval Algorithm for Hallucination Mitigation "
+        "in Large Language Models for Intrusion Detection and Cyber Threat Intelligence",
+        lang,
+    )
+    bg = (
+        f'<img class="rx-hero-bg" src="{uri}" alt="" />'
+        if uri
+        else ""
+    )
     st.markdown(
         f"""
-        <div class="edgr-hero">
-          <p class="kicker">{_t(
-            "Truy hồi đồ thị động dựa trên bằng chứng · IDS / CTI",
-            "Evidence-driven dynamic graph retrieval · IDS / CTI",
-            lang,
-          )}</p>
-          <h1 class="edgr-brand">EDGR — {_t("Pipeline nghiên cứu A→Z", "Research pipeline A→Z", lang)}</h1>
-          <p class="meta">{health_line}
-            · <span class="progress-pill">{done}/{total} {_t('đã chạy', 'done', lang)}</span>
-          </p>
+        <div class="rx-hero">
+          {bg}
+          <div class="rx-hero-body">
+            <div>
+              <p class="rx-kicker">{_t(
+                "Truy hồi đồ thị động dựa trên bằng chứng · IDS / CTI",
+                "Evidence-driven dynamic graph retrieval · IDS / CTI",
+                lang,
+              )}</p>
+              <h1 class="rx-title">EDGR</h1>
+              <p class="rx-desc">{desc}</p>
+              <p class="rx-meta">{_t("Pipeline nghiên cứu A→Z", "Research pipeline A→Z", lang)} · {health_line}</p>
+            </div>
+            <div class="rx-aside">
+              <div class="rx-progress">{_t(
+                f"Đã chạy {done}/{total} công việc",
+                f"Ran {done}/{total} tasks",
+                lang,
+              )}</div>
+            </div>
+          </div>
         </div>
         """,
+        unsafe_allow_html=True,
+    )
+
+
+def _step_rail_html(
+    lang: str,
+    steps: list[dict[str, Any]],
+    active: int,
+    completed: set[int],
+) -> None:
+    """Horizontal step cards matching React StepRail (query-param navigation)."""
+    chips: list[str] = []
+    overview_color = STEP_COLORS[0]
+    ov_active = active == 0
+    ov_cls = "rx-chip overview active" if ov_active else "rx-chip overview"
+    ov_icon_color = "#ffffff" if ov_active else overview_color
+    chips.append(
+        f'<a class="{ov_cls}" href="?step=0" style="--step-color:{overview_color}">'
+        f'<span class="rx-chip-head">'
+        f'<span class="rx-icon" style="background:{overview_color}18;border-color:{overview_color}55">'
+        f"{_step_icon_svg(0, ov_icon_color)}</span>"
+        f'<span class="rx-num">{0}</span></span>'
+        f'<span class="rx-label">{_t("Tổng quan", "Overview", lang)}</span></a>'
+    )
+    for s in steps:
+        sid = int(s["id"])
+        color = STEP_COLORS.get(sid, "#0d7377")
+        title = str(s.get("title") if lang == "vi" else s.get("title_en") or "")
+        title_esc = (
+            title.replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+        )
+        badge = s.get("badge") if lang == "vi" else (s.get("badge_en") or s.get("badge"))
+        is_active = active == sid
+        cls = "rx-chip active" if is_active else "rx-chip"
+        if sid in completed and not is_active:
+            cls += " done"
+        badge_html = (
+            f'<span class="rx-mini">{str(badge).replace("<", "&lt;")}</span>' if badge else ""
+        )
+        icon_color = "#ffffff" if is_active else color
+        chips.append(
+            f'<a class="{cls}" href="?step={sid}" style="--step-color:{color}" title="{title_esc}">'
+            f'<span class="rx-chip-head">'
+            f'<span class="rx-icon" style="background:{color}18;border-color:{color}55">'
+            f"{_step_icon_svg(sid, icon_color)}</span>"
+            f'<span class="rx-num">{sid}</span></span>'
+            f'<span class="rx-label">{title_esc}</span>{badge_html}</a>'
+        )
+    st.markdown(
+        f'<div class="rx-rail-wrap"><nav class="rx-rail">{"".join(chips)}</nav></div>',
         unsafe_allow_html=True,
     )
 
@@ -1506,58 +1840,36 @@ def main() -> None:
         f"{len(steps)} steps · {stats.nodes} nodes · {len(core['vector_store'].chunks)} evidence",
         lang,
     )
-    # Count unique step completions (any task cached for that step)
+    # Sync step from React-style rail links (?step=N)
+    try:
+        qp_step = st.query_params.get("step")
+        if qp_step is not None:
+            sid = int(str(qp_step))
+            if sid != st.session_state.step_id:
+                st.session_state.step_id = sid
+                st.session_state.task_id = STEP_OVERVIEW
+                st.session_state.last_payload = None
+    except (TypeError, ValueError):
+        pass
+
+    # Task progress (matches React 0/N công việc)
+    progress_total = sum(len(s.get("tasks") or []) for s in steps)
+    progress_done = len(st.session_state.result_cache)
     completed_steps = set()
     for key in st.session_state.result_cache:
         try:
             completed_steps.add(int(str(key).split(":", 1)[0]))
         except ValueError:
             pass
-    _hero(lang, health_line, done=len(completed_steps), total=len(steps))
-
-    # Top step rail (closer to React StepRail) + sidebar
-    st.markdown('<div class="step-rail-top">', unsafe_allow_html=True)
-    rail_cols = st.columns(min(9, len(steps) + 1))
-    # Overview button
-    with rail_cols[0]:
-        if st.button("0", key="rail_0", help=_t("Tổng quan", "Overview", lang), use_container_width=True):
-            st.session_state.step_id = 0
-            st.session_state.task_id = STEP_OVERVIEW
-            st.session_state.last_payload = None
-            st.rerun()
-    for i, s in enumerate(steps[:8]):
-        sid = int(s["id"])
-        with rail_cols[(i + 1) % len(rail_cols)]:
-            mark = "✓" if sid in completed_steps else str(sid)
-            if st.button(
-                mark,
-                key=f"rail_{sid}",
-                help=(s.get("title") if lang == "vi" else s.get("title_en")),
-                use_container_width=True,
-                type="primary" if st.session_state.step_id == sid else "secondary",
-            ):
-                st.session_state.step_id = sid
-                st.session_state.task_id = STEP_OVERVIEW
-                st.session_state.last_payload = None
-                st.rerun()
-    if len(steps) > 8:
-        rail2 = st.columns(min(8, len(steps) - 8))
-        for i, s in enumerate(steps[8:]):
-            sid = int(s["id"])
-            with rail2[i % len(rail2)]:
-                mark = "✓" if sid in completed_steps else str(sid)
-                if st.button(
-                    mark,
-                    key=f"rail2_{sid}",
-                    help=(s.get("title") if lang == "vi" else s.get("title_en")),
-                    use_container_width=True,
-                    type="primary" if st.session_state.step_id == sid else "secondary",
-                ):
-                    st.session_state.step_id = sid
-                    st.session_state.task_id = STEP_OVERVIEW
-                    st.session_state.last_payload = None
-                    st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+    topic = _pick(definition, "topic_vi", "topic", lang, "")
+    _hero(
+        lang,
+        health_line,
+        done=progress_done,
+        total=max(progress_total, 1),
+        topic=topic,
+    )
+    _step_rail_html(lang, steps, st.session_state.step_id, completed_steps)
 
     # Sidebar step rail
     st.sidebar.markdown("---")
@@ -1590,6 +1902,7 @@ def main() -> None:
         st.session_state.step_id = choice
         st.session_state.task_id = STEP_OVERVIEW
         st.session_state.last_payload = None
+        st.query_params["step"] = str(choice)
         st.rerun()
 
     st.sidebar.markdown("---")
