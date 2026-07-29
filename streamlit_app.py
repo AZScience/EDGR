@@ -722,13 +722,16 @@ def _init_state() -> None:
     ss.setdefault("lang", "vi")
     # Prefer React whenever we can embed it (local FastAPI or public URL).
     public_ui = _public_ui_url()
-    default_mode = "react" if (public_ui or not _is_streamlit_cloud()) else "native"
+    if public_ui:
+        default_mode = "react"
+    elif _is_streamlit_cloud():
+        # Cloud: show React setup guide by default (native cannot be 100% local).
+        default_mode = "react"
+    else:
+        default_mode = "react"
     ss.setdefault("ui_mode", default_mode)
     if public_ui:
         ss.ui_mode = "react"
-    elif _is_streamlit_cloud():
-        # Cloud without public UI URL cannot reach localhost FastAPI.
-        ss.ui_mode = "native"
     ss.setdefault("step_id", 0)
     ss.setdefault("task_id", STEP_OVERVIEW)
     ss.setdefault("result_cache", {})
@@ -836,48 +839,66 @@ def _embed_iframe(src: str) -> None:
 
 def page_react_setup(lang: str) -> None:
     """Cloud without EDGR_PUBLIC_UI_URL — explain how to get pixel-perfect React."""
-    st.title("EDGR — React (giống local)")
+    st.title(_t("Cần host React giống local", "Host React to match local", lang))
     st.error(
         _t(
-            "Streamlit Cloud không chạy được FastAPI localhost. "
-            "Để UI giống hệt React local, hãy host API + `/ui/` công khai rồi gắn secret.",
-            "Streamlit Cloud cannot reach a localhost FastAPI. "
-            "To match the local React UI, host API + `/ui/` publicly and set a secret.",
+            "Không thể chỉnh Streamlit native cho giống 100% React. "
+            "Muốn giống hoàn toàn local → phải iframe SPA React thật từ URL công khai.",
+            "Streamlit native cannot be 100% identical to React. "
+            "For a perfect match, iframe the real React SPA from a public URL.",
             lang,
         )
     )
     st.markdown(
         _t(
             """
-### Cách làm (pixel-perfect)
+### Cách làm (giống local 100%)
 
-1. Build React: `cd frontend && npm run build`
-2. Deploy Docker (file `Dockerfile` ở root) lên **Railway / Render / Fly.io**  
-   → nhận URL kiểu `https://edgr-xxxx.onrender.com`
-3. Kiểm tra: mở `https://…/ui/` phải thấy đúng UI React local
-4. Trên Streamlit Cloud → **Settings → Secrets**:
+**A. Deploy API + React `/ui/` (một lần)**
+
+1. Vào [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**
+2. Connect repo `AZScience/EDGR`, branch `kiemtranoibo` (file `render.yaml` đã có sẵn)
+3. Deploy service `edgr-api-ui` → nhận URL dạng `https://edgr-api-ui-xxxx.onrender.com`
+4. Kiểm tra:
+   - `https://…/ui/` → phải **y hệt** UI React local
+   - `https://…/api/health` → `{"status":"ok",…}`
+
+**B. Gắn vào Streamlit Cloud**
+
+App settings → **Secrets**:
 ```toml
-EDGR_PUBLIC_UI_URL = "https://edgr-xxxx.onrender.com/ui/"
+EDGR_PUBLIC_UI_URL = "https://edgr-api-ui-xxxx.onrender.com/ui/"
 ```
-5. Reboot app → Streamlit sẽ iframe đúng SPA React (cùng CSS/layout/chức năng)
+→ **Reboot** app Streamlit → sẽ nhúng đúng SPA React (banner, tab cha/con, CSS — như local).
+
+> Local vẫn dùng FastAPI `:8016/ui/` tự động — không cần secret.
 """,
             """
-### How to get pixel-perfect React
+### How to match local 100%
 
-1. Build React: `cd frontend && npm run build`
-2. Deploy the root `Dockerfile` to **Railway / Render / Fly.io**  
-   → get a URL like `https://edgr-xxxx.onrender.com`
-3. Check: open `https://…/ui/` — must match local React
-4. Streamlit Cloud → **Settings → Secrets**:
+**A. Deploy API + React `/ui/` (once)**
+
+1. Open [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**
+2. Connect `AZScience/EDGR`, branch `kiemtranoibo` (`render.yaml` is in the repo)
+3. Deploy `edgr-api-ui` → URL like `https://edgr-api-ui-xxxx.onrender.com`
+4. Check:
+   - `https://…/ui/` → must match local React
+   - `https://…/api/health` → `{"status":"ok",…}`
+
+**B. Wire Streamlit Cloud**
+
+App settings → **Secrets**:
 ```toml
-EDGR_PUBLIC_UI_URL = "https://edgr-xxxx.onrender.com/ui/"
+EDGR_PUBLIC_UI_URL = "https://edgr-api-ui-xxxx.onrender.com/ui/"
 ```
-5. Reboot — Streamlit iframes the real React SPA
+→ **Reboot** Streamlit → iframes the real React SPA (same as local).
+
+> Local still auto-uses FastAPI `:8016/ui/` — no secret needed.
 """,
             lang,
         )
     )
-    if st.button(_t("Tạm dùng Streamlit native", "Use native Streamlit for now", lang)):
+    if st.button(_t("Tạm dùng Streamlit native (không giống 100%)", "Use native Streamlit (not 100%)", lang)):
         st.session_state.ui_mode = "native"
         st.rerun()
 
@@ -2143,29 +2164,29 @@ def main() -> None:
             )
         )
     elif on_cloud:
-        # No public UI yet — default native, but allow choosing React to see setup guide
+        # Without public React host, prefer setup guide (pixel-perfect path)
         mode = st.sidebar.radio(
             _t("Chế độ UI", "UI mode", lang),
-            options=["native", "react"],
+            options=["react", "native"],
             format_func=lambda m: _t(
-                "Streamlit native (tạm)",
-                "Streamlit native (temporary)",
+                "React giống local 100% (cần Render)",
+                "React = local 100% (needs Render)",
                 lang,
             )
-            if m == "native"
+            if m == "react"
             else _t(
-                "React giống local (cần host /ui/)",
-                "React like local (needs hosted /ui/)",
+                "Streamlit native (không giống 100%)",
+                "Streamlit native (not 100%)",
                 lang,
             ),
-            index=0 if st.session_state.ui_mode == "native" else 1,
+            index=0 if st.session_state.ui_mode != "native" else 1,
             key="ui_mode_radio_cloud",
         )
         st.session_state.ui_mode = mode
         st.sidebar.caption(
             _t(
-                "Muốn y hệt React: deploy Dockerfile → Secrets EDGR_PUBLIC_UI_URL",
-                "For pixel-perfect React: deploy Dockerfile → Secrets EDGR_PUBLIC_UI_URL",
+                "Giống hoàn toàn local chỉ khi có Secrets EDGR_PUBLIC_UI_URL.",
+                "Exact local match only with Secrets EDGR_PUBLIC_UI_URL.",
                 lang,
             )
         )

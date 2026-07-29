@@ -51,50 +51,20 @@ POST /api/app/alerts
 
 Mỗi tab cha/con (trừ Step 16 app) có khung học thuật: CSDL · Mô hình toán · Mô hình thuật toán · Mô hình hoạt động · Trích dẫn · Minh chứng · Nhận định đánh giá.
 
-## Streamlit
+## Streamlit — giống local React 100%
 
-**Mục tiêu:** UI **giống hệt React local** → Streamlit chỉ iframe SPA thật (không mock widget).
+Streamlit **widget native không bao giờ** bằng React local (banner, tab cha/con, CSS).
 
-### Local (pixel-perfect)
+**Cách đúng (pixel-perfect):**
 
-```powershell
-cd d:\DemoTiensi\frontend
-npx vite build
+1. Deploy `render.yaml` / `Dockerfile` lên [Render](https://dashboard.render.com) (Blueprint, branch `kiemtranoibo`)
+2. Mở `https://YOUR-HOST/ui/` — phải giống React local
+3. Streamlit Cloud → Secrets:
+   ```toml
+   EDGR_PUBLIC_UI_URL = "https://YOUR-HOST/ui/"
+   ```
+4. Reboot → Streamlit chỉ iframe SPA React thật
 
-cd d:\DemoTiensi\backend
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8016
+**Local:** FastAPI `:8016/ui/` + Streamlit embed (không cần secret).
 
-cd d:\DemoTiensi
-python -m streamlit run streamlit_app.py --server.address 127.0.0.1 --server.port 8501
-```
-
-- Streamlit (React iframe): http://127.0.0.1:8501  
-- React trực tiếp: http://127.0.0.1:8016/ui/ hoặc Vite http://127.0.0.1:5180  
-- API docs: http://127.0.0.1:8016/docs  
-
-### Streamlit Cloud — giống React local (bắt buộc host `/ui/` công khai)
-
-Streamlit Cloud **không** mở được `127.0.0.1`. Cần 2 bước:
-
-**1) Deploy FastAPI + React (`Dockerfile` ở root)** lên Railway / Render / Fly:
-
-```powershell
-cd d:\DemoTiensi\frontend
-npx vite build
-# Commit frontend/dist nếu chưa có, rồi deploy Docker image từ root Dockerfile
-```
-
-Kiểm tra: `https://YOUR-HOST/ui/` phải giống UI React local, `https://YOUR-HOST/api/health` → `ok`.
-
-**2) Streamlit Cloud → Settings → Secrets:**
-
-```toml
-EDGR_PUBLIC_UI_URL = "https://YOUR-HOST/ui/"
-```
-
-Reboot app → Streamlit nhúng đúng SPA React (cùng CSS/layout/API).
-
-> Python trên Cloud: Advanced settings chọn **3.11 hoặc 3.12** (tránh 3.14).  
-> Fallback tạm: sidebar «Streamlit native» nếu chưa có `EDGR_PUBLIC_UI_URL`.
-
-Ví dụ secrets: xem `.streamlit/secrets.toml.example`.
+Chi tiết / fallback native: xem mục Streamlit bên dưới trong lịch sử README cũ hoặc trang hướng dẫn trong app Cloud.

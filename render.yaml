@@ -1,0 +1,18 @@
+# Render Blueprint — deploy FastAPI + React /ui/ (pixel-perfect SPA)
+# https://dashboard.render.com → New → Blueprint → connect AZScience/EDGR (branch kiemtranoibo)
+#
+# After deploy, set Streamlit Cloud Secrets:
+#   EDGR_PUBLIC_UI_URL = "https://<this-service>.onrender.com/ui/"
+
+services:
+  - type: web
+    name: edgr-api-ui
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    branch: kiemtranoibo
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: "8000"
