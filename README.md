@@ -50,3 +50,26 @@ POST /api/app/alerts
 ```
 
 Mỗi tab cha/con (trừ Step 16 app) có khung học thuật: CSDL · Mô hình toán · Mô hình thuật toán · Mô hình hoạt động · Trích dẫn · Minh chứng · Nhận định đánh giá.
+
+## Streamlit (cùng core Python)
+
+UI Streamlit gọi trực tiếp `pipeline_service` / `ids_cti_app.analyze` (không qua FastAPI).
+
+```powershell
+cd d:\DemoTiensi
+python -m pip install -r requirements.txt
+python -m streamlit run streamlit_app.py --server.address 127.0.0.1 --server.port 8501
+```
+
+- Local: http://127.0.0.1:8501  
+- Hoặc: `.\scripts\start-streamlit.ps1`
+
+### Deploy Streamlit Community Cloud
+
+1. Repo: https://github.com/AZScience/EDGR (branch `kiemtranoibo` hoặc `main`)
+2. [share.streamlit.io](https://share.streamlit.io) → **New app**
+3. Main file: `streamlit_app.py`
+4. Python requirements: `requirements.txt` (root)
+5. Deploy
+
+Gợi ý: tab **Live IDS/CTI** cho demo nhanh; bước 9–11 (evaluate / ablation) có thể chậm trên free tier.
