@@ -217,11 +217,27 @@ LATEX_HINT = re.compile(r"(\$.*\$|\\frac|\\sum|O\(|\\approx|T\(n\)|=O)")
 
 
 def _is_streamlit_cloud() -> bool:
-    return bool(
-        os.getenv("STREAMLIT_SHARING_MODE")
-        or os.getenv("STREAMLIT_CLOUD")
-        or os.getenv("STREAMLIT_RUNTIME")
-    )
+    """Detect Streamlit Community Cloud (env vars alone are unreliable)."""
+    if os.getenv("STREAMLIT_SHARING_MODE") or os.getenv("STREAMLIT_CLOUD"):
+        return True
+    # Cloud clones into /mount/src/<repo> and runs as adminuser.
+    if Path("/mount/src").is_dir():
+        return True
+    if os.getenv("USER") == "adminuser" or os.getenv("HOME", "").startswith("/home/adminuser"):
+        return True
+    # Hostname / URL hints when available.
+    host = (os.getenv("HOSTNAME") or os.getenv("STREAMLIT_SERVER_BASE_URL_PATH") or "").lower()
+    if "streamlit.app" in host or "streamlitcloud" in host:
+        return True
+    try:
+        headers = getattr(getattr(st, "context", None), "headers", None)
+        if headers:
+            raw = str(headers.get("host") or headers.get("Host") or "").lower()
+            if "streamlit.app" in raw:
+                return True
+    except Exception:  # noqa: BLE001
+        pass
+    return False
 
 CUSTOM_CSS = """
 <style>
@@ -421,6 +437,9 @@ def _init_state() -> None:
     ss = st.session_state
     ss.setdefault("lang", "vi")
     ss.setdefault("ui_mode", "native" if _is_streamlit_cloud() else "react")  # react | native
+    # Cloud cannot expose localhost FastAPI to the browser — always force native.
+    if _is_streamlit_cloud():
+        ss.ui_mode = "native"
     ss.setdefault("step_id", 0)
     ss.setdefault("task_id", STEP_OVERVIEW)
     ss.setdefault("result_cache", {})
@@ -472,16 +491,6 @@ def _ensure_backend() -> bool:
 
 def page_react_embed(lang: str) -> None:
     """Fullscreen iframe of the real React SPA (same CSS/layout/behavior)."""
-    if _is_streamlit_cloud():
-        st.info(
-            _t(
-                "Streamlit Cloud không public FastAPI `/ui/`, nên app tự chuyển sang giao diện Streamlit native.",
-                "Streamlit Cloud cannot expose the FastAPI `/ui/` app, so this deployment uses the native Streamlit UI.",
-                lang,
-            )
-        )
-        return
-
     st.markdown(
         """
         <style>
@@ -1430,6 +1439,7 @@ def page_ids_cti(core: dict[str, Any], lang: str) -> None:
 
 def main() -> None:
     _init_state()
+    on_cloud = _is_streamlit_cloud()
 
     lang = st.sidebar.radio(
         _t("Ngôn ngữ", "Language", st.session_state.lang),
@@ -1441,28 +1451,38 @@ def main() -> None:
     )
     st.session_state.lang = lang
 
-    mode = st.sidebar.radio(
-        _t("Chế độ UI", "UI mode", lang),
-        options=["react", "native"],
-        format_func=lambda m: _t(
-            "React gốc (y hệt SPA)",
-            "Real React (pixel-perfect SPA)",
-            lang,
+    if on_cloud:
+        mode = "native"
+        st.session_state.ui_mode = "native"
+        st.sidebar.caption(
+            _t(
+                "Streamlit Cloud: dùng UI native (React iframe cần FastAPI localhost — không public được).",
+                "Streamlit Cloud: native UI only (React iframe needs local FastAPI — not publicly reachable).",
+                lang,
+            )
         )
-        if m == "react"
-        else _t("Streamlit native (gần đúng)", "Streamlit native (approximate)", lang),
-        index=0 if st.session_state.ui_mode == "react" else 1,
-        key="ui_mode_radio",
-    )
-    st.session_state.ui_mode = mode
-
-    st.sidebar.caption(
-        _t(
-            "Mặc định nhúng React qua iframe FastAPI `/ui/` — layout/CSS/chức năng như bản cũ.",
-            "Default embeds React via FastAPI `/ui/` iframe — same layout/CSS/behavior as the SPA.",
-            lang,
+    else:
+        mode = st.sidebar.radio(
+            _t("Chế độ UI", "UI mode", lang),
+            options=["react", "native"],
+            format_func=lambda m: _t(
+                "React gốc (y hệt SPA)",
+                "Real React (pixel-perfect SPA)",
+                lang,
+            )
+            if m == "react"
+            else _t("Streamlit native (gần đúng)", "Streamlit native (approximate)", lang),
+            index=0 if st.session_state.ui_mode == "react" else 1,
+            key="ui_mode_radio",
         )
-    )
+        st.session_state.ui_mode = mode
+        st.sidebar.caption(
+            _t(
+                "Mặc định nhúng React qua iframe FastAPI `/ui/` — layout/CSS/chức năng như bản cũ.",
+                "Default embeds React via FastAPI `/ui/` iframe — same layout/CSS/behavior as the SPA.",
+                lang,
+            )
+        )
 
     if mode == "react":
         page_react_embed(lang)
