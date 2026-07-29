@@ -63,15 +63,19 @@ Vercel chỉ host **React**. FastAPI vẫn cần host riêng (Render/Railway/Fly
 
 ### 2) UI trên Vercel
 
-1. [vercel.com](https://vercel.com) → Add New Project → import `AZScience/EDGR`
-2. **Root Directory:** `frontend`
-3. Framework: Vite (đọc `frontend/vercel.json`)
+Repo root có `vercel.json` (ép **Vite**, không phải FastAPI).
+
+1. [vercel.com](https://vercel.com) → Add New Project → import `AZScience/EDGR`, branch `kiemtranoibo`
+2. Framework Preset: **Vite** (không chọn FastAPI)
+3. Root Directory: để trống (dùng `vercel.json` root) **hoặc** đặt `frontend`
 4. Environment Variables:
    ```
    VITE_API_URL=https://YOUR-RENDER-HOST.onrender.com
    ```
    (không có `/` cuối; không dùng URL Streamlit)
 5. Deploy → mở `https://….vercel.app` — giao diện giống local, gọi API qua Render
+
+Nếu lỗi *No FastAPI entrypoint…*: Settings → General → Framework = **Vite**, Root Directory = `frontend`, rồi Redeploy.
 
 **Lưu ý:** Free Render có thể sleep; lần gọi API đầu có thể chậm ~30–60s.
 
