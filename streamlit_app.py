@@ -8,6 +8,7 @@ Fallback: native Streamlit panels (approximate parity only).
 from __future__ import annotations
 
 import base64
+import html
 import json
 import os
 import re
@@ -1413,7 +1414,7 @@ def _step_rail_html(
     active: int,
     completed: set[int],
 ) -> None:
-    """React-like horizontal step cards (scroll) — st.button keeps same-page session."""
+    """React-like step cards: fixed 128×104, even height, no mid-word breaks."""
     items: list[dict[str, Any]] = [
         {
             "id": 0,
@@ -1437,102 +1438,170 @@ def _step_rail_html(
             }
         )
 
+    n = len(items)
+    rail_min = n * 136  # 128px card + gap
     st.markdown(
-        """
+        f"""
         <style>
-          .st-key-edgr_step_rail [data-testid="stHorizontalBlock"] {
+          /* Match React .step-chip: 128×104, horizontal scroll, even heights */
+          .st-key-edgr_step_rail [data-testid="stHorizontalBlock"] {{
             flex-wrap: nowrap !important;
+            align-items: stretch !important;
             overflow-x: auto !important;
             gap: 8px !important;
-            padding: 2px 2px 10px !important;
+            padding: 4px 2px 12px !important;
             scrollbar-width: thin;
-          }
-          .st-key-edgr_step_rail [data-testid="column"] {
+            min-width: 100%;
+          }}
+          .st-key-edgr_step_rail [data-testid="stHorizontalBlock"] > div {{
+            min-width: {rail_min}px !important;
+          }}
+          .st-key-edgr_step_rail [data-testid="column"] {{
             flex: 0 0 128px !important;
             width: 128px !important;
             min-width: 128px !important;
-          }
-          .st-key-edgr_step_rail [data-testid="column"] button {
-            width: 100% !important;
-            min-height: 2.6rem !important;
-            white-space: normal !important;
-            font-size: 0.68rem !important;
-            font-weight: 600 !important;
-            line-height: 1.2 !important;
-            border-radius: 0 0 12px 12px !important;
-            margin-top: 0 !important;
-          }
-          .rx-card-head {
-            border-radius: 12px 12px 0 0;
-            padding: 8px 8px 4px;
+            max-width: 128px !important;
+            position: relative !important;
+            height: 104px !important;
+            min-height: 104px !important;
+          }}
+          .st-key-edgr_step_rail [data-testid="column"] > div {{
+            height: 100%;
+          }}
+          .rx-chip {{
+            width: 128px;
+            min-height: 104px;
+            height: 104px;
+            box-sizing: border-box;
             border: 1px solid;
-            border-bottom: none;
+            border-radius: 12px;
+            padding: 8px 8px 6px;
             display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.92);
+          }}
+          .rx-chip.active {{
+            color: #f8fafc;
+          }}
+          .rx-chip .chip-head {{
+            display: flex;
+            width: 100%;
             align-items: center;
             justify-content: space-between;
-            min-height: 40px;
-            box-sizing: border-box;
-          }
-          .rx-card-head .num {
+            gap: 6px;
+            flex-shrink: 0;
+          }}
+          .rx-chip .num {{
             font-family: "IBM Plex Mono", monospace;
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: 800;
             line-height: 1;
-          }
-          .rx-card-badge {
+            letter-spacing: -0.03em;
+          }}
+          .rx-chip .badge-slot {{
+            height: 16px;
+            max-width: 100%;
+            overflow: hidden;
+            flex-shrink: 0;
+          }}
+          .rx-chip .mini-badge {{
             display: inline-block;
-            margin: 0 0 2px;
+            max-width: 100%;
             font-size: 0.58rem;
             background: #c45c26;
             color: #fff;
             border-radius: 999px;
             padding: 1px 6px;
-            max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-          }
+          }}
+          .rx-chip.active .mini-badge {{
+            background: rgba(255,255,255,0.92);
+            color: #0f172a;
+          }}
+          .rx-chip .label {{
+            font-size: 0.68rem;
+            font-weight: 600;
+            line-height: 1.25;
+            width: 100%;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+          }}
+          /* Invisible hit-target over each card (same-page session) */
+          .st-key-edgr_step_rail [data-testid="column"] .stButton {{
+            position: absolute !important;
+            inset: 0 !important;
+            z-index: 2 !important;
+            margin: 0 !important;
+          }}
+          .st-key-edgr_step_rail [data-testid="column"] .stButton > button {{
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 104px !important;
+            padding: 0 !important;
+            opacity: 0.01 !important;
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+          }}
         </style>
         """,
         unsafe_allow_html=True,
     )
 
     with st.container(key="edgr_step_rail"):
-        cols = st.columns(len(items))
+        cols = st.columns(n)
         for col, item in zip(cols, items):
             sid = int(item["id"])
             color = str(item["color"])
             title = str(item["title"])
-            short = title if len(title) <= 28 else title[:26] + "…"
+            title_esc = html.escape(title)
             is_active = active == sid
             done = sid in completed and sid != 0
             icon_color = "#ffffff" if is_active else color
-            head_bg = color if is_active else "rgba(255,255,255,0.92)"
-            head_border = color if is_active else f"{color}55"
+            chip_bg = color if is_active else "rgba(255,255,255,0.92)"
+            border = color if is_active else f"{color}59"
             num_color = "#fff" if is_active else color
             dash = "dashed" if item.get("overview") else "solid"
             badge = item.get("badge")
+            badge_html = ""
+            if badge:
+                b = str(badge)
+                badge_short = b if len(b) <= 16 else b[:14] + "…"
+                badge_html = (
+                    f'<span class="mini-badge" title="{html.escape(b)}">'
+                    f"{html.escape(badge_short)}</span>"
+                )
+            label_txt = ("✓ " if done and not is_active else "") + title
+            active_cls = " active" if is_active else ""
             with col:
                 st.markdown(
                     f"""
-                    <div class="rx-card-head" style="background:{head_bg};border-color:{head_border};border-style:{dash}">
-                      <span>{_step_icon_svg(sid, icon_color, 18)}</span>
-                      <span class="num" style="color:{num_color}">{sid}</span>
+                    <div class="rx-chip{active_cls}" style="background:{chip_bg};border-color:{border};border-style:{dash}">
+                      <div class="chip-head">
+                        <span>{_step_icon_svg(sid, icon_color, 18)}</span>
+                        <span class="num" style="color:{num_color}">{sid}</span>
+                      </div>
+                      <div class="badge-slot">{badge_html}</div>
+                      <div class="label" style="color:{'#f8fafc' if is_active else '#0f172a'}" title="{title_esc}">{html.escape(label_txt)}</div>
                     </div>
                     """,
                     unsafe_allow_html=True,
                 )
-                if badge:
-                    st.markdown(
-                        f'<div class="rx-card-badge" title="{badge}">{badge}</div>',
-                        unsafe_allow_html=True,
-                    )
-                btn_label = ("✓ " if done and not is_active else "") + short
                 if st.button(
-                    btn_label,
+                    f"step {sid}",
                     key=f"rail_btn_{sid}",
                     use_container_width=True,
-                    type="primary" if is_active else "secondary",
                     help=title,
                 ) and not is_active:
                     _goto_step(sid)

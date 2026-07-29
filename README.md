@@ -51,20 +51,40 @@ POST /api/app/alerts
 
 Mỗi tab cha/con (trừ Step 16 app) có khung học thuật: CSDL · Mô hình toán · Mô hình thuật toán · Mô hình hoạt động · Trích dẫn · Minh chứng · Nhận định đánh giá.
 
-## Streamlit — giống local React 100%
+## Deploy Vercel (UI giống local) + Render (API)
 
-Streamlit **widget native không bao giờ** bằng React local (banner, tab cha/con, CSS).
+Vercel chỉ host **React**. FastAPI vẫn cần host riêng (Render/Railway/Fly).
 
-**Cách đúng (pixel-perfect):**
+### 1) API trên Render
 
-1. Deploy `render.yaml` / `Dockerfile` lên [Render](https://dashboard.render.com) (Blueprint, branch `kiemtranoibo`)
-2. Mở `https://YOUR-HOST/ui/` — phải giống React local
-3. Streamlit Cloud → Secrets:
-   ```toml
-   EDGR_PUBLIC_UI_URL = "https://YOUR-HOST/ui/"
+1. [Render](https://dashboard.render.com) → New → Blueprint → repo `AZScience/EDGR`, branch `kiemtranoibo` (`render.yaml`)
+2. Sau khi lên: ghi lại URL, ví dụ `https://edgr-api-ui.onrender.com`
+3. Kiểm tra: `https://…onrender.com/api/health` và `https://…onrender.com/ui/`
+
+### 2) UI trên Vercel
+
+1. [vercel.com](https://vercel.com) → Add New Project → import `AZScience/EDGR`
+2. **Root Directory:** `frontend`
+3. Framework: Vite (đọc `frontend/vercel.json`)
+4. Environment Variables:
    ```
-4. Reboot → Streamlit chỉ iframe SPA React thật
+   VITE_API_URL=https://YOUR-RENDER-HOST.onrender.com
+   ```
+   (không có `/` cuối; không dùng URL Streamlit)
+5. Deploy → mở `https://….vercel.app` — giao diện giống local, gọi API qua Render
+
+**Lưu ý:** Free Render có thể sleep; lần gọi API đầu có thể chậm ~30–60s.
+
+### Cách khác (một URL, không cần Vercel)
+
+Chỉ dùng Render Docker: mở `https://YOUR-HOST.onrender.com/ui/` (UI + API cùng host).
+
+## Streamlit (tuỳ chọn)
+
+Streamlit widget native **không** bằng React. Để iframe SPA:
+
+```toml
+EDGR_PUBLIC_UI_URL = "https://YOUR-HOST.onrender.com/ui/"
+```
 
 **Local:** FastAPI `:8016/ui/` + Streamlit embed (không cần secret).
-
-Chi tiết / fallback native: xem mục Streamlit bên dưới trong lịch sử README cũ hoặc trang hướng dẫn trong app Cloud.
