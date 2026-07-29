@@ -79,4 +79,7 @@ python -m streamlit run streamlit_app.py --server.address 127.0.0.1 --server.por
 2. [share.streamlit.io](https://share.streamlit.io) → **New app**
 3. Main file: `streamlit_app.py`
 4. Python requirements: `requirements.txt` (root)
-5. Deploy — mở sidebar chọn **Streamlit native**
+5. **Advanced settings → Python version: chọn 3.11 hoặc 3.12** (không dùng 3.14 — `numpy`/`scikit-learn` dễ treo lúc `uv pip install`)
+6. Deploy — Cloud tự dùng **Streamlit native** (React iframe cần FastAPI localhost, không public được)
+
+> `runtime.txt` / `.python-version` **không** đổi Python trên Community Cloud — chỉ đổi trong dashboard Settings → Advanced.
