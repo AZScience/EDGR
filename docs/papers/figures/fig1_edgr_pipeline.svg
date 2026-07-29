@@ -1,0 +1,25 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="960" height="280" viewBox="0 0 960 280" role="img" aria-label="EDGR six-stage pipeline">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f2a3d"/>
+      <stop offset="100%" stop-color="#1a4a5c"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#d7e6ea"/></marker>
+  </defs>
+  <rect width="960" height="280" fill="url(#bg)"/>
+  <text x="28" y="36" fill="#e8f3f5" font-family="Georgia, serif" font-size="18" font-weight="700">Figure 1. EDGR pipeline (φ1–φ6) with ρ-gate abstain</text>
+  <g font-family="Segoe UI, Helvetica, sans-serif" font-size="12" fill="#0f2a3d">
+    <rect x="24" y="70" width="130" height="88" rx="6" fill="#cfe8ef"/><text x="89" y="102" text-anchor="middle" font-weight="700">φ1</text><text x="89" y="122" text-anchor="middle">Entity</text><text x="89" y="138" text-anchor="middle">extraction</text>
+    <rect x="176" y="70" width="130" height="88" rx="6" fill="#b9dde8"/><text x="241" y="102" text-anchor="middle" font-weight="700">φ2</text><text x="241" y="122" text-anchor="middle">Multi-hop</text><text x="241" y="138" text-anchor="middle">expansion</text>
+    <rect x="328" y="70" width="130" height="88" rx="6" fill="#a5d2e0"/><text x="393" y="102" text-anchor="middle" font-weight="700">φ3</text><text x="393" y="122" text-anchor="middle">Temporal</text><text x="393" y="138" text-anchor="middle">filter</text>
+    <rect x="480" y="70" width="130" height="88" rx="6" fill="#91c7d8"/><text x="545" y="102" text-anchor="middle" font-weight="700">φ4</text><text x="545" y="122" text-anchor="middle">Evidence</text><text x="545" y="138" text-anchor="middle">ranking</text>
+    <rect x="632" y="70" width="130" height="88" rx="6" fill="#7dbcd0"/><text x="697" y="102" text-anchor="middle" font-weight="700">φ5</text><text x="697" y="122" text-anchor="middle">Trust / risk</text><text x="697" y="138" text-anchor="middle">scoring</text>
+    <rect x="784" y="70" width="152" height="88" rx="6" fill="#f4c95f"/><text x="860" y="102" text-anchor="middle" font-weight="700">φ6</text><text x="860" y="122" text-anchor="middle">ρ-gate +</text><text x="860" y="138" text-anchor="middle">Trusted answer</text>
+  </g>
+  <g stroke="#d7e6ea" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <line x1="154" y1="114" x2="172" y2="114"/><line x1="306" y1="114" x2="324" y2="114"/><line x1="458" y1="114" x2="476" y2="114"/><line x1="610" y1="114" x2="628" y2="114"/><line x1="762" y1="114" x2="780" y2="114"/>
+  </g>
+  <text x="28" y="210" fill="#d7e6ea" font-family="Segoe UI, Helvetica, sans-serif" font-size="13">Inputs: query q · Dynamic CTI KG G_t · evidence store D · threshold θ=0.55 · top-k=5</text>
+  <text x="28" y="236" fill="#d7e6ea" font-family="Segoe UI, Helvetica, sans-serif" font-size="13">Outputs: grounded answer a with evidence E*  OR  Abstain (unknown CVE / high risk / empty safe set)</text>
+  <text x="28" y="262" fill="#9eb8c0" font-family="Segoe UI, Helvetica, sans-serif" font-size="11">Trust τ = 0.30R + 0.20F + 0.25G + 0.25S · Risk ρ = 1 − τ · Emit iff ρ(E*) &lt; θ and identifiers supported</text>
+</svg>

@@ -1,0 +1,23 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="920" height="400" viewBox="0 0 920 400" role="img" aria-label="Ablation deltas">
+  <rect width="920" height="400" fill="#f7fafb"/>
+  <text x="28" y="36" fill="#0f2a3d" font-family="Georgia, serif" font-size="18" font-weight="700">Figure 3. Ablation: Δ mean faithfulness vs full EDGR (n=52)</text>
+  <text x="28" y="58" fill="#4a6670" font-family="Segoe UI" font-size="12">Negative Δ ⇒ removed component contributes to dataset-mean faithfulness</text>
+  <line x1="280" y1="90" x2="280" y2="340" stroke="#334" stroke-width="1.5"/>
+  <line x1="120" y1="215" x2="860" y2="215" stroke="#889" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="280" y="360" text-anchor="middle" font-family="Segoe UI" font-size="11" fill="#556">0 (full)</text>
+  <!-- scale: 0 at x=280; -0.10 -> left 200px => 20px per 0.01 -->
+  <!-- w/o Temporal -0.0003; Graph -0.1035; Trust -0.0205; Ranking +0.0014; Scoring 0 -->
+  <g font-family="Segoe UI" font-size="13" fill="#0f2a3d">
+    <text x="260" y="118" text-anchor="end">w/o Temporal</text>
+    <rect x="279.4" y="102" width="1.2" height="22" fill="#7aa0ad"/><text x="290" y="118" fill="#4a6670">−0.000</text>
+    <text x="260" y="168" text-anchor="end">w/o Graph</text>
+    <rect x="73" y="152" width="207" height="22" fill="#c45c46"/><text x="60" y="168" text-anchor="end" font-weight="700">−0.104</text>
+    <text x="260" y="218" text-anchor="end">w/o Trust</text>
+    <rect x="239" y="202" width="41" height="22" fill="#e2a93b"/><text x="226" y="218" text-anchor="end">−0.021</text>
+    <text x="260" y="268" text-anchor="end">w/o Ranking</text>
+    <rect x="280" y="252" width="3" height="22" fill="#7aa0ad"/><text x="292" y="268" fill="#4a6670">+0.001</text>
+    <text x="260" y="318" text-anchor="end">w/o Scoring</text>
+    <rect x="279" y="302" width="2" height="22" fill="#7aa0ad"/><text x="292" y="318" fill="#4a6670">0.000</text>
+  </g>
+  <text x="28" y="386" fill="#4a6670" font-family="Segoe UI" font-size="11">Largest drop when removing graph expansion — supports H3 for relational CTI questions.</text>
+</svg>

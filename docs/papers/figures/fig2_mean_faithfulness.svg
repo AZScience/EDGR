@@ -1,0 +1,35 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420" role="img" aria-label="Mean faithfulness comparison">
+  <rect width="920" height="420" fill="#f7fafb"/>
+  <text x="28" y="36" fill="#0f2a3d" font-family="Georgia, serif" font-size="18" font-weight="700">Figure 2. Mean faithfulness by method (n=52, OOD abstain excluded)</text>
+  <text x="28" y="58" fill="#4a6670" font-family="Segoe UI, Helvetica, sans-serif" font-size="12">Bootstrap 95% CI · Non-EDGR methods are family stubs on the same evidence store</text>
+  <!-- axes -->
+  <line x1="120" y1="360" x2="880" y2="360" stroke="#334" stroke-width="1.5"/>
+  <line x1="120" y1="90" x2="120" y2="360" stroke="#334" stroke-width="1.5"/>
+  <text x="40" y="230" fill="#334" font-family="Segoe UI" font-size="12" transform="rotate(-90 40 230)">Faithfulness</text>
+  <!-- y ticks 0,0.25,0.5,0.75,1 -->
+  <g font-family="Segoe UI" font-size="11" fill="#556">
+    <text x="108" y="364" text-anchor="end">0.00</text>
+    <text x="108" y="297" text-anchor="end">0.25</text>
+    <text x="108" y="229" text-anchor="end">0.50</text>
+    <text x="108" y="162" text-anchor="end">0.75</text>
+    <text x="108" y="94" text-anchor="end">1.00</text>
+  </g>
+  <g stroke="#ccd" stroke-dasharray="3 4">
+    <line x1="120" y1="292.5" x2="880" y2="292.5"/>
+    <line x1="120" y1="225" x2="880" y2="225"/>
+    <line x1="120" y1="157.5" x2="880" y2="157.5"/>
+    <line x1="120" y1="90" x2="880" y2="90"/>
+  </g>
+  <!-- bars: scale y = 360 - v*270 -->
+  <!-- RAG 0.5575 -> 209.475; GraphRAG 0.5451; LightRAG 0.8417; HippoRAG 0.7423; Self 0.4714; CRAG 0.4709; EDGR 0.6976 -->
+  <g font-family="Segoe UI" font-size="11">
+    <rect x="150" y="209.5" width="70" height="150.5" fill="#7aa0ad"/><text x="185" y="380" text-anchor="middle">RAG</text><text x="185" y="202" text-anchor="middle" fill="#0f2a3d">0.56</text>
+    <rect x="250" y="212.8" width="70" height="147.2" fill="#7aa0ad"/><text x="285" y="380" text-anchor="middle">Graph</text><text x="285" y="205" text-anchor="middle" fill="#0f2a3d">0.55</text>
+    <rect x="350" y="132.7" width="70" height="227.3" fill="#b8c9cf"/><text x="385" y="380" text-anchor="middle">Light†</text><text x="385" y="126" text-anchor="middle" fill="#0f2a3d">0.84</text>
+    <rect x="450" y="159.6" width="70" height="200.4" fill="#7aa0ad"/><text x="485" y="380" text-anchor="middle">Hippo</text><text x="485" y="152" text-anchor="middle" fill="#0f2a3d">0.74</text>
+    <rect x="550" y="232.7" width="70" height="127.3" fill="#7aa0ad"/><text x="585" y="380" text-anchor="middle">Self</text><text x="585" y="226" text-anchor="middle" fill="#0f2a3d">0.47</text>
+    <rect x="650" y="232.9" width="70" height="127.1" fill="#7aa0ad"/><text x="685" y="380" text-anchor="middle">CRAG</text><text x="685" y="226" text-anchor="middle" fill="#0f2a3d">0.47</text>
+    <rect x="750" y="171.6" width="70" height="188.4" fill="#e2a93b"/><text x="785" y="380" text-anchor="middle" font-weight="700">EDGR</text><text x="785" y="164" text-anchor="middle" font-weight="700" fill="#0f2a3d">0.70</text>
+  </g>
+  <text x="28" y="408" fill="#4a6670" font-family="Segoe UI" font-size="11">† LightRAG family stub can score high on the automatic proxy without a Trusted Answer (ρ-gate/abstain) contract.</text>
+</svg>

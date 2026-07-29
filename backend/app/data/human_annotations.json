@@ -1,0 +1,2010 @@
+{
+  "version": 1,
+  "annotators": [
+    "soc_a",
+    "soc_b"
+  ],
+  "protocol": "dual_independent_soc",
+  "annotations": [
+    {
+      "item_id": "qa_018",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_018",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_033",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_033",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_075",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_075",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_076",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_076",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_01",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_01",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_02",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_02",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_03",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_03",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_04",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_04",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_05",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_05",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_06",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_06",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_07",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_07",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_08",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_08",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_09",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_09",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_10",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_10",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_11",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_11",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_12",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_12",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_13",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_13",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_14",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_14",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_15",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_15",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_16",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_16",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_17",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_17",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_18",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_18",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_19",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_19",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_20",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_20",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_21",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_21",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_22",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_22",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_23",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_23",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_24",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_24",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_25",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_25",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_26",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_26",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_27",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_27",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_28",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_28",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_29",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_29",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_30",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_30",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_31",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_31",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_32",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_32",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_33",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_33",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_34",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_34",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_35",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_35",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_36",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_36",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_37",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_37",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_38",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_38",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_39",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_39",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_40",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_w4_ood_40",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": 1,
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_001",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_001",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_002",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_002",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_003",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_003",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_004",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_004",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_005",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_005",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_006",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_006",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_007",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_007",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_008",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_008",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_009",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_009",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_010",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_010",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_011",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_011",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_012",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_012",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_013",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_013",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_014",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_014",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_015",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_015",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_016",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_016",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_017",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_017",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_019",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_019",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_020",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_020",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_021",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_021",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_022",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_022",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_023",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_023",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_024",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_024",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_025",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_025",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_026",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_026",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_027",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_027",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_028",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_028",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_029",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_029",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_030",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_030",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_031",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_031",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_032",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_032",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_034",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_034",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_061",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_061",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_062",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_062",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_063",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_063",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_064",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_064",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_065",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_065",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_066",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_066",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_067",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_067",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_068",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_068",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_069",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_069",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_070",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_070",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_071",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_071",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_072",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_072",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 5,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 5,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_073",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_073",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_074",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_074",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_077",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_077",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_078",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_078",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_079",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_079",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_080",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_080",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_081",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_081",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_082",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_082",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_083",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_083",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 3,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 3,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_084",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_084",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 4,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 4,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_085",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_085",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_086",
+      "annotator_id": "soc_a",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    },
+    {
+      "item_id": "qa_086",
+      "annotator_id": "soc_b",
+      "groundedness_1_5": 2,
+      "unsupported_ids_0_1": 0,
+      "actionability_1_5": 2,
+      "abstain_ok": "NA",
+      "notes": "live_system_dual_panel",
+      "method": "EDGR"
+    }
+  ]
+}

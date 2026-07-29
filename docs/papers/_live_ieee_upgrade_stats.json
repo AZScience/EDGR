@@ -1,0 +1,327 @@
+{
+  "scale": {
+    "qa": 104,
+    "evidence": 60,
+    "kg": {
+      "nodes": 46,
+      "edges": 50,
+      "entity_types": {
+        "technique": 17,
+        "tactic": 5,
+        "cve": 6,
+        "actor": 4,
+        "malware": 4,
+        "software": 3,
+        "concept": 5,
+        "dataset": 2
+      },
+      "last_updated": "2026-07-21T13:52:12.298297+00:00",
+      "sources": [
+        "MITRE ATT&CK",
+        "CVE/NVD",
+        "CWE/CAPEC",
+        "CISA/CERT",
+        "Threat Feeds",
+        "IDS/NIDS"
+      ]
+    }
+  },
+  "eval": {
+    "accuracy": 0.4519,
+    "precision": 0.168,
+    "recall": 0.3884,
+    "f1": 0.2297,
+    "faithfulness": 0.5994,
+    "hallucination_rate": 0.4006,
+    "p_at_k": 0.3577,
+    "r_at_k": 0.8093,
+    "mrr": 0.6915,
+    "avg_latency_ms": 115.5795
+  },
+  "paired": {
+    "n": 104,
+    "faithfulness_ci_a": {
+      "mean": 0.5994,
+      "ci_low": 0.5623,
+      "ci_high": 0.6357,
+      "n": 104,
+      "n_boot": 1000,
+      "alpha": 0.05
+    },
+    "faithfulness_ci_b": {
+      "mean": 0.5123,
+      "ci_low": 0.473,
+      "ci_high": 0.5506,
+      "n": 104,
+      "n_boot": 1000,
+      "alpha": 0.05
+    },
+    "delta_faithfulness_ci": {
+      "mean": 0.0871,
+      "ci_low": 0.0574,
+      "ci_high": 0.1229,
+      "n": 104,
+      "n_boot": 1000,
+      "alpha": 0.05
+    },
+    "wilcoxon_signed_rank": {
+      "n_nonzero": 104,
+      "w_positive": 4354.0,
+      "w_negative": 1106.0,
+      "statistic_w": 1106.0,
+      "z_approx": -5.2663,
+      "p_value_approx": 0.0,
+      "significant_0_05": true,
+      "median_delta": 0.067,
+      "note_en": "Wilcoxon signed-rank on faithfulness deltas (normal approx); primary H1 test alongside bootstrap CI.",
+      "note_vi": "Wilcoxon signed-rank trên delta faithfulness (xấp xỉ chuẩn); bổ sung CI bootstrap cho H1."
+    },
+    "mcnemar": {
+      "b10_edgr_only": 9,
+      "b01_baseline_only": 12,
+      "discordant": 21,
+      "n": 104,
+      "p_value_exact": 0.6636,
+      "significant_0_05": false,
+      "note_en": "McNemar exact test on per-QA correctness proxy (not human labels).",
+      "note_vi": "Kiểm định McNemar exact trên proxy đúng/sai theo từng QA (chưa phải nhãn người)."
+    }
+  },
+  "means": {
+    "n_questions": 100,
+    "excluded_ood_abstain": true,
+    "methods": [
+      {
+        "method": "RAG",
+        "mean_faithfulness": 0.5096,
+        "mean_hallucination": 0.4904,
+        "faith_ci": {
+          "mean": 0.5096,
+          "ci_low": 0.4731,
+          "ci_high": 0.5514,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 100,
+        "family_stub": true
+      },
+      {
+        "method": "GraphRAG",
+        "mean_faithfulness": 0.3254,
+        "mean_hallucination": 0.6746,
+        "faith_ci": {
+          "mean": 0.3254,
+          "ci_low": 0.2967,
+          "ci_high": 0.3558,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 100,
+        "family_stub": true
+      },
+      {
+        "method": "LightRAG",
+        "mean_faithfulness": 0.7744,
+        "mean_hallucination": 0.2256,
+        "faith_ci": {
+          "mean": 0.7744,
+          "ci_low": 0.7401,
+          "ci_high": 0.8096,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 100,
+        "family_stub": true
+      },
+      {
+        "method": "HippoRAG",
+        "mean_faithfulness": 0.4621,
+        "mean_hallucination": 0.5379,
+        "faith_ci": {
+          "mean": 0.4621,
+          "ci_low": 0.4373,
+          "ci_high": 0.4868,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 100,
+        "family_stub": true
+      },
+      {
+        "method": "Self-RAG",
+        "mean_faithfulness": 0.3327,
+        "mean_hallucination": 0.6673,
+        "faith_ci": {
+          "mean": 0.3327,
+          "ci_low": 0.2953,
+          "ci_high": 0.373,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 100,
+        "family_stub": true
+      },
+      {
+        "method": "Corrective-RAG",
+        "mean_faithfulness": 0.3453,
+        "mean_hallucination": 0.6547,
+        "faith_ci": {
+          "mean": 0.3453,
+          "ci_low": 0.3111,
+          "ci_high": 0.3854,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 100,
+        "family_stub": true
+      },
+      {
+        "method": "EDGR",
+        "mean_faithfulness": 0.5834,
+        "mean_hallucination": 0.4166,
+        "faith_ci": {
+          "mean": 0.5834,
+          "ci_low": 0.5483,
+          "ci_high": 0.6197,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 100,
+        "family_stub": false
+      }
+    ],
+    "disclosure_vi": "Mọi baseline ≠ EDGR là family stub trên cùng evidence store.",
+    "disclosure_en": "All non-EDGR methods are family stubs on the same evidence store."
+  },
+  "ablation": {
+    "n_questions": 100,
+    "variants": [
+      {
+        "variant": "full",
+        "mean_faithfulness": 0.5834,
+        "ci": {
+          "mean": 0.5834,
+          "ci_low": 0.5483,
+          "ci_high": 0.6197,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": 0.0,
+        "n": 100
+      },
+      {
+        "variant": "w/o Temporal",
+        "mean_faithfulness": 0.566,
+        "ci": {
+          "mean": 0.566,
+          "ci_low": 0.5375,
+          "ci_high": 0.5975,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": -0.0173,
+        "n": 100
+      },
+      {
+        "variant": "w/o Graph",
+        "mean_faithfulness": 0.4952,
+        "ci": {
+          "mean": 0.4952,
+          "ci_low": 0.4564,
+          "ci_high": 0.5336,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": -0.0882,
+        "n": 100
+      },
+      {
+        "variant": "w/o Trust Score",
+        "mean_faithfulness": 0.5678,
+        "ci": {
+          "mean": 0.5678,
+          "ci_low": 0.5389,
+          "ci_high": 0.5999,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": -0.0156,
+        "n": 100
+      },
+      {
+        "variant": "w/o Evidence Ranking",
+        "mean_faithfulness": 0.5849,
+        "ci": {
+          "mean": 0.5849,
+          "ci_low": 0.5495,
+          "ci_high": 0.6214,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": 0.0015,
+        "n": 100
+      },
+      {
+        "variant": "w/o Hallucination Scoring",
+        "mean_faithfulness": 0.5834,
+        "ci": {
+          "mean": 0.5834,
+          "ci_low": 0.5483,
+          "ci_high": 0.6197,
+          "n": 100,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": 0.0,
+        "n": 100
+      }
+    ],
+    "hypothesis_link": "H3",
+    "interpretation_vi": "ΔFaith âm khi gỡ module ⇒ module đóng góp nhân quả ở mức trung bình dataset (không chỉ một query).",
+    "interpretation_en": "Negative ΔFaith when removing a module ⇒ causal contribution at dataset-mean level (not a single query)."
+  },
+  "ood": {
+    "n": 4,
+    "abstain_rate": 1.0,
+    "rows": [
+      {
+        "id": "qa_018",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-99999. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_033",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-11111. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_075",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-55555. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_076",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-66666. EDGR abstains instead of guessing. CVE không có trong"
+      }
+    ],
+    "hypothesis_link": "H2",
+    "pass_h2": true
+  }
+}

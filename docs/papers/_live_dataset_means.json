@@ -1,0 +1,622 @@
+﻿{
+    "step_id":  9,
+    "step_title":  "Thá»±c nghiá»m \u0026 So sÃ¡nh",
+    "step_title_en":  "Experiments \u0026 Comparison",
+    "task_id":  "dataset_means",
+    "task_title":  "Trung bÃ¬nh dataset + CI (má»i method)",
+    "task_title_en":  "Dataset means + CI (all methods)",
+    "action":  "compare_dataset",
+    "elapsed_ms":  1127.2,
+    "computation_kind":  "live_metrics",
+    "real_computation":  true,
+    "result":  {
+                   "n_questions":  8,
+                   "excluded_ood_abstain":  true,
+                   "methods":  [
+                                   {
+                                       "method":  "RAG",
+                                       "mean_faithfulness":  0.6337,
+                                       "mean_hallucination":  0.3663,
+                                       "faith_ci":  {
+                                                        "mean":  0.6337,
+                                                        "ci_low":  0.4966,
+                                                        "ci_high":  0.783,
+                                                        "n":  8,
+                                                        "n_boot":  1000,
+                                                        "alpha":  0.05
+                                                    },
+                                       "n":  8,
+                                       "family_stub":  true
+                                   },
+                                   {
+                                       "method":  "GraphRAG",
+                                       "mean_faithfulness":  0.6098,
+                                       "mean_hallucination":  0.3902,
+                                       "faith_ci":  {
+                                                        "mean":  0.6098,
+                                                        "ci_low":  0.5163,
+                                                        "ci_high":  0.6996,
+                                                        "n":  8,
+                                                        "n_boot":  1000,
+                                                        "alpha":  0.05
+                                                    },
+                                       "n":  8,
+                                       "family_stub":  true
+                                   },
+                                   {
+                                       "method":  "LightRAG",
+                                       "mean_faithfulness":  0.8552,
+                                       "mean_hallucination":  0.1448,
+                                       "faith_ci":  {
+                                                        "mean":  0.8552,
+                                                        "ci_low":  0.7639,
+                                                        "ci_high":  0.9448,
+                                                        "n":  8,
+                                                        "n_boot":  1000,
+                                                        "alpha":  0.05
+                                                    },
+                                       "n":  8,
+                                       "family_stub":  true
+                                   },
+                                   {
+                                       "method":  "HippoRAG",
+                                       "mean_faithfulness":  0.8215,
+                                       "mean_hallucination":  0.1785,
+                                       "faith_ci":  {
+                                                        "mean":  0.8215,
+                                                        "ci_low":  0.7332,
+                                                        "ci_high":  0.9038,
+                                                        "n":  8,
+                                                        "n_boot":  1000,
+                                                        "alpha":  0.05
+                                                    },
+                                       "n":  8,
+                                       "family_stub":  true
+                                   },
+                                   {
+                                       "method":  "Self-RAG",
+                                       "mean_faithfulness":  0.5613,
+                                       "mean_hallucination":  0.4387,
+                                       "faith_ci":  {
+                                                        "mean":  0.5613,
+                                                        "ci_low":  0.4405,
+                                                        "ci_high":  0.6697,
+                                                        "n":  8,
+                                                        "n_boot":  1000,
+                                                        "alpha":  0.05
+                                                    },
+                                       "n":  8,
+                                       "family_stub":  true
+                                   },
+                                   {
+                                       "method":  "Corrective-RAG",
+                                       "mean_faithfulness":  0.5765,
+                                       "mean_hallucination":  0.4235,
+                                       "faith_ci":  {
+                                                        "mean":  0.5765,
+                                                        "ci_low":  0.4722,
+                                                        "ci_high":  0.6717,
+                                                        "n":  8,
+                                                        "n_boot":  1000,
+                                                        "alpha":  0.05
+                                                    },
+                                       "n":  8,
+                                       "family_stub":  true
+                                   },
+                                   {
+                                       "method":  "EDGR",
+                                       "mean_faithfulness":  0.7594,
+                                       "mean_hallucination":  0.2406,
+                                       "faith_ci":  {
+                                                        "mean":  0.7594,
+                                                        "ci_low":  0.6427,
+                                                        "ci_high":  0.86,
+                                                        "n":  8,
+                                                        "n_boot":  1000,
+                                                        "alpha":  0.05
+                                                    },
+                                       "n":  8,
+                                       "family_stub":  false
+                                   }
+                               ],
+                   "disclosure_vi":  "Má»i baseline â  EDGR lÃ  family stub trÃªn cÃ¹ng evidence store.",
+                   "disclosure_en":  "All non-EDGR methods are family stubs on the same evidence store."
+               },
+    "result_review":  {
+                          "explain_vi":  "Báº£ng chi tiáº¿t bÃªn dÆ°á»i: methods.",
+                          "explain_en":  "Detail tables below: methods.",
+                          "bullets_vi":  [
+                                             "ÄÃ£ kiá»m chá»©ng runtime: 4/4 tiÃªu chÃ­ Äáº¡t.",
+                                             "Báº£ng chi tiáº¿t bÃªn dÆ°á»i: methods."
+                                         ],
+                          "bullets_en":  [
+                                             "Runtime verified: 4/4 criteria passed.",
+                                             "Detail tables below: methods."
+                                         ],
+                          "how_to_read_vi":  "CÃ¡ch Äá»c khoa há»c: (1) Nháº­n Äá»nh thiáº¿t káº¿ phÃ­a trÃªn; (2) checklist kiá»m chá»©ng runtime bÃªn dÆ°á»i; (3) tráº¡ng thÃ¡i tháº©m Äá»nh chuyÃªn gia (Îº) â bá» sung á» BÆ°á»c 10; (4) báº£ng/hÃ¬nh Káº¿t quáº£.",
+                          "how_to_read_en":  "Scientific reading: (1) Design assessment above; (2) runtime verification checklist below; (3) expert-review status (Îº) â complete in Step 10; (4) Results tables/figures.",
+                          "evidence":  {
+                                           "claim_vi":  "Minh chá»©ng runtime quan sÃ¡t ÄÆ°á»£c tá»« káº¿t quáº£ cháº¡y. Chi tiáº¿t tá»«ng báº£ng (giáº£i thÃ­ch Â· ÄÃ¡nh giÃ¡ Â· nháº­n Äá»nh) á» khá»i dá»¯ liá»u bÃªn dÆ°á»i: methods(n=7)",
+                                           "claim_en":  "Observable runtime evidence extracted from the run result. Per-table explain/evaluate/verdict are in the data block below: methods(n=7)",
+                                           "scalars":  {
+
+                                                       },
+                                           "collections":  [
+                                                               {
+                                                                   "field":  "methods",
+                                                                   "count":  7
+                                                               }
+                                                           ],
+                                           "has_evidence":  true,
+                                           "tables":  {
+                                                          "methods":  {
+                                                                          "field":  "methods",
+                                                                          "title_vi":  "Báº£ng methods (n=7)",
+                                                                          "title_en":  "Methods table (n=7)",
+                                                                          "explain_vi":  "Há» phÆ°Æ¡ng phÃ¡p baseline (RAG/GraphRAGâ¦) tá»« papers core.",
+                                                                          "explain_en":  "Baseline method families (RAG/GraphRAGâ¦) from core papers.",
+                                                                          "evaluate_vi":  "ÄÃ¡nh giÃ¡: inventory cÃ³ phá»§ Äá»§ há» so sÃ¡nh cho Step 9 khÃ´ng.",
+                                                                          "evaluate_en":  "Evaluate: whether the inventory covers families needed for Step 9.",
+                                                                          "verdict_vi":  "Nháº­n Äá»nh: á»n náº¿u count \u003e 0 vÃ  cÃ³ cáº£ RAG-family láº«n GraphRAG-family.",
+                                                                          "verdict_en":  "Verdict: sound if count \u003e 0 and both RAG- and GraphRAG-family appear."
+                                                                      },
+                                                          "_scalars":  {
+                                                                           "field":  "_scalars",
+                                                                           "title_vi":  "Báº£ng chá» sá» tÃ³m táº¯t",
+                                                                           "title_en":  "Summary metrics table",
+                                                                           "explain_vi":  "CÃ¡c chá» sá» scalar quan sÃ¡t ÄÆ°á»£c (Faith, Hall, count, %â¦). GiÃ¡ trá» 0â1 hiá»n thá» dáº¡ng %.",
+                                                                           "explain_en":  "Observed scalar metrics (Faith, Hall, count, %â¦). 0â1 values shown as %.",
+                                                                           "evaluate_vi":  "ÄÃ¡nh giÃ¡: hÆ°á»ng tá»t lÃ  Faithâ Hallâ; count/% khá»p má»¥c tiÃªu tab.",
+                                                                           "evaluate_en":  "Evaluate: good direction is Faithâ Hallâ; counts/% match the tab goal.",
+                                                                           "verdict_vi":  "Nháº­n Äá»nh: ÄÃ¢y lÃ  lá»p tÃ³m táº¯t â chi tiáº¿t náº±m á» cÃ¡c báº£ng bÃªn dÆ°á»i.",
+                                                                           "verdict_en":  "Verdict: this is the summary layer â details are in the tables below."
+                                                                       }
+                                                      }
+                                       },
+                          "tables":  {
+                                         "methods":  {
+                                                         "field":  "methods",
+                                                         "title_vi":  "Báº£ng methods (n=7)",
+                                                         "title_en":  "Methods table (n=7)",
+                                                         "explain_vi":  "Há» phÆ°Æ¡ng phÃ¡p baseline (RAG/GraphRAGâ¦) tá»« papers core.",
+                                                         "explain_en":  "Baseline method families (RAG/GraphRAGâ¦) from core papers.",
+                                                         "evaluate_vi":  "ÄÃ¡nh giÃ¡: inventory cÃ³ phá»§ Äá»§ há» so sÃ¡nh cho Step 9 khÃ´ng.",
+                                                         "evaluate_en":  "Evaluate: whether the inventory covers families needed for Step 9.",
+                                                         "verdict_vi":  "Nháº­n Äá»nh: á»n náº¿u count \u003e 0 vÃ  cÃ³ cáº£ RAG-family láº«n GraphRAG-family.",
+                                                         "verdict_en":  "Verdict: sound if count \u003e 0 and both RAG- and GraphRAG-family appear."
+                                                     },
+                                         "_scalars":  {
+                                                          "field":  "_scalars",
+                                                          "title_vi":  "Báº£ng chá» sá» tÃ³m táº¯t",
+                                                          "title_en":  "Summary metrics table",
+                                                          "explain_vi":  "CÃ¡c chá» sá» scalar quan sÃ¡t ÄÆ°á»£c (Faith, Hall, count, %â¦). GiÃ¡ trá» 0â1 hiá»n thá» dáº¡ng %.",
+                                                          "explain_en":  "Observed scalar metrics (Faith, Hall, count, %â¦). 0â1 values shown as %.",
+                                                          "evaluate_vi":  "ÄÃ¡nh giÃ¡: hÆ°á»ng tá»t lÃ  Faithâ Hallâ; count/% khá»p má»¥c tiÃªu tab.",
+                                                          "evaluate_en":  "Evaluate: good direction is Faithâ Hallâ; counts/% match the tab goal.",
+                                                          "verdict_vi":  "Nháº­n Äá»nh: ÄÃ¢y lÃ  lá»p tÃ³m táº¯t â chi tiáº¿t náº±m á» cÃ¡c báº£ng bÃªn dÆ°á»i.",
+                                                          "verdict_en":  "Verdict: this is the summary layer â details are in the tables below."
+                                                      }
+                                     },
+                          "assessment":  {
+                                             "strength":  "Nháº­n Äá»nh thiáº¿t káº¿ ÄÃ£ ÄÆ°á»£c Äá»i chiáº¿u runtime vÃ  cÃ³ há» trá»£ panel chuyÃªn gia (Îº).",
+                                             "strength_en":  "Design assessment cross-checked with runtime and supported by the expert panel (Îº).",
+                                             "limitation":  "ÄÃ£ kiá»m chá»©ng runtime: 4/4 tiÃªu chÃ­ Äáº¡t. Tháº©m Äá»nh chuyÃªn gia: Tháº©m Äá»nh chuyÃªn gia (panel SOC): Îºâ0.58, n_dual=30 â Äáº¡t ngÆ°á»¡ng demo. BÆ°á»c 10 â Human evaluation / PhiÃªn cháº¥m SOC Äá» bá» sung nhÃ£n chuyÃªn gia.",
+                                             "limitation_en":  "Runtime verified: 4/4 criteria passed. Expert review: Expert panel (SOC): Îºâ0.58, n_dual=30 â demo threshold met. Step 10 â Human evaluation / SOC rating session to add expert labels.",
+                                             "verdict":  "Äá»§ chuá»i khoa há»c thiáº¿t káº¿ â runtime â human-eval cho minh chá»©ng luáº­n Ã¡n/demo.",
+                                             "verdict_en":  "Full design â runtime â human-eval chain is adequate for thesis/demo evidence.",
+                                             "score_0_1":  0.9,
+                                             "evidence_vi":  [
+                                                                 "Khung nháº­n Äá»nh thiáº¿t káº¿ tá»n táº¡i â",
+                                                                 "CÃ³ quan sÃ¡t runtime sau Â«Cháº¡y cÃ´ng viá»c nÃ yÂ» â",
+                                                                 "Chá» sá» runtime há» trá»£ (hoáº·c phÃ¹ há»£p loáº¡i tab) â",
+                                                                 "CÃ³ hÃ¬nh/báº£ng minh chá»©ng gáº¯n káº¿t quáº£ â",
+                                                                 "Tháº©m Äá»nh chuyÃªn gia (panel SOC / Îº) â"
+                                                             ],
+                                             "evidence_en":  [
+                                                                 "Design assessment frame exists â",
+                                                                 "Runtime observations after Â«Run this taskÂ» â",
+                                                                 "Runtime metrics support (or fit the tab type) â",
+                                                                 "Figure/table evidence attached to the result â",
+                                                                 "Expert review (SOC panel / Îº) â"
+                                                             ],
+                                             "figures_vi":  [
+                                                                "HÃ¬nh/báº£ng runtime náº±m trong khá»i Káº¿t quáº£ (khÃ´ng nhÃºng láº¡i á» ÄÃ¢y)."
+                                                            ],
+                                             "figures_en":  [
+                                                                "Runtime figures/tables live in the Results block (not re-embedded here)."
+                                                            ],
+                                             "support_vi":  [
+                                                                "Checklist khoa há»c: 4/4 runtime Â· chuyÃªn gia=Äáº¡t.",
+                                                                "Chuá»i: Nháº­n Äá»nh thiáº¿t káº¿ â Cháº¡y â Checklist â (BÆ°á»c 10) Human-eval."
+                                                            ],
+                                             "support_en":  [
+                                                                "Scientific checklist: 4/4 runtime Â· expert=met.",
+                                                                "Chain: Design assessment â Run â Checklist â (Step 10) Human-eval."
+                                                            ],
+                                             "has_support":  true,
+                                             "verification_status":  "verified",
+                                             "expert_status":  "expert_supported"
+                                         },
+                          "scientific_verification":  {
+                                                          "kind":  "scientific_verification",
+                                                          "step_id":  9,
+                                                          "task_id":  "dataset_means",
+                                                          "runtime_status":  "verified",
+                                                          "runtime_status_vi":  "ÄÃ£ kiá»m chá»©ng runtime: 4/4 tiÃªu chÃ­ Äáº¡t",
+                                                          "runtime_status_en":  "Runtime verified: 4/4 criteria passed",
+                                                          "passed":  5,
+                                                          "total":  5,
+                                                          "runtime_passed":  4,
+                                                          "runtime_total":  4,
+                                                          "checks":  [
+                                                                         {
+                                                                             "id":  "design_frame",
+                                                                             "ok":  true,
+                                                                             "title_vi":  "Khung nháº­n Äá»nh thiáº¿t káº¿ tá»n táº¡i",
+                                                                             "title_en":  "Design assessment frame exists",
+                                                                             "detail_vi":  "Khá»i Â«Nháº­n Äá»nh thiáº¿t káº¿Â» phÃ­a trÃªn ÄÃ£ cÃ³ strength/verdict.",
+                                                                             "detail_en":  "The design assessment block above has strength/verdict."
+                                                                         },
+                                                                         {
+                                                                             "id":  "runtime_observed",
+                                                                             "ok":  true,
+                                                                             "title_vi":  "CÃ³ quan sÃ¡t runtime sau Â«Cháº¡y cÃ´ng viá»c nÃ yÂ»",
+                                                                             "title_en":  "Runtime observations after Â«Run this taskÂ»",
+                                                                             "detail_vi":  "Task ÄÃ£ sinh output/metric/báº£ng quan sÃ¡t ÄÆ°á»£c.",
+                                                                             "detail_en":  "Task produced observable output/metrics/tables."
+                                                                         },
+                                                                         {
+                                                                             "id":  "metrics_support",
+                                                                             "ok":  true,
+                                                                             "title_vi":  "Chá» sá» runtime há» trá»£ (hoáº·c phÃ¹ há»£p loáº¡i tab)",
+                                                                             "title_en":  "Runtime metrics support (or fit the tab type)",
+                                                                             "detail_vi":  "Äiá»m runtime tá»ng há»£p=0.680.",
+                                                                             "detail_en":  "Aggregate runtime score=0.680."
+                                                                         },
+                                                                         {
+                                                                             "id":  "figure_or_table",
+                                                                             "ok":  true,
+                                                                             "title_vi":  "CÃ³ hÃ¬nh/báº£ng minh chá»©ng gáº¯n káº¿t quáº£",
+                                                                             "title_en":  "Figure/table evidence attached to the result",
+                                                                             "detail_vi":  "ÄÃ£ cÃ³ viz/chart hoáº·c báº£ng collections.",
+                                                                             "detail_en":  "Viz/chart or collection tables present."
+                                                                         },
+                                                                         {
+                                                                             "id":  "expert_review",
+                                                                             "ok":  true,
+                                                                             "title_vi":  "Tháº©m Äá»nh chuyÃªn gia (panel SOC / Îº)",
+                                                                             "title_en":  "Expert review (SOC panel / Îº)",
+                                                                             "detail_vi":  "Tháº©m Äá»nh chuyÃªn gia (panel SOC): Îºâ0.58, n_dual=30 â Äáº¡t ngÆ°á»¡ng demo",
+                                                                             "detail_en":  "Expert panel (SOC): Îºâ0.58, n_dual=30 â demo threshold met"
+                                                                         }
+                                                                     ],
+                                                          "expert":  {
+                                                                         "status":  "expert_supported",
+                                                                         "status_vi":  "Tháº©m Äá»nh chuyÃªn gia (panel SOC): Îºâ0.58, n_dual=30 â Äáº¡t ngÆ°á»¡ng demo",
+                                                                         "status_en":  "Expert panel (SOC): Îºâ0.58, n_dual=30 â demo threshold met",
+                                                                         "kappa":  0.5789,
+                                                                         "n_dual":  30,
+                                                                         "meets_minimum":  true,
+                                                                         "kappa_report":  {
+                                                                                              "cohen_kappa_mean":  0.5789,
+                                                                                              "kappa_groundedness":  {
+                                                                                                                         "kappa":  0.3857,
+                                                                                                                         "p_o":  0.8,
+                                                                                                                         "p_e":  0.6744,
+                                                                                                                         "n":  30,
+                                                                                                                         "agree":  24,
+                                                                                                                         "formula":  "Îº=(p_o-p_e)/(1-p_e)"
+                                                                                                                     },
+                                                                                              "n_dual_items":  30,
+                                                                                              "interpretation":  "Îº\u003e0.6 thÆ°á»ng coi lÃ  thá»a thuáº­n khÃ¡âtá»t giá»¯a hai SOC annotator; bÃ¡o cÃ¡o kÃ¨m mean Likert groundedness/actionability."
+                                                                                          },
+                                                                         "next_step_vi":  "BÆ°á»c 10 â Human evaluation / PhiÃªn cháº¥m SOC Äá» bá» sung nhÃ£n chuyÃªn gia.",
+                                                                         "next_step_en":  "Step 10 â Human evaluation / SOC rating session to add expert labels.",
+                                                                         "jump":  {
+                                                                                      "step_id":  10,
+                                                                                      "task_id":  "human_eval"
+                                                                                  }
+                                                                     },
+                                                          "assessment_patch":  {
+                                                                                   "strength":  "Nháº­n Äá»nh thiáº¿t káº¿ ÄÃ£ ÄÆ°á»£c Äá»i chiáº¿u runtime vÃ  cÃ³ há» trá»£ panel chuyÃªn gia (Îº).",
+                                                                                   "strength_en":  "Design assessment cross-checked with runtime and supported by the expert panel (Îº).",
+                                                                                   "limitation":  "ÄÃ£ kiá»m chá»©ng runtime: 4/4 tiÃªu chÃ­ Äáº¡t. Tháº©m Äá»nh chuyÃªn gia: Tháº©m Äá»nh chuyÃªn gia (panel SOC): Îºâ0.58, n_dual=30 â Äáº¡t ngÆ°á»¡ng demo. BÆ°á»c 10 â Human evaluation / PhiÃªn cháº¥m SOC Äá» bá» sung nhÃ£n chuyÃªn gia.",
+                                                                                   "limitation_en":  "Runtime verified: 4/4 criteria passed. Expert review: Expert panel (SOC): Îºâ0.58, n_dual=30 â demo threshold met. Step 10 â Human evaluation / SOC rating session to add expert labels.",
+                                                                                   "verdict":  "Äá»§ chuá»i khoa há»c thiáº¿t káº¿ â runtime â human-eval cho minh chá»©ng luáº­n Ã¡n/demo.",
+                                                                                   "verdict_en":  "Full design â runtime â human-eval chain is adequate for thesis/demo evidence.",
+                                                                                   "score_0_1":  0.9,
+                                                                                   "verification_status":  "verified",
+                                                                                   "expert_status":  "expert_supported",
+                                                                                   "support_vi":  [
+                                                                                                      "Checklist khoa há»c: 4/4 runtime Â· chuyÃªn gia=Äáº¡t.",
+                                                                                                      "Chuá»i: Nháº­n Äá»nh thiáº¿t káº¿ â Cháº¡y â Checklist â (BÆ°á»c 10) Human-eval."
+                                                                                                  ],
+                                                                                   "support_en":  [
+                                                                                                      "Scientific checklist: 4/4 runtime Â· expert=met.",
+                                                                                                      "Chain: Design assessment â Run â Checklist â (Step 10) Human-eval."
+                                                                                                  ],
+                                                                                   "evidence_vi":  [
+                                                                                                       "Khung nháº­n Äá»nh thiáº¿t káº¿ tá»n táº¡i â",
+                                                                                                       "CÃ³ quan sÃ¡t runtime sau Â«Cháº¡y cÃ´ng viá»c nÃ yÂ» â",
+                                                                                                       "Chá» sá» runtime há» trá»£ (hoáº·c phÃ¹ há»£p loáº¡i tab) â",
+                                                                                                       "CÃ³ hÃ¬nh/báº£ng minh chá»©ng gáº¯n káº¿t quáº£ â",
+                                                                                                       "Tháº©m Äá»nh chuyÃªn gia (panel SOC / Îº) â"
+                                                                                                   ],
+                                                                                   "evidence_en":  [
+                                                                                                       "Design assessment frame exists â",
+                                                                                                       "Runtime observations after Â«Run this taskÂ» â",
+                                                                                                       "Runtime metrics support (or fit the tab type) â",
+                                                                                                       "Figure/table evidence attached to the result â",
+                                                                                                       "Expert review (SOC panel / Îº) â"
+                                                                                                   ]
+                                                                               },
+                                                          "protocol_vi":  "Giao thá»©c khoa há»c: (1) khung thiáº¿t káº¿ trÆ°á»c Run; (2) kiá»m chá»©ng runtime báº±ng checklist; (3) tháº©m Äá»nh chuyÃªn gia qua panel SOC / Cohenâs Îº (BÆ°á»c 10).",
+                                                          "protocol_en":  "Scientific protocol: (1) design frame before Run; (2) runtime verification checklist; (3) expert review via SOC panel / Cohenâs Îº (Step 10)."
+                                                      }
+                      },
+    "academic":  {
+                     "scope":  "task",
+                     "step_id":  9,
+                     "task_id":  "dataset_means",
+                     "title":  "Trung bÃ¬nh dataset + CI (má»i method)",
+                     "title_en":  "Dataset means + CI (all methods)",
+                     "purpose":  {
+                                     "vi":  "Trá»ng tÃ¢m tab: Â«Trung bÃ¬nh dataset + CI (má»i method)Â» â thá»±c hiá»n ÄÃºng cÃ´ng viá»c nÃ y.",
+                                     "en":  "Tab focus: Â«Dataset means + CI (all methods)Â» â execute this task only.",
+                                     "does_vi":  "Cháº¡y `dataset_means` â Äá»c káº¿t quáº£ runtime (khÃ´ng láº·p má»¥c tiÃªu cáº£ bÆ°á»c).",
+                                     "does_en":  "Run `dataset_means` â read the runtime result (not the whole-step goal)."
+                                 },
+                     "theory":  {
+                                    "name_vi":  "Trung bÃ¬nh dataset + CI",
+                                    "name_en":  "Dataset means + CI",
+                                    "what_vi":  "Mean faithfulness/hallucination trÃªn toÃ n bá» QA (trá»« OOD) kÃ¨m bootstrap CI; disclosure family stub.",
+                                    "what_en":  "Mean faithfulness/hallucination over all QA (excl. OOD) with bootstrap CIs; family-stub disclosure.",
+                                    "why_vi":  "Báº£ng so sÃ¡nh cÃ´ng báº±ng hÆ¡n single-query.",
+                                    "why_en":  "Fairer than single-query comparison tables.",
+                                    "ideas_vi":  [
+                                                     "dataset mean",
+                                                     "CI",
+                                                     "stub disclosure"
+                                                 ],
+                                    "ideas_en":  [
+                                                     "dataset mean",
+                                                     "CI",
+                                                     "stub disclosure"
+                                                 ],
+                                    "refs":  "",
+                                    "frame_vi":  "Khung lÃ½ thuyáº¿t há»c thuáº­t: Äá»nh nghÄ©a khoa há»c Â· giáº£ Äá»nh Â· láº­p luáº­n Â· related work",
+                                    "frame_en":  "Academic theory frame: scientific definition Â· assumptions Â· argument Â· related work",
+                                    "argument_vi":  "Láº­p luáº­n khoa há»c: Mean faithfulness/hallucination trÃªn toÃ n bá» QA (trá»« OOD) kÃ¨m bootstrap CI; disclosure family stub. Trong luáº­n Ã¡n EDGR, Äiá»u nÃ y quan trá»ng vÃ¬ Báº£ng so sÃ¡nh cÃ´ng báº±ng hÆ¡n single-query. Do ÄÃ³ tab nÃ y pháº£i lÃ m rÃµ vÃ  (khi cháº¡y) kiá»m chá»©ng: dataset mean; CI; stub disclosure. Khá»i MÃ´ hÃ¬nh toÃ¡n / Thuáº­t toÃ¡n bÃªn dÆ°á»i cá»¥ thá» hÃ³a giáº£ Äá»nh thÃ nh cÃ´ng thá»©c vÃ  thá»§ tá»¥c.",
+                                    "argument_en":  "Scientific argument: Mean faithfulness/hallucination over all QA (excl. OOD) with bootstrap CIs; family-stub disclosure. In the EDGR thesis this matters because Fairer than single-query comparison tables. Hence this tab must clarify and (when run) test: dataset mean; CI; stub disclosure. The Math / Algorithm blocks below turn assumptions into formulas and procedures.",
+                                    "assumptions_vi":  [
+                                                           "Giáº£ Äá»nh miá»n: bÃ i toÃ¡n gáº¯n IDS/CTI cÃ³ thá» neo báº±ng evidence + quan há» trÃªn KG.",
+                                                           "Giáº£ Äá»nh ÄÃ¡nh giÃ¡: Faith/Hall vÃ /hoáº·c P@kâMRR lÃ  proxy há»£p lá» cho cháº¥t lÆ°á»£ng grounded.",
+                                                           "Giáº£ Äá»nh kiá»m chá»©ng táº¡i tab: dataset mean"
+                                                       ],
+                                    "assumptions_en":  [
+                                                           "Domain assumption: IDS/CTI tasks can be grounded via evidence + KG relations.",
+                                                           "Evaluation assumption: Faith/Hall and/or P@kâMRR are valid proxies for grounded quality.",
+                                                           "Tab-level testable assumption: dataset mean"
+                                                       ],
+                                    "related_work":  [
+
+                                                     ],
+                                    "scope_vi":  "BÆ°á»c 9 Â· cÃ´ng viá»c `dataset_means`",
+                                    "scope_en":  "Step 9 Â· task `dataset_means`"
+                                },
+                     "goal":  "So sÃ¡nh EDGR vá»i há» RAG trÃªn cÃ¹ng truy váº¥n/dataset.",
+                     "goal_en":  "Compare EDGR with the RAG family on the same queries/dataset.",
+                     "blocks":  {
+                                    "csdl":  {
+                                                 "name":  "Experiment Ledger",
+                                                 "tables":  [
+                                                                "runs(method,query,faithfulness,hall_rate,p_at_k,mrr,latency)"
+                                                            ],
+                                                 "methods":  [
+                                                                 "RAG",
+                                                                 "GraphRAG",
+                                                                 "LightRAG",
+                                                                 "HippoRAG",
+                                                                 "Self-RAG",
+                                                                 "Corrective-RAG",
+                                                                 "EDGR"
+                                                             ],
+                                                 "name_vi":  "CSDL sá» thá»±c nghiá»m",
+                                                 "name_en":  "Experiment Ledger",
+                                                 "explain_vi":  "Ghi nháº­n má»i láº§n cháº¡y method vá»i metric thá»ng nháº¥t trÃªn cÃ¹ng q,D,G.",
+                                                 "explain_en":  "Logs each method run with unified metrics on the same q,D,G.",
+                                                 "role_vi":  "Báº±ng chá»©ng so sÃ¡nh cÃ´ng báº±ng EDGR vs baselines.",
+                                                 "role_en":  "Evidence for fair EDGR vs baseline comparison.",
+                                                 "tables_vi":  [
+                                                                   "runs(method,query,faith,hall,p_at_k,mrr,latency)"
+                                                               ],
+                                                 "tables_en":  [
+                                                                   "runs(method,query,faith,hall,p_at_k,mrr,latency)"
+                                                               ]
+                                             },
+                                    "mo_hinh_toan":  {
+                                                         "lang":  "vi-en",
+                                                         "formulas":  [
+                                                                          {
+                                                                              "id":  "delta",
+                                                                              "label_vi":  "ChÃªnh lá»ch so vá»i baseline",
+                                                                              "label_en":  "Delta versus baseline",
+                                                                              "latex":  "\\Delta_m=\\mathrm{Faith}(\\mathrm{EDGR})-\\mathrm{Faith}(m)",
+                                                                              "explain_vi":  "So cÃ¹ng query/dataset/KG; Î\u003e0 nghÄ©a lÃ  EDGR trung thá»±c hÆ¡n method m.",
+                                                                              "explain_en":  "Same query/dataset/KG; Î\u003e0 means EDGR is more faithful than method m.",
+                                                                              "variables":  [
+                                                                                                {
+                                                                                                    "symbol":  "m",
+                                                                                                    "vi":  "baseline",
+                                                                                                    "en":  "baseline method",
+                                                                                                    "domain":  "RAGâ¦CRAG",
+                                                                                                    "good":  ""
+                                                                                                },
+                                                                                                {
+                                                                                                    "symbol":  "\\Delta_m",
+                                                                                                    "vi":  "chÃªnh faithfulness",
+                                                                                                    "en":  "faithfulness delta",
+                                                                                                    "domain":  "",
+                                                                                                    "good":  "\u003e0 lÃ  tá»t cho EDGR"
+                                                                                                }
+                                                                                            ],
+                                                                              "optimize_vi":  "ThÃ nh cÃ´ng thá»±c nghiá»m khi Î_mâ¥0 trÃªn Äa sá» query vÃ  hallucination_rate(EDGR) tháº¥p hÆ¡n.",
+                                                                              "optimize_en":  "Experimental success when Î_mâ¥0 on most queries and EDGR hall. rate is lower."
+                                                                          }
+                                                                      ],
+                                                         "note_vi":  "",
+                                                         "note_en":  ""
+                                                     },
+                                    "mo_hinh_thuat_toan":  {
+                                                               "name":  "Controlled Baseline Comparison",
+                                                               "pseudocode":  [
+                                                                                  "For each method m",
+                                                                                  "Retrieve with m-policy",
+                                                                                  "Generate",
+                                                                                  "Score same metrics"
+                                                                              ],
+                                                               "note":  "KhÃ´ng degrade Äiá»m giáº£ / No artificial score degradation"
+                                                           },
+                                    "mo_hinh_hoat_dong":  {
+                                                              "flow":  [
+                                                                           "Fix query/dataset",
+                                                                           "Run each method",
+                                                                           "Aggregate table"
+                                                                       ],
+                                                              "kind":  "algorithm",
+                                                              "caption_vi":  "Luá»ng thá»±c thi thuáº­t toÃ¡n: cÃ¡c giai Äoáº¡n I/O quan sÃ¡t ÄÆ°á»£c khi cháº¡y.",
+                                                              "caption_en":  "Algorithm execution flow: observable I/O stages at runtime."
+                                                          },
+                                    "trich_dan":  [
+                                                      {
+                                                          "id":  "lewis2020rag",
+                                                          "text":  "Lewis et al. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. NeurIPS.",
+                                                          "doi":  "10.48550/arXiv.2005.11401",
+                                                          "year":  2020
+                                                      },
+                                                      {
+                                                          "id":  "edge2024graphrag",
+                                                          "text":  "Edge et al. (Microsoft Research) (2024). From Local to Global: A Graph RAG Approach to Query-Focused Summarization. arXiv.",
+                                                          "doi":  "10.48550/arXiv.2404.16130",
+                                                          "year":  2024
+                                                      },
+                                                      {
+                                                          "id":  "guo2024lightrag",
+                                                          "text":  "Guo et al. (2024). LightRAG: Simple and Fast Retrieval-Augmented Generation. arXiv.",
+                                                          "doi":  "10.48550/arXiv.2410.05779",
+                                                          "year":  2024
+                                                      },
+                                                      {
+                                                          "id":  "gutierrez2024hipporag",
+                                                          "text":  "GutiÃ©rrez et al. (2024). HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models. NeurIPS.",
+                                                          "doi":  "10.48550/arXiv.2405.14831",
+                                                          "year":  2024
+                                                      },
+                                                      {
+                                                          "id":  "asai2024selfrag",
+                                                          "text":  "Asai et al. (2024). Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection. ICLR.",
+                                                          "doi":  "10.48550/arXiv.2310.11511",
+                                                          "year":  2024
+                                                      },
+                                                      {
+                                                          "id":  "yan2024crag",
+                                                          "text":  "Yan et al. (2024). Corrective Retrieval Augmented Generation. SIGIR.",
+                                                          "doi":  "10.48550/arXiv.2401.15884",
+                                                          "year":  2024
+                                                      }
+                                                  ],
+                                    "minh_chung":  {
+                                                       "type":  "comparison_table",
+                                                       "claim":  "Minh chá»©ng runtime cá»§a tab Â«Trung bÃ¬nh dataset + CI (má»i method)Â»",
+                                                       "task":  "dataset_means",
+                                                       "step":  9,
+                                                       "claim_en":  "Runtime evidence for tab Â«Dataset means + CI (all methods)Â»",
+                                                       "live":  {
+                                                                    "live_system":  {
+                                                                                        "kg_nodes":  40,
+                                                                                        "kg_edges":  41,
+                                                                                        "evidence_chunks":  41,
+                                                                                        "qa_pairs":  54,
+                                                                                        "corpus_papers":  335,
+                                                                                        "last_run_keys":  [
+                                                                                                              "n_questions",
+                                                                                                              "excluded_ood_abstain",
+                                                                                                              "methods",
+                                                                                                              "disclosure_vi",
+                                                                                                              "disclosure_en"
+                                                                                                          ]
+                                                                                    },
+                                                                    "tab":  {
+                                                                                "step_id":  9,
+                                                                                "task_id":  "dataset_means"
+                                                                            },
+                                                                    "computed_at_runtime":  true
+                                                                },
+                                                       "logic_vi":  "Cháº¡y â thu tháº­p quan sÃ¡t â Äá»i chiáº¿u má»¥c tiÃªu tab (Purpose phÃ­a trÃªn).",
+                                                       "logic_en":  "Run â collect observations â compare with tab goal (Purpose above)."
+                                                   },
+                                    "nhan_dinh_danh_gia":  {
+                                                               "strength":  "Tab Â«Trung bÃ¬nh dataset + CI (má»i method)Â» cÃ³ CSDL, trÃ­ch dáº«n vÃ  ÄÆ°á»ng dáº«n minh chá»©ng gáº¯n thao tÃ¡c tab (má»¥c tiÃªu chi tiáº¿t xem khá»i Purpose â khÃ´ng láº·p á» ÄÃ¢y).",
+                                                               "limitation":  "ÄÃ£ kiá»m chá»©ng runtime: 4/4 tiÃªu chÃ­ Äáº¡t. Tháº©m Äá»nh chuyÃªn gia: Tháº©m Äá»nh chuyÃªn gia (panel SOC): Îºâ0.58, n_dual=30 â Äáº¡t ngÆ°á»¡ng demo. BÆ°á»c 10 â Human evaluation / PhiÃªn cháº¥m SOC Äá» bá» sung nhÃ£n chuyÃªn gia.",
+                                                               "verdict":  "Äá»§ khung logic Äá» cháº¡y Â«Trung bÃ¬nh dataset + CI (má»i method)Â» vÃ  káº¿t luáº­n dá»±a trÃªn minh chá»©ng quan sÃ¡t ÄÆ°á»£c.",
+                                                               "score_0_1":  0.81,
+                                                               "strength_en":  "Tab Â«Dataset means + CI (all methods)Â» has CSDL, citations, and an evidence path tied to the tab action (see Purpose for the goal text â not repeated here).",
+                                                               "limitation_en":  "Runtime verified: 4/4 criteria passed. Expert review: Expert panel (SOC): Îºâ0.58, n_dual=30 â demo threshold met. Step 10 â Human evaluation / SOC rating session to add expert labels.",
+                                                               "support_vi":  [
+                                                                                  "Sau khi Cháº¡y: checklist kiá»m chá»©ng xuáº¥t hiá»n á» Â«Nháº­n Äá»nh runtimeÂ».",
+                                                                                  "Dáº«n chá»©ng DOI: xem khá»i TrÃ­ch dáº«n phÃ­a trÃªn (6 má»¥c).",
+                                                                                  "Checklist khoa há»c: 3/4 runtime Â· chuyÃªn gia=Äáº¡t.",
+                                                                                  "Chuá»i: Nháº­n Äá»nh thiáº¿t káº¿ â Cháº¡y â Checklist â (BÆ°á»c 10) Human-eval.",
+                                                                                  "Checklist khoa há»c: 4/4 runtime Â· chuyÃªn gia=Äáº¡t."
+                                                                              ],
+                                                               "support_en":  [
+                                                                                  "After Run: the verification checklist appears under Â«Runtime assessmentÂ».",
+                                                                                  "DOI citations: see the Citations block above (6 items).",
+                                                                                  "Scientific checklist: 3/4 runtime Â· expert=met.",
+                                                                                  "Chain: Design assessment â Run â Checklist â (Step 10) Human-eval.",
+                                                                                  "Scientific checklist: 4/4 runtime Â· expert=met."
+                                                                              ],
+                                                               "has_support":  true,
+                                                               "verdict_en":  "Logically framed enough to run Â«Dataset means + CI (all methods)Â» and conclude from observable evidence.",
+                                                               "task_specialized":  true,
+                                                               "evidence_vi":  [
+                                                                                   "Claim thiáº¿t káº¿: Minh chá»©ng runtime cá»§a tab Â«Trung bÃ¬nh dataset + CI (má»i method)Â»",
+                                                                                   "Logic: Cháº¡y â thu tháº­p quan sÃ¡t â Äá»i chiáº¿u má»¥c tiÃªu tab (Purpose phÃ­a trÃªn).",
+                                                                                   "type Â· comparison_table",
+                                                                                   "task Â· dataset_means"
+                                                                               ],
+                                                               "evidence_en":  [
+                                                                                   "Design claim: Runtime evidence for tab Â«Dataset means + CI (all methods)Â»",
+                                                                                   "Logic: Run â collect observations â compare with tab goal (Purpose above).",
+                                                                                   "type Â· comparison_table",
+                                                                                   "task Â· dataset_means"
+                                                                               ],
+                                                               "figures_vi":  [
+                                                                                  "MÃ´ hÃ¬nh toÃ¡n phÃ­a trÃªn (1 cÃ´ng thá»©c): ChÃªnh lá»ch so vá»i baseline.",
+                                                                                  "Thuáº­t toÃ¡n: Â«Controlled Baseline ComparisonÂ» Â· 4 bÆ°á»c (khá»i Algorithm).",
+                                                                                  "Luá»ng váº­n hÃ nh: 3 bÆ°á»c (khá»i Operating model).",
+                                                                                  "CSDL: CSDL sá» thá»±c nghiá»m (khá»i Database)."
+                                                                              ],
+                                                               "figures_en":  [
+                                                                                  "Math model above (1 formulas): ChÃªnh lá»ch so vá»i baseline.",
+                                                                                  "Algorithm: Â«Controlled Baseline ComparisonÂ» Â· 4 steps (Algorithm block).",
+                                                                                  "Operating flow: 3 steps (Operating model block).",
+                                                                                  "Database: CSDL sá» thá»±c nghiá»m (Database block)."
+                                                                              ],
+                                                               "verification_status":  "verified",
+                                                               "expert_status":  "expert_supported",
+                                                               "scientific_bridge_vi":  "Giao thá»©c khoa há»c: (1) khung thiáº¿t káº¿ trÆ°á»c Run; (2) kiá»m chá»©ng runtime báº±ng checklist; (3) tháº©m Äá»nh chuyÃªn gia qua panel SOC / Cohenâs Îº (BÆ°á»c 10).",
+                                                               "scientific_bridge_en":  "Scientific protocol: (1) design frame before Run; (2) runtime verification checklist; (3) expert review via SOC panel / Cohenâs Îº (Step 10)."
+                                                           }
+                                },
+                     "block_keys":  [
+                                        "csdl",
+                                        "mo_hinh_toan",
+                                        "mo_hinh_thuat_toan",
+                                        "mo_hinh_hoat_dong",
+                                        "trich_dan",
+                                        "minh_chung",
+                                        "nhan_dinh_danh_gia"
+                                    ]
+                 }
+}

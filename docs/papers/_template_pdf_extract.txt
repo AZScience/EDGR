@@ -1,0 +1,780 @@
+PAGES=18
+
+===== PAGE 1 =====
+11
+2
+1
+Tóm  tắt:  Dự  đoán  giá  cổ  phiếu  chính  xác  có  vai  trò  quan  trọng  trong  đầu  tư  cổ  phiếu.  Vì  dữ  liệu  giá  cổ  
+phiếu  được  đặc  trưng  bởi  tần  suất  cao,  phi  tuyến  tính  và  bộ  nhớ  dài  nên  việc  dự  đoán  giá  cổ  phiếu  
+chính  xác  là  một  thách  thức.  Nhiều  phương  pháp  dự  báo  khác  nhau  đã  được  đề  xuất,  từ  các  phương  pháp  
+chuỗi  thời  gian  cổ  điển  đến  các  phương  pháp  dựa  trên  máy  học,  chẳng  hạn  như  rừng  ngẫu  nhiên  (RF),  mạng  
+nơ  -ron  hồi  quy  (RNN),  mạng  nơ-ron  tích  chập  (CNN),  mạng  nơ-ron  bộ  nhớ  dài  ngắn  hạn  (LSTM)  và  các  biến  
+thể  của  chúng,  v.v.  Mỗi  phương  pháp  có  thể  đạt  đến  một  mức  độ  chính  xác  nhất  định  nhưng  cũng  có  những  
+hạn  chế.  Trong  bài  báo  này,  một  mô  hình  dựa  trên  CNN-BiLSTM-Attention  được  đề  xuất  để  tăng  độ  chính  
+xác  của  việc  dự  đoán  giá  cổ  phiếu  và  chỉ  số.  Đầu  tiên,  các  đặc  điểm  thời  gian  của  dữ  liệu  chuỗi  được  
+trích  xuất  bằng  mạng  nơ-ron  tích  chập  (CNN)  và  mạng  bộ  nhớ  dài  và  ngắn  hạn  hai  chiều  (BiLSTM).  Sau  đó,  
+một  cơ  chế  chú  ý  được  giới  thiệu  để  tự  động  phù  hợp  với  các  phép  gán  trọng  số  cho  các  đặc  điểm  thông  
+tin;  và  cuối  cùng,  kết  quả  dự  đoán  cuối  cùng  được  đưa  ra  thông  qua  lớp  dày  đặc.  Phương  pháp  được  đề  
+xuất  lần  đầu  tiên  được  sử  dụng  để  dự  đoán  giá  của  chỉ  số  chứng  khoán  Trung  Quốc—chỉ  số  CSI300  và  được  
+xác  định  là  chính  xác  hơn  bất  kỳ  phương  pháp  nào  trong  ba  phương  pháp  còn  lại—LSTM,  CNN-LSTM,  CNN-LSTM-Attention.
+Để  nghiên  cứu  xem  mô  hình  đề  xuất  có  hiệu  quả  mạnh  mẽ  trong  việc  dự  đoán  chỉ  số  chứng  khoán  hay  không,  
+ba  chỉ  số  chứng  khoán  khác  ở  Trung  Quốc  và  tám  chỉ  số  chứng  khoán  quốc  tế  đã  được  chọn  để  thử  nghiệm  
+và  hiệu  quả  mạnh  mẽ  của  mô  hình  CNN-BiLSTM-Attention  trong  việc  dự  đoán  giá  cổ  phiếu  đã  được  xác  nhận.
+Dự  đoán  giá  cổ  phiếu  bằng  mô  hình  CNN-BiLSTM-Attention
+Toán  học  2023,  11,  1985.  https://doi.org/10.3390/math11091985
+Khoa  Khoa  học  máy  tính  và  Toán  học,  Đại  học  Công  nghệ  Phúc  Kiến,  Phúc  Châu  350108,  Trung  Quốc  
+Khoa  Toán  học,  Đại  học  Wilfrid  Laurier,  Waterloo,  ON  N2L  3C5,  Canada  *  Liên  hệ:  
+ylai@wlu.ca
+Giấy  phép  ghi  công  (CC  BY)  (https://  
+creativecommons.org/licenses/by/
+,
+1.  Giới  thiệu
+và  Yongzeng  Lai  2,*Cát  Lâm  Trương Lệ  Thi  Diệp
+Bài  báo
+https://www.mdpi.com/journal/mathematics
+toán  học
+Từ  khóa:  dự  đoán  giá  cổ  phiếu;  học  sâu;  CNN;  BiLSTM;  cơ  chế  chú  ý
+So  sánh  phương  pháp  này  với  các  mô  hình  LSTM,  CNN-LSTM  và  CNN-LSTM-Attention,  có  thể  thấy  độ  chính  xác  của  dự  đoán  giá  cổ  phiếu  
+là  cao  nhất  khi  sử  dụng  mô  hình  CNN-BiLSTM-Attention  trong  hầu  hết  mọi  trường  hợp.
+MSC:  62-04;  62Pxx
+Nhận:  5  tháng  3  năm  2023
+Đã  sửa  đổi:  13  tháng  4  năm  2023
+Đã  chấp  nhận:  19  tháng  4  năm  2023
+Bản  quyền:  ©  2023  thuộc  về  tác  giả.
+Mô  hình  chú  ý  CNN-BiLSTM.
+Toán  học  2023,  11,  1985.  https://  doi.org/
+10.3390/math11091985
+Dự  đoán  giá  cổ  phiếu  bằng  cách  sử  dụng
+Trích  dẫn:  Zhang,  J.;  Vâng,  L.;  Lại,  Y.
+Bài  viết  này  là  một  bài  viết  truy  cập  mở
+được  phân  phối  theo  các  điều  khoản  và
+4.0/).
+Người  được  cấp  phép  MDPI,  Basel,  Thụy  Sĩ.
+Ngày  xuất  bản:  23  tháng  4  năm  2023
+điều  kiện  của  Creative  Commons
+Tuy  nhiên,  các  phương  pháp  này  phụ  thuộc  quá  nhiều  vào  việc  lựa  chọn  mẫu  trong  quá  trình  
+xây  dựng  mô  hình,  khiến  cho  việc  xây  dựng  và  cập  nhật  mô  hình  trở  nên  thiếu  linh  hoạt,  dẫn  đến
+Thị  trường  chứng  khoán  biến  động  và  không  đều,  và  dữ  liệu  chứng  khoán  của  thị  trường  
+này  có  những  đặc  điểm  phức  tạp  như  khối  lượng  dữ  liệu  lớn,  thông  tin  mơ  hồ,  phi  tuyến  tính  
+và  không  trơn  tru.  Các  phương  pháp  kinh  tế  lượng  truyền  thống  như  trung  bình  động  hồi  quy  
+tự  động  (ARMA),  phương  sai  dị  biệt  có  điều  kiện  hồi  quy  tự  động  tổng  quát  (GARCH)  và  các  
+phương  pháp  khác  có  hiệu  ứng  dự  đoán  tốt  hơn  đối  với  dữ  liệu  ít  biến  động  [4–6].  Các  thuật  
+toán  học  máy  thông  thường  như  Rừng  ngẫu  nhiên  và  Máy  vectơ  hỗ  trợ  có  thể  là  lựa  chọn  tốt  để  
+tìm  hiểu  mối  quan  hệ  phi  tuyến  tính  giữa  các  cổ  phiếu  và  các  yếu  tố  ảnh  hưởng  khác  nhau.
+Thị  trường  chứng  khoán  là  một  bộ  phận  quan  trọng  của  thị  trường  tài  chính,  những  biến  động  
+lớn  trên  thị  trường  chứng  khoán  có  thể  tác  động  tiêu  cực  lớn  đến  nền  kinh  tế  [1].  Nếu  giá  cổ  
+phiếu  có  thể  được  dự  đoán  chính  xác  hơn,  có  thể  tránh  được  sự  sụp  đổ  của  thị  trường  chứng  khoán  
+thông  qua  các  hành  động  có  mục  tiêu  và  có  thể  định  hướng  thị  trường  chứng  khoán  hoạt  động  tốt,  
+cuối  cùng  sẽ  đặt  nền  tảng  vững  chắc  hơn  cho  sự  phát  triển  lành  mạnh  của  thị  trường  tài  chính  
+[2].  Do  đó,  việc  nghiên  cứu  giá  trị  nội  tại  và  dự  đoán  thị  trường  chứng  khoán  đã  thu  hút  ngày  
+càng  nhiều  sự  chú  ý  của  cả  học  giả  và  người  thực  hành,  và  một  loạt  các  kết  quả  đã  đạt  được  [3].
+Machine Translated by Google
+===== PAGE 2 =====
+BiLSTM,  một  Bộ  nhớ  dài  hạn  ngắn  hạn  song  hướng,  được  đề  xuất  như  một  phần  mở  rộng  của  LSTM  đơn  hướng  truyền  
+thống  để  cải  thiện  thêm  độ  chính  xác  dự  đoán  của  mô  hình  với  khả  năng  học  các  đặc  điểm  chuỗi  thời  gian  song  hướng.  
+Jia  và  cộng  sự  sử  dụng  mô  hình  BiLSTM  để  dự  đoán  giá  cổ  phiếu  GREE  và  cho  thấy  BiLSTM  đã  cải  thiện  độ  chính  xác  dự  
+đoán  so  với  mô  hình  LSTM  [14].  Wang  và  cộng  sự  đề  xuất  một  mô  hình  CNN-BiSLSTM  kết  hợp,  một  cải  tiến  của  mô  hình  
+BiLSTM,  để  dự  đoán  giá  cổ  phiếu  và  so  sánh  nó  với  mô  hình  LSTM,  mô  hình  BiLSTM,  mô  hình  CNN-LSTM  và  mô  hình  CNN-
+BiLSTM,  và  kết  luận  rằng  mô  hình  được  đề  xuất  là  tốt  nhất  trong  số  các  mô  hình  này  [15].
+Mạng  nơ-ron  bộ  nhớ  dài  hạn  ngắn  (LSTM)  là  một  loại  mạng  nơ-ron  hồi  quy  có  thể  xử  lý  tốt  hơn  các  chuỗi  đầu  vào  
+dài  trong  khi  xem  xét  chuỗi  thời  gian  và  bản  chất  phi  tuyến  tính  của  dữ  liệu  chứng  khoán.  Do  đó,  nó  được  sử  dụng  
+rộng  rãi  trong  dự  đoán  chứng  khoán  do  khả  năng  bộ  nhớ  và  cấu  trúc  cổng  đặc  biệt  của  nó,  so  với  các  mạng  nơ-ron  hồi  
+quy  khác  chỉ  có  thể  nhớ  các  chuỗi  ngắn  [10].  Moghar  và  Hamiche  đề  xuất  một  mô  hình  mạng  nơ-ron  hồi  quy  (RNN)  dựa  
+trên  LSTM  để  dự  đoán  xu  hướng  giá  mở  cửa  của  GOOGL  và  NKE,  và  kết  quả  thử  nghiệm  đã  xác  minh  tính  hiệu  quả  của  mô  
+hình  [11].  Vidal  và  Kristjanpoller  đã  đề  xuất  một  CNN  và  LSTM  lai  để  dự  đoán  biến  động  giá  vàng  và  kết  luận  rằng  mô  
+hình  có  thể  trích  xuất  đầy  đủ  các  tính  năng  chuỗi  thời  gian  để  dự  đoán  có  độ  chính  xác  cao.  Kết  quả  dự  đoán  tốt  hơn  
+so  với  các  mô  hình  CNN  và  LSTM  riêng  lẻ  [12].  Nelson  và  cộng  sự  sử  dụng  mạng  LSTM  để  dự  đoán  xu  hướng  giá  cổ  phiếu  
+trong  tương  lai  dựa  trên  giá  lịch  sử  và  các  chỉ  số  phân  tích  kỹ  thuật.  Kết  quả  thử  nghiệm  cho  thấy  phương  pháp  này  
+đạt  độ  chính  xác  trung  bình  là  55,9%  [13].
+độ  chính  xác  dự  đoán  gặp  khó  khăn  trong  việc  đáp  ứng  các  yêu  cầu  dự  báo  [7,8].  Các  mô  hình  học  sâu  có  khả  năng  học  
+tập  mạnh  mẽ  hơn  và  khả  năng  tự  thích  ứng  hơn  các  mô  hình  máy  truyền  thống  và  có  thể  hoạt  động  tốt  hơn  trong  phân  
+tích  giá  cổ  phiếu  [9].
+Tài  liệu  liên  quan  hiện  tại  hiếm  khi  xem  xét  cả  vấn  đề  mà  các  mô  hình  dự  đoán  giá  cổ  phiếu  ngắn  hạn  LSTM  
+không  cho  phép  kết  nối  chặt  chẽ  hơn  giữa  dữ  liệu  quá  khứ  và  tương  lai  cũng  như  tác  động  của  các  đặc  điểm  cục  bộ  của  
+dữ  liệu  cổ  phiếu  đến  độ  chính  xác  dự  đoán  của  các  mô  hình.
+2  trong  số  18Toán  học  2023,  11,  1985
+Cơ  chế  chú  ý  trong  mạng  nơ-ron  là  một  lược  đồ  phân  bổ  tài  nguyên  để  phân  bổ  tài  nguyên  tính  toán  cho  các  tác  
+vụ  quan  trọng  hơn  trong  khi  giải  quyết  vấn  đề  quá  tải  thông  tin  trong  điều  kiện  năng  lực  tính  toán  hạn  chế.  Cinar  
+và  cộng  sự  đề  xuất  một  mô  hình  chú  ý  mở  rộng  cho  RNN.  Kết  quả  thử  nghiệm  cho  thấy  mô  hình  với  RNN  có  thể  nắm  bắt  
+được  chu  kỳ  giả  trong  chuỗi  thời  gian.  Hiệu  suất  mở  rộng  của  nó  tốt  hơn  đáng  kể  so  với  bản  gốc  [16].  Wang  và  cộng  
+sự  đề  xuất  một  mô  hình  lai  dựa  trên  phân  tích  bậc  hai  (SD),  phân  tích  đa  yếu  tố  (MFA)  và  Bộ  nhớ  dài  hạn  dựa  trên  sự  
+chú  ý  (ALSTM)  để  dự  đoán  xu  hướng  giá  thị  trường  chứng  khoán  tại  bốn  quốc  gia  châu  Á  lớn.  Kết  quả  phân  tích  thực  
+nghiệm  cho  thấy  mô  hình  đề  xuất  có  thể  đạt  được  độ  chính  xác  cao  hơn  ít  nhất  30%  so  với  Bộ  nhớ  dài  hạn  nói  chung,  
+chứng  minh  tính  hiệu  quả  của  mô  hình  lai  [17].
+Tóm  lại,  đóng  góp  chính  của  bài  báo  này  là  đề  xuất  một  mô  hình  CNN-BiLSTM-Attention  để  dự  đoán  giá  cổ  phiếu  
+dựa  trên  những  lợi  thế  về  khả  năng  học  các  đặc  điểm  thời  gian  hai  chiều  của  BiLSTM,  giúp  cải  thiện  độ  chính  xác  của  
+dự  đoán  mô  hình  và  khả  năng  của  cơ  chế  attention  để  gán  trọng  số  theo  tầm  quan  trọng  của  thông  tin  được  sử  dụng  
+trong  [18–20].  Để  minh  họa  cho  tính  ưu  việt  của  mô  hình  được  đề  xuất  so  với  một  số  mô  hình  học  sâu  thường  được  sử  
+dụng,  chẳng  hạn  như  các  mô  hình  RNN,  LSTM,  CNN-LSTM,  CNN-biLSTM,  v.v.,  mười  hai  chỉ  số  thị  trường  chứng  khoán  -  bốn  
+chỉ  số  từ  Trung  Quốc  và  tám  chỉ  số  từ  các  thị  trường  quốc  tế  -  đã  được  sử  dụng  làm  đối  tượng  thử  nghiệm.  Đầu  tiên,  
+CNN  được  sử  dụng  để  trích  xuất  các  đặc  điểm  cục  bộ  phi  tuyến  tính  của  dữ  liệu  chứng  khoán.  Sau  đó,  BiLSTM  được  sử  
+dụng  để  loại  bỏ  các  đặc  điểm  chuỗi  thời  gian  hai  chiều  của  dữ  liệu  chuỗi.  Cuối  cùng,  cơ  chế  attention  đã  giảm  tác  
+động  của  thông  tin  dư  thừa  đến  độ  chính  xác  của  dự  đoán  giá  cổ  phiếu  bằng  cách  gán  trọng  số  lớn  hơn  cho  các  thành  
+phần  đặc  điểm  quan  trọng  hơn  thông  qua  việc  tự  động  khớp  các  phép  gán  trọng  số  với  các  đặc  điểm  thông  tin  được  
+trích  xuất  bởi  lớp  BiLSTM.  Kết  quả  thử  nghiệm  cho  thấy  mô  hình  đề  xuất  có  hiệu  suất  tốt  nhất  trong  số  tất  cả  các  mô  
+hình  được  sử  dụng  trong  dự  đoán  chỉ  số.
+Machine Translated by Google
+===== PAGE 3 =====
+Mạng  nơ-ron  tích  chập  (CNN)  được  Lecun  và  cộng  sự  đề  xuất  vào  năm  1998  [21].
+CNN  bao  gồm  năm  thành  phần  chính:  lớp  đầu  vào,  lớp  tích  chập,  lớp  gộp,  lớp  kết  nối  đầy  
+đủ  và  lớp  đầu  ra  [22].  Lớp  tích  chập  và  lớp  gộp  là  trọng  tâm  của  toàn  bộ  cấu  trúc  mô  
+hình,  chủ  yếu  được  sử  dụng  để  trích  xuất  các  đặc  điểm  và  thực  hiện  giảm  chiều  trên  các  
+đặc  điểm.  Với  khả  năng  trích  xuất  và  nhận  dạng  đặc  điểm  tuyệt  vời ,  CNN  đã  được  áp  dụng  
+thành  công  trong  các  tác  vụ  phân  loại  dữ  liệu  hình  ảnh  và  chuỗi  thời  gian  [23].  Nghiên  
+cứu  này  tập  trung  vào  trích  xuất  đặc  điểm  cục  bộ  phi  tuyến  tính  hiệu  quả  cho  dữ  liệu  
+chứng  khoán  bằng  cách  sử  dụng  các  lớp  tích  chập  và  trích  xuất  đặc  điểm  bằng  cách  sử  dụng  
+nén  lớp  gộp  để  tạo  ra  thông  tin  đặc  điểm  quan  trọng  hơn.
+2.  Cấu  trúc  mô  hình  2.1.  
+Mạng  nơ-ron  tích  chập  (CNN)
+2.2.  Mạng  bộ  nhớ  dài  hạn  ngắn  hạn  (LSTM)
+Cấu  trúc  của  ô  LSTM  được  thể  hiện  trong  Hình  1.  Trong  hình,  h(t 1)  và  ht  lần  lượt  là  đầu  
+ra  của  ô  trước  và  ô  hiện  tại.  xt  là  đầu  vào  của  đơn  vị  hiện  tại,  Sigmoid  và  tanh  là  các  hàm  
+kích  hoạt  và  các  vòng  tròn  trong  hình  đều  chỉ  ra  các  quy  tắc  số  học  giữa  các  vectơ.  Ct  là  
+trạng  thái  của  nơ-ron  tại  thời  điểm  t.  ft  là  ngưỡng  quên,  điều  khiển  cách  tế  bào  loại  bỏ  thông  
+tin  thông  qua  hàm  kích  hoạt  Sigmoid.  Đây  là  ngưỡng  đầu  vào  xác  định  thông  tin  cần  được  cập  
+nhật  bởi  hàm  Sigmoid,  sau  đó  tạo  ra  bộ  nhớ  mới  bằng  hàm  kích  hoạt  tanh  Ct  và  cuối  cùng  kiểm  
+soát  lượng  thông  tin  mới  được  thêm  vào  trạng  thái  của  nơ-ron.  Ot  là  ngưỡng  đầu  ra,  xác  định  
+trạng  thái  nơ-ron  đầu  ra  của  hàm  Sigmoid  và  cuối  cùng  xử  lý  trạng  thái  nơ-ron  bằng  hàm  kích  
+hoạt  tanh  để  có  được  kết  quả  cuối  cùng  [26].
+Hochreiter  và  Schmidhuber  lần  đầu  tiên  đề  xuất  mạng  Bộ  nhớ  dài  ngắn  hạn  (LSTM)  vào  năm  1997  như  một  biến  thể  
+của  Mạng  nơ-ron  hồi  quy  (RNN)  [10].  So  với  RNN  truyền  thống,  mạng  nơ-ron  LSTM  thể  hiện  các  đặc  điểm  phù  hợp  để  xử  
+lý  và  dự  đoán  các  sự  kiện  quan  trọng  với  khoảng  thời  gian  dài  và  độ  trễ  trong  chuỗi  thời  gian  [24].  LSTM  cải  thiện  
+cấu  trúc  lớp  ẩn  của  RNN  bằng  cách  giới  thiệu  một  hệ  thống  các  đơn  vị  gating  bao  gồm  các  cổng  đầu  vào,  cổng  quên  và  
+cổng  đầu  ra,  giúp  giảm  hiệu  quả  các  vấn  đề  biến  mất  gradient  và  bùng  nổ  gradient  trong  quá  trình  đào  tạo  mô  hình.  
+Cấu  trúc  được  thể  hiện  trong  Hình  1.  Trong  số  đó,  cổng  quên  được  sử  dụng  để  quyết  định  thông  tin  nào  cần  loại  bỏ  
+khỏi  nơ-ron  trong  mô  hình,  cổng  đầu  vào  được  sử  dụng  để  cập  nhật  trạng  thái  đơn  vị  và  cổng  đầu  ra  được  sử  dụng  để  
+điều  khiển  đầu  ra  đến  thời  điểm  tiếp  theo  của  nơ-ron  [25].
+Phần  còn  lại  của  bài  báo  được  tổ  chức  như  sau.  Phần  2  trình  bày  mô  tả  về  cấu  trúc  mô  hình  cho  các  mạng  nơ-ron  
+được  sử  dụng.  Dữ  liệu  và  các  chỉ  số  đánh  giá  được  sử  dụng  trong  thí  nghiệm  được  trình  bày  trong  Phần  3.  Phần  4  hiển  
+thị  và  giải  thích  kết  quả  phân  tích  số.  Cuối  cùng,  Phần  5  kết  thúc  bài  báo.
+Toán  học  2023,  11,  1985 3  trong  số  18
+Hình  1.  Ô  nhớ  LSTM.
+Machine Translated by Google
+===== PAGE 4 =====
+Ot  =  σ[Wo  ·  (xt ,  ht 1)  +  bo],  
+ht  =
+Ct  =  tanh[Wc  ·  (xt ,  ht 1)  +  bc],  
+Ớt     tanh(Ut),
+Mạng  nơ-ron  Bidirectional  Long  Short-Term  Memory  (BiLSTM)  là  một  cải  tiến  được  tối  
+ưu  hóa  của  LSTM  [27].  Trong  khi  LSTM  truyền  thống  dự  đoán  đầu  ra  của  thời  điểm  tiếp  
+theo  bằng  thông  tin  chuỗi  thời  gian  trong  quá  khứ,  BiLSTM  có  thể  tính  đến  đầy  đủ  thông  
+tin  trong  quá  khứ  và  tương  lai  bằng  cách  kết  nối  một  lớp  LSTM  chuyển  tiếp  và  một  lớp  
+LSTM  ngược,  giúp  tạo  điều  kiện  cho  cả  đầu  vào  thông  tin  chuỗi  chuyển  tiếp  và  ngược,  do  
+đó  làm  cho  mô  hình  mạnh  mẽ  hơn  [28].  Do  đó,  bài  báo  này  đã  sử  dụng  mạng  nơ-ron  BiLSTM  
+để  học  các  đặc  điểm  tuần  tự  hai  chiều  từ  thông  tin  đặc  điểm  được  trích  xuất  từ  lớp  CNN,  
+khai  thác  đầy  đủ  các  đặc  điểm  phụ  thuộc  dài  hạn  của  dữ  liệu  mẫu  để  học  và  cuối  cùng  đưa  
+ra  kết  quả  dự  đoán  giá  cổ  phiếu  thông  qua  lớp  được  liên  kết  đầy  đủ.  Cấu  trúc  BiLSTM  
+được  thể  hiện  trong  Hình  2.
+ft  =  σ[Wf  (ht 1,  xt)  +  bf ],  
+nó  =  σ[Wi  ·  (xt ,  ht 1)  +  bi ],
+2.3.  Mô  hình  dự  báo  rủi  ro  hệ  
+thống  Sơ  đồ  luồng  thuật  toán  của  phương  pháp  dự  báo  rủi  ro  hệ  thống  hiệu  chỉnh  lỗi  
+Savgol-TCN  được  đề  xuất  trong  bài  báo  này  được  thể  hiện  ở  Hình  2  và  các  bước  cụ  thể  như  sau.
+2.4.  Mạng  nơ-ron  bộ  nhớ  dài  hạn  song  hướng  (BiLSTM)
+4  trong  số  18Toán  học  2023,  11,  1985
+Hình  2.  Cấu  trúc  BiLSTM.
+trong  đó  ft ,  it ,  và  Ot  lần  lượt  là  cổng  quên,  cổng  vào  và  cổng  ra;  Wf ,  Wi  và  Wo  
+lần  lượt  là  các  ma  trận  hệ  số  trọng  số  tương  ứng  với  cổng  quên,  cổng  vào  và  cổng  ra;  
+bf ,  bi  và  bo  biểu  thị  các  hằng  số  bù  tương  ứng  với  cổng  quên,  cổng  vào  và  cổng  ra;  
+Ut  là  trạng  thái  của  nơ-ron;  ht  là  đầu  ra  của  lớp  ẩn;  σ  là  hàm  Sigmoid;  và     là  tích  
+Hadamard.
+Ut  =  nó     Ct  +  ft     Ct 1,
+Machine Translated by Google
+===== PAGE 5 =====
+Như  đã  chỉ  ra  trước  đó,  việc  dự  báo  giá  cổ  phiếu  (hoặc  tài  sản  khác)  rất  quan  trọng  đến  
+nỗi  các  học  giả  đã  cố  gắng  sử  dụng  nhiều  phương  pháp  khác  nhau  cho  mục  đích  đó.  Có  rất  nhiều  
+chỗ  để  nâng  cao  độ  chính  xác  của  dự  đoán,  đặc  biệt  là  với  sự  trợ  giúp  của  sự  phát  triển  mới  
+trong  công  nghệ.  Bài  báo  này  đề  xuất  một  phương  pháp  dự  đoán  giá  đóng  cửa  cổ  phiếu  dựa  trên  mô  
+hình  CNN-BiLSTM-Attention.  Quá  trình  của  phương  pháp  này  có  thể  được  mô  tả  như  sau.
+Cơ  chế  chú  ý  bắt  nguồn  từ  các  nghiên  cứu  về  thị  giác  của  con  người.  Các  mạng  nơ-ron  truyền  
+thống  không  thể  phân  biệt  được  tầm  quan  trọng  của  các  tín  hiệu  trong  quá  trình  xử  lý  thông  tin.  
+Đồng  thời,  cơ  chế  chú  ý  có  thể  gán  các  trọng  số  khác  nhau  theo  các  đặc  điểm  khác  nhau,  tức  là  
+gán  trọng  số  lớn  hơn  cho  thông  tin  quan  trọng  và  chọn  loại  bỏ  thông  tin  không  quan  trọng  để  cải  
+thiện  hiệu  quả  xử  lý  thông  tin  thông  qua  việc  gán  trọng  số  khác  biệt  và  giải  quyết  vấn  đề  mất  
+thông  tin  do  các  chuỗi  dài  trong  LSTM.  Do  đó,  việc  đưa  cơ  chế  chú  ý  vào  có  thể  cải  thiện  thêm  
+độ  chính  xác  của  dự  đoán  giá  cổ  phiếu.
+2.6.  Thành  phần  mô  hình  dự  đoán  sự  chú  ý  CNN-BILSTM
+Bước  2:  Đầu  tiên,  lớp  CNN  được  sử  dụng  để  trích  xuất  các  đặc  điểm  bên  trong  của  dữ  liệu  chứng  
+khoán  và  lớp  CNN  bao  gồm  một  lớp  tích  chập  2D,  một  lớp  gộp  và  một  lớp  bỏ  qua.  Sau  đó,  
+lớp  BiLSTM  được  đào  tạo  trên  các  đặc  điểm  cục  bộ  được  CNN  trích  xuất  để  tìm  hiểu  mẫu  
+thay  đổi  động  bên  trong.  Một  cơ  chế  chú  ý  được  giới  thiệu  để  tự  động  gán  các  trọng  số  
+khác  nhau  cho  các  đặc  điểm  được  lớp  BiLSTM  trích  xuất  để  khám  phá  mối  tương  quan  thời  
+gian  sâu.  Cuối  cùng,  đầu  ra  được  truyền  qua  một  lớp  dày  đặc.  Sơ  đồ  cấu  trúc  mạng  của  
+nó  được  hiển  thị  trong  Hình  3.
+trong  đó  f1,  f2  và  f3  là  các  hàm  kích  hoạt  của  các  lớp  tương  ứng.
+Bước  1:  Dữ  liệu  kho  được  thu  thập  được  chuẩn  hóa  và  chia  thành  đào  tạo  và  thử  nghiệm
+2.5.  Cơ  chế  chú  ý
+Công  thức  của  từng  phần  trong  BiLSTM  được  đưa  ra  dưới  đây.
+Bước  3:  Kết  quả  dự  đoán  được  chuẩn  hóa  để  có  được  giá  trị  mong  muốn.
+mức  độ.
+Yi  =  f3(ω5Ai  +  ω6Bi),
+Ai  =  f1(ω1xi  +  ω2Ai 1),
+Bi  =  f2(ω3xi  +  ω4Bi+1),
+5  trong  số  18Toán  học  2023,  11,  1985
+Hình  3.  Mạng  nơ-ron  CNN-BiLSTM-Attention.
+Machine Translated by Google
+===== PAGE 6 =====
+trong  đó  xi  là  dữ  liệu  gốc,  x  là  giá  trị  chuẩn  hóa,  xmin  và  xmax  lần  lượt  là  giá  trị  nhỏ  
+nhất  và  lớn  nhất  của  dữ  liệu  gốc.  Vì  dữ  liệu  được  chuẩn  hóa  bởi  mô  hình  cũng  được  chuẩn  hóa,  
+nên  dữ  liệu  đầu  ra  được  phi  chuẩn  hóa  bởi  quy  trình  flip-flop.  Công  thức  tính  toán  được  thể  
+hiện  trong  (2).
+2
+N
+y1     y  
+i     |  |  ×  100%,  yi
+2
+Tôi
+   (xmax     xmin)  +  xmin,  =  y  
+xmax  -  xmin
+xi     xmin  
+N
+N 2
+ 
+  
+ 
+tôi=1
+là  giá  trị  dự  báo  giá  cổ  phiếu  thực  tế
+Bài  báo  này  sử  dụng  phần  mềm  Paycharm  để  xây  dựng  mô  hình  CNN-BiLSTM-Attention.  Hàm  kích  hoạt  
+được  sử  dụng  là  ReLU.  Hàm  mất  mát  được  sử  dụng  là  hàm  MSE  (Mean_squared  _erro).  Bộ  tối  ưu  hóa  được  sử  
+dụng  là  thuật  toán  tối  ưu  hóa  Adam  phổ  biến  để  cập  nhật  các  tham  số  của  từng  lớp  của  mạng.  Lớp  Dropout  
+liên  quan  đã  giúp  ngăn  ngừa  sự  xuất  hiện  của  quá  khớp,  cải  thiện  khả  năng  khái  quát  hóa  của  mô  hình  
+và  giảm  thời  gian  đào  tạo  cho  mô  hình.  Để  xác  minh  hiệu  quả  của  mô  hình,  mô  hình  được  xây  dựng  cũng  
+được  so  sánh  với  các  mô  hình  LSTM,  CNN-LSTM  và  CNN-LSTM-Attention  về  hiệu  suất  dự  đoán  trong  bài  báo  
+này.
+Chỉ  số  Shanghai  Shenzhen  CSI  300  là  một  trong  những  chỉ  số  thị  trường  chứng  khoán  được  theo  dõi  chặt  
+chẽ  nhất  của  Trung  Quốc.  Chỉ  số  này  bao  gồm  300  cổ  phiếu  A-share  được  giao  dịch  trên  sàn  giao  dịch  
+chứng  khoán  Thượng  Hải  và  Thâm  Quyến  và  được  coi  là  chỉ  báo  về  xu  hướng  ở  cả  hai  thị  trường  đó.  Các  
+tính  năng  được  chọn  bao  gồm  giá  mở  cửa,  giá  cao  nhất,  giá  thấp  nhất,  giá  đóng  cửa,  khối  lượng,  doanh  
+thu  và  lợi  nhuận.  Một  chiến  lược  dự  đoán  trực  tiếp  một  bước  đã  được  sử  dụng.  Tỷ  lệ  dữ  liệu  được  sử  
+dụng  cho  tập  huấn  luyện,  tập  kiểm  tra  và  tập  xác  thực  là  6:2:2.
+=
+(2)x
+,
+Sai  số  bình  phương  trung  bình  căn  bậc  hai  (RMSE)  và  hệ  số  xác  định  hiệu  
+suất  dự  đoán  R.  Chúng  được  tính  theo  các  phương  trình  (3),  (4)  và  (5)  tương  ứng.
+1
+3.  Thí  nghiệm  
+3.1.  Mô  tả  dữ  liệu  
+Bài  báo  này  đã  chọn  dữ  liệu  của  Chỉ  số  CSI  300  từ  ngày  4  tháng  1  năm  2011  đến  ngày  31  tháng  
+12  năm  2021,  tổng  cộng  2675  ngày  giao  dịch  để  dự  đoán  giá  cổ  phiếu  và  dự  đoán  giá  đóng  cửa.
+   (y1     y  i )RMSE  = (4)
+trong  đó  
+y  thu  được  sau  khi  chuẩn  hóa.
+(y1     y  i )  
+(y1     y  i )
+ i  =1  2
+,
+BẢN  ĐỒ  =
+3.2.  Tiền  xử  lý  dữ  liệu  
+Có  một  thang  đo  lớn  giữa  dữ  liệu  đặc  điểm  trong  bài  báo  này.  Để  loại  bỏ  ảnh  hưởng  của  thang  
+đo  giữa  các  đặc  điểm,  tập  dữ  liệu  đã  được  chuẩn  hóa  trong  bài  báo  này.  Quá  trình  chuẩn  hóa  hữu  
+ích  để  tăng  tốc  độ  hội  tụ  của  hàm  mất  mát,  ngăn  chặn  sự  bùng  nổ  gradient  trong  quá  trình  đào  tạo  
+mạng  và  cải  thiện  độ  chính  xác  tính  toán.  Trong  bài  báo  này,  dữ  liệu  đã  được  chuẩn  hóa  thành  [0,  
+1]  bằng  cách  sử  dụng  chuẩn  hóa  Min-Max  và  quá  trình  tính  toán  được  thể  hiện  trong  Phương  trình  
+(1).
+R  =  1     n (5)
+n  =  1
+3.3.  Các  chỉ  số  đánh  giá
+N
+2 ,
+ i  =1
+(3)
+(1)
+1
+là  dự  báo  giá  cổ  phiếu  được  chuẩn  hóa.  x
+   
+x  
+tôi
+6  trong  số  18Toán  học  2023,  11,  1985
+,
+Bài  báo  này  sử  dụng  ba  chỉ  số  đánh  giá,  Sai  số  phần  trăm  tuyệt  đối  trung  bình  (MAPE),  để  đánh  giá  mô  hình
+Machine Translated by Google
+===== PAGE 7 =====
+7  trong  số  18Toán  học  2023,  11,  1985
+2
+So  sánh  với  kết  quả  dự  đoán  của  ba  mô  hình  khác,  có  thể  thấy  rằng  mô  hình  CNN-BiLSTM-Attention  có  độ  chính  xác  
+cao  hơn  trong  việc  dự  đoán  giá  đóng  cửa  cổ  phiếu  và  mô  hình  CNN-BiLSTM-Attention  có  độ  chính  xác  cao  hơn  trong  việc  dự  đoán  giá  đóng  cửa  cổ  phiếu  và  các  giá  trị  dự  đoán  khớp  với  những  thay  đổi  trong  các  giá  trị  thực  tế.  Đường  
+cong  dự  đoán  của  nó  là  các  giá  trị  dự  đoán  khớp  với  những  thay  đổi  trong  các  giá  trị  thực  tế.  Đường  cong  dự  đoán  của  nó  tương  tự  như  đường  cong  giá  trị  thích  hợp.  Cả  hai  mô  hình  LSTM  và  CNN-LSTM  đều  có  hiện  tượng  tương  tự  như  
+đường  cong  giá  trị  thích  hợp.  Cả  hai  mô  hình  LSTM  và  CNN-LSTM  đều  có  hiện  tượng  "gián  đoạn"  trong  dự  đoán  chỉ  số  đóng  cửa  và  CNN-LSTM-Attention.  Tuy  nhiên,  "gián  đoạn"  trong  dự  đoán  chỉ  số  đóng  cửa  và  CNN-LSTM-Attention.  Tuy  
+nhiên,  độ  chính  xác  dự  đoán  của  CNN-LSTM-Attention  đã  được  cải  thiện  so  với  độ  chính  xác  dự  đoán  của  CNN-LSTM-Attention  đã  được  cải  thiện  so  với  hai  mô  hình  trước  đó;  kết  quả  dự  đoán  không  tốt  bằng  hai  mô  hình  trước  đó  của  CNN-
+BiLSTM-Attention;  kết  quả  dự  đoán  không  tốt  bằng  mô  hình  CNN-BiLSTM-Attention.  Nhìn  chung,  mô  hình  LSTM  đơn  lẻ  có  hiệu  ứng  dự  đoán  ít  thỏa  mãn  nhất  và  mô  hình.  Nhìn  chung,  mô  hình  LSTM  đơn  lẻ  có  hiệu  ứng  dự  đoán  ít  thỏa  mãn  nhất  
+và  mô  hình  CNN-LSTM,  hiệu  ứng  dự  đoán  giá  cổ  phiếu,  không  tốt  bằng  mô  hình  CNN-LSTM,  hiệu  ứng  dự  đoán  giá  cổ  phiếu,  không  tốt  bằng  mô  hình  có  cơ  chế  chú  ý  được  thêm  vào  vì  cơ  chế  chú  ý  cho  phép  mô  hình  có  được  cơ  chế  chú  ý  được  thêm  
+vào  vì  cơ  chế  chú  ý  cho  phép  mô  hình  có  được  các  tính  năng  quan  trọng  có  tác  động  thiết  yếu  đến  kết  quả  dự  đoán  từ  một  số  lượng  lớn  các  tính  năng  quan  trọng  có  tác  động  thiết  yếu  đến  kết  quả  dự  đoán  từ  một  số  lượng  lớn  các  tính  
+năng  có  tác  động  đáng  kể  đến  kết  quả  dự  đoán.  CNN-BiLSTM-Attention  đạt  được  các  tính  năng  có  tác  động  đáng  kể  đến  kết  quả  dự  đoán.  CNN-BiLSTM-Attention  đạt  được  hiệu  ứng  dự  đoán  tốt  nhất,  có  lẽ  là  do  mô  hình  LSTM  hai  chiều  sử  dụng  
+đầy  đủ  mối  quan  hệ  giữa  các  chiều  thời  gian  tiến  và  lùi  trên  chuỗi  thời  gian,  mối  quan  hệ  giữa  các  chiều  thời  gian  tiến  và  lùi  trên  chuỗi  thời  gian,  có  thể  thu  được  nhiều  thông  tin  về  đặc  điểm  hơn  và  do  đó  cải  thiện  độ  chính  xác  
+dự  đoán  của  mô  hình.
+trong  đó  y  i ,  yi  và  y¯  i  lần  lượt  là  giá  trị  cổ  phiếu  dự  đoán,  giá  trị  cổ  phiếu  thực  và  giá  trị  dự  báo  trung  bình  tại  thời  điểm  i  và  n  biểu  thị  tổng  số  mẫu  thử  
+nghiệm.  A  trong  đó  y  i ,  yi  và  y¯  i  lần  lượt  là  giá  trị  cổ  phiếu  dự  đoán,  giá  trị  cổ  phiếu  thực  và  giá  trị  nhỏ  hơn  trung  bình  của  MAPE  hoặc  RMSE  biểu  thị  dự  đoán  
+giá  cổ  phiếu  chính  xác  hơn,  trong  khi  giá  trị  dự  báo  tại  thời  điểm  i  và  n  biểu  thị  tổng  số  mẫu  thử  nghiệm.  A  2  lấy  các  giá  trị  trong  khoảng  [0,  1]  và  nói  chung,  giá  
+trị  RR  càng  gần  1  thì  giá  trị  MAPE  hoặc  RMSE  càng  nhỏ  thì  dự  đoán  giá  cổ  phiếu  chính  xác  hơn,  trong  khi  mô  hình  phù  hợp  hơn.  2  lấy  các  giá  trị  trong  khoảng  [0,  1]  
+và  nói  chung,  giá  trị  RR  càng  gần  1  thì  mô  hình  phù  hợp  càng  tốt.
+4.  Phân  tích  kết  quả  Để  xác  
+minh  thêm  tính  ưu  việt  của  mô  hình  CNN-BiLSTM-Attention  được  đề  xuất  trong  4.  Phân  tích  kết  quả  bài  báo  này  để  dự  đoán  giá  cổ  phiếu  ngắn  
+hạn,  mô  hình  LSTM,  mô  hình  CNN-LSTM  và  Để  xác  minh  thêm  tính  ưu  việt  của  mô  hình  CNN-BiLSTM-Attention  được  đề  xuất  trong  mô  hình  CNN-LSTM-Attention  được  chọn  làm  mô  hình  so  sánh  để  phân  tích.  Bài  báo  này  để  dự  đoán  giá  cổ  
+phiếu  ngắn  hạn,  mô  hình  LSTM,  mô  hình  CNN-LSTM  và  kết  quả  dự  đoán  được  thể  hiện  trong  Hình  4–7.  Trục  ngang  biểu  thị  số  mô  hình  CNN-LSTM-Attention  được  chọn  làm  mô  hình  so  sánh  để  phân  tích.  Trục  tung  biểu  thị  giá  cổ  phiếu,  đường  
+màu  cam  liền  là  kết  quả  dự  đoán  thực  tế  được  thể  hiện  trong  Hình  4–7.  Trục  hoành  biểu  thị  số  giá  đóng  cửa  cổ  phiếu  và  đường  màu  xanh  liền  là  giá  đóng  cửa  cổ  phiếu  dự  đoán  với  trục  tung  biểu  thị  giá  cổ  phiếu,  đường  màu  cam  liền  là  
+mô  hình  tương  ứng  thực  tế.  Trong  mỗi  hình,  hai  đường  cong  càng  gần  nhau  thì  mô  hình  càng  tốt.  giá  đóng  cửa  cổ  phiếu,  và  đường  màu  xanh  lam  liền  là  giá  đóng  cửa  cổ  phiếu  dự  đoán  với  Như  người  ta  có  thể  quan  sát,  đường  cong  của  kết  
+quả  dự  đoán  của  mô  hình  CNN-BiLSTM-Attention  tương  ứng  với  mô  hình.  Trong  mỗi  hình,  hai  đường  cong  càng  gần  nhau  thì  mô  hình  càng  tốt.  gần  nhất  với  đường  cong  của  dữ  liệu  thực  tế  nói  chung.  Nghĩa  là,  CNN-BiLSTM-Attention  Như  người  
+ta  có  thể  quan  sát,  đường  cong  của  kết  quả  dự  đoán  của  mô  hình  CNN-BiLSTM-Attention  là  chính  xác  nhất  trong  bốn  mô  hình  này  để  dự  đoán  CSI  300  với  gần  nhất  với  đường  cong  của  dữ  liệu  thực  tế  nói  chung.  Nghĩa  là,  phạm  vi  dữ  liệu  
+được  chọn  của  CNN-BiLSTM-Attention.  là  chính  xác  nhất  trong  bốn  mô  hình  này  để  dự  đoán  CSI  300  với  phạm  vi  dữ  liệu  được  chọn.
+7  trong  số  18Toán  học  2023,  1,  0
+2
+Kết  quả  dự  đoán  dựa  trên  LSTM.Hình  4.  Hình  4.  Kết  quả  dự  đoán  dựa  trên  LSTM.
+Machine Translated by Google
+===== PAGE 8 =====
+Hình  6.  Kết  quả  dự  đoán  dựa  trên  CNN-LSTM-Attention.
+Hình  5.  Kết  quả  dự  đoán  dựa  trên  CNN-LSTM.
+8  trong  số  18Toán  học  2023,  11,  1985
+Machine Translated by Google
+===== PAGE 9 =====
+định  lượng  sự  so  sánh  các  kết  quả  dự  đoán,  các  giá  trị  của  ba  số  lượng  được  tính  toán
+5.  Mô  hình  phân  tích  mạnh  mẽ
+Sàn  giao  dịch  chứng  khoán  Kuala  Lumpur)  và  OEX  (S&P  100).
+mô  hình  được  đề  xuất  trong  bài  báo  này.
+kết  quả  tốt  nhất  trong  các  mô  hình  là  in  đậm  (tương  tự  đối  với  các  bảng  khác).
+Từ  Bảng  1,  có  thể  thấy  rằng  độ  chính  xác  dự  đoán  được  sắp  xếp  từ  cao  đến  thấp  là
+giá  đóng  cửa  của  các  chỉ  số  chứng  khoán  Trung  Quốc  và  quốc  tế  để  có  được  các  lỗi  thử  nghiệm.
+mô  hình  CNN-BiLSTM-Attention,  mô  hình  CNN-LSTM-Attention,  mô  hình  CNN-LSTM  và
+Mô  hình  CNN-LSTM-Attention,  giảm  lần  lượt  0,854%,  0,459%  và  0,265%,  tiếp  tục
+theo  Phương  trình  (3)–(5)  cho  bốn  mô  hình  có  chỉ  số  được  thể  hiện  trong  Bảng  1,  trong  đó
+Để  xác  minh  thêm  độ  chính  xác  và  độ  tin  cậy  của  mô  hình  được  đề  xuất  trong  bài  báo  này,
+xác  minh  định  lượng  tính  hợp  lý  và  hiệu  quả  của  CNN-LSTM-Attention
+Những  so  sánh  trên  với  các  con  số  rất  trực  quan  nhưng  cũng  khá  thô  sơ.
+mô  hình  CNN-BiLSTM-Attention  và  ba  mô  hình  khác  sẽ  được  sử  dụng  để  dự  đoán
+Chỉ  số  Trung  Quốc  được  chọn  là  chỉ  số  cổ  phiếu  SSE  A,  chỉ  số  tổng  hợp  SSE  và  SZSI
+chỉ  số  thành  phần  và  chỉ  số  quốc  tế  được  chọn  là  AEX  (Sàn  giao  dịch  chứng  khoán  Amsterdam)
+2R
+LSTM  
+CNN-LSTM  CNN-
+LSTM-Chú  ý.
+RMSE
+CNN-BiLSTM-Chú  ý
+MẠNG  LƯỢNG  (%)Phương  pháp
+Bảng  1.  So  sánh  các  chỉ  số  lỗi  đánh  giá  của  bốn  phương  pháp.
+Hình  7.  Kết  quả  dự  đoán  dựa  trên  CNN-BiLSTM-Attention.
+108.748  
+89.048  
+76.454  
+64.848
+0,958
+0,972
+1.877  
+1.482  
+1.288  
+1.023
+0,979
+0,985
+9  trong  số  18Toán  học  2023,  11,  1985
+Các  con  số  in  đậm  chỉ  ra  kết  quả  tốt  nhất  trong  số  các  mô  hình.
+chỉ  số),  ATX  (Chỉ  số  giao  dịch  của  Áo),  FCHI  (Chỉ  số  CAC  40),  FTSE  (Financial  Times  Stock
+giá  đóng  cửa  của  Chỉ  số  CSI  300  là  64,84,  thấp  hơn  LSTM  đơn  lẻ,  CNN-LSTM,
+Chỉ  số  Exchange  100),  HSI  (Chỉ  số  Hang  Seng),  JKSE  (Sàn  giao  dịch  chứng  khoán  Jakarta),  KLSE  (Kuala
+Mô  hình  CNN-BiLSTM-Attention,  so  sánh  với  mô  hình  LSTM,  mô  hình  CNN-LSTM  và
+Mô  hình  LSTM,  tương  ứng.  RMSE  của  mô  hình  CNN-BiLSTM-Attention  để  dự  đoán
+và  CNN-LSTM-Attention  lần  lượt  là  43,9,  24,2  và  11,606.  Về  MAPE,
+Machine Translated by Google
+===== PAGE 10 =====
+Hình  9.  So  sánh  kết  quả  dự  đoán  Chỉ  số  cổ  phiếu  A  của  SSE.
+Hình  8.  Xu  hướng  của  chỉ  số  chứng  khoán  Trung  Quốc.
+Dữ  liệu  được  chọn  để  dự  đoán  giá  cổ  phiếu  từ  ngày  4  tháng  1  năm  2011  đến  ngày  31  tháng  12  năm  2021  
+(vào  thời  điểm  dự  án  bắt  đầu),  tổng  cộng  là  2675  ngày  giao  dịch;  xu  hướng  giá  đóng  cửa  của  các  chỉ  số  chứng  
+khoán  được  thể  hiện  ở  Hình  8.
+5.1.  Mô  hình  phân  tích  mạnh  mẽ  dựa  trên  chỉ  số  thị  trường  Trung  Quốc
+Biểu  đồ  cho  thấy  bốn  chỉ  số  chứng  khoán  được  chọn  nhìn  chung  có  xu  hướng  tương  tự  nhau,  đặc  biệt  là  
+Chỉ  số  cổ  phiếu  SSE  A,  Chỉ  số  tổng  hợp  SSE  và  Chỉ  số  CSI  300.  Việc  chuẩn  hóa  sẽ  loại  bỏ  hiệu  ứng  của  độ  lớn  
+và  các  siêu  tham  số  được  sử  dụng  trong  dự  đoán  sẽ  không  thay  đổi.
+10  trong  số  18Toán  học  2023,  11,  1985
+Để  tiết  kiệm  không  gian,  việc  so  sánh  dự  đoán  của  từng  chỉ  số  được  đề  cập  ở  trên  
+theo  bốn  mô  hình  đã  chọn  được  thể  hiện  trong  một  hình.  Ý  nghĩa  tương  tự  như  giải  
+thích  ở  trên—đường  cong  của  mô  hình  càng  gần  với  đường  cong  thực  tế  thì  mô  hình  càng  
+tốt.  Kết  quả  dự  đoán  được  thể  hiện  trong  Hình  9–11 .  Có  thể  thấy  rằng  mô  hình  CNN-
+BiLSTM-Attention  có  khả  năng  khái  quát  hóa  tốt  và  độ  tin  cậy  tốt.  Tuy  nhiên,  độ  chính  
+xác  dự  đoán  cục  bộ  của  mô  hình  giảm  ở  các  điểm  đột  biến  trong  giá  cổ  phiếu.
+Machine Translated by Google
+===== PAGE 11 =====
+Hình  10.  So  sánh  kết  quả  dự  đoán  của  Chỉ  số  tổng  hợp  SSE.
+Hình  11.  So  sánh  kết  quả  dự  đoán  Chỉ  số  cổ  phiếu  thành  phần  A  của  SZSE.
+11  trong  số  18Toán  học  2023,  11,  1985
+Một  lần  nữa,  các  so  sánh  trên  với  các  con  số  rất  trực  quan  nhưng  khá  thô  sơ.  Để  
+định  lượng  sự  so  sánh  các  kết  quả  dự  đoán,  các  giá  trị  của  ba  số  lượng  được  tính  toán  
+bằng  Phương  trình  (3)–(5)  cho  bốn  mô  hình  với  mỗi  chỉ  số  được  thể  hiện  trong  Bảng  2.
+Machine Translated by Google
+===== PAGE 12 =====
+thấp  hơn  nhiều  so  với  Chỉ  số  cổ  phiếu  thành  phần  A  của  SZSE  do  sự  khác  biệt  trong
+cho  thấy  giá  trị  RMSE  của  mô  hình  CNN-BiLSTM-Attention  thấp  hơn  7,13%  so  với
+các  chỉ  số  quốc  tế  có  nhiều  dự  báo  chậm  trễ  hơn,  có  lẽ  liên  quan  đến  “T+1”
+của  mô  hình  tốt  thứ  hai,  CNN-LSTM-Attention,  và  R giá  trị  cũng  đã  được  cải  thiện.
+phác  thảo  dữ  liệu  gốc  và  lỗi  bình  phương  trung  bình  sẽ  khác  nhau.
+dự  báo  không  thay  đổi.
+5.2.  Mô  hình  phân  tích  mạnh  mẽ  dựa  trên  chỉ  số  thị  trường  quốc  tế
+mô  hình  thấp  hơn  20,3%  so  với  mô  hình  tốt  thứ  hai,  CNN-LSTM-Attention  và  R
+Sự  so  sánh  kết  quả  dự  đoán  của  các  chỉ  số  này  được  thể  hiện  trong  Hình  12–19,
+hệ  thống  giao  dịch  tại  Trung  Quốc  và  hệ  thống  “T+0”  trên  thị  trường  quốc  tế.
+12  trong  số  18Toán  học  2023,  11,  1985
+Các  con  số  in  đậm  chỉ  ra  kết  quả  tốt  nhất  trong  số  các  mô  hình.
+2
+2
+2
+2
+0,874  
+40,360
+Chú  ý
+SZSE
+39.750
+LSTM  CNN-LSTM
+0,989Chỉ  số  A-Share
+R
+RMSE  2
+0,978
+0,982
+R
+CNN-
+1,136  
+50,859  
+0,970Mục  lục
+37.988
+RMSE  2
+1.429
+291.072
+1.565
+0,914  
+42,801  
+0,979
+1.160
+0,968  
+42,737
+Chú  ý
+Hợp  chất
+251.095
+0,995  
+41,600
+CNN-LSTM-
+Mục  lục
+0,836
+0,985 0,989
+0,979
+315.153
+Mục  lục
+Thành  phần
+BẢN  ĐỒ
+Đông  Nam  Á BẢN  ĐỒ
+0,977
+Bảng  2.  So  sánh  các  chỉ  số  lỗi  đánh  giá  của  bốn  phương  pháp  trong  ba  chỉ  số.
+A-chia  sẻ RMSE
+0,851
+BẢN  ĐỒ 1,185
+Đông  Nam  Á
+0,943  
+41,988  
+0,979
+0,982
+BiLSTM-
+R
+251.561
+0,982
+giá  trị
+ba  chỉ  số  tương  tự  nhau.  Tuy  nhiên,  RMSE  của  Chỉ  số  cổ  phiếu  A  của  SSE  và  Chỉ  số  tổng  hợp  của  SSE
+đường  cong  của  kết  quả  dự  đoán  của  mô  hình  CNN-BiLSTM-Attention  gần  nhất  với  đường  cong  của
+được  cải  thiện  từ  0,982  lên  0,989,  điều  này  cho  thấy  độ  chính  xác  dự  đoán  của  mô  hình
+2
+với  mô  hình  CNN-LSTM-Attention.  Phân  tích  kết  quả  dự  đoán  của  SZSE
+Bảng  2  cho  thấy  mô  hình  CNN-BiLSTM-Attention  vượt  trội  hơn  các  mô  hình  khác  trong
+trong  bốn  mô  hình  này.  So  với  kết  quả  dự  báo  của  các  chỉ  số  Trung  Quốc,
+dự  đoán  giá  đóng  cửa  của  Chỉ  số  cổ  phiếu  A  của  SSE,  Chỉ  số  tổng  hợp  SSE  và
+đặc  điểm  bao  gồm  giá  mở  cửa,  giá  cao,  giá  thấp,  giá  đóng  cửa,  khối  lượng  và
+đã  được  cải  thiện.  Trong  khi  đó,  người  ta  có  thể  thấy  từ  Bảng  2  rằng  MAPE  và  R
+Tám  chỉ  số  quốc  tế,  cụ  thể  là  AEX,  ATX,  FCHI,  FTSE,  HSI,  JKSE,  KLSE  và
+của
+phân  tích  kết  quả  dự  đoán  cho  Chỉ  số  tổng  hợp  SSE  cho  thấy  mô  hình  CNN-BiLSTM-Attention  có  
+giá  trị  RMSE  thấp  hơn  5,88%  và  R  được  cải  thiện
+chỉ  số  A-share  thành  phần  cho  thấy  giá  trị  RMSE  của  CNN-BiLSTM-Attention
+giá  trị  so  sánh
+Chỉ  số  cổ  phiếu  thành  phần  A  của  SZSE.  Phân  tích  kết  quả  dự  đoán  chỉ  số  cổ  phiếu  A  của  SSE
+trả  về.  Dữ  liệu  giao  dịch  từ  ngày  3  tháng  1  năm  2011  đến  ngày  29  tháng  10  năm  2021  được  chọn.  Dữ  liệu
+đầu  tiên  được  chuẩn  hóa  để  loại  bỏ  hiệu  ứng  của  thể  tích  và  các  siêu  tham  số  được  sử  dụng  cho
+trong  đó  ý  nghĩa  của  mỗi  hình  có  thể  được  giải  thích  tương  tự  như  những  hình  trước  đó.
+OEX  đã  được  chọn  để  dự  báo  giá  đóng  cửa  của  họ  và  đưa  ra  lỗi  kiểm  tra  bằng  cách  chọn
+dữ  liệu  thực  tế  nói  chung.  Nghĩa  là,  mô  hình  CNN-BiLSTM-Attention  là  chính  xác  nhất
+Machine Translated by Google
+===== PAGE 13 =====
+Hình  13.  So  sánh  kết  quả  dự  đoán  Chỉ  số  ATX.
+Hình  12.  So  sánh  kết  quả  dự  đoán  của  Chỉ  số  AEX.
+Hình  14.  So  sánh  kết  quả  dự  đoán  Chỉ  số  FCHI.
+13  trong  số  18Toán  học  2023,  11,  1985
+Machine Translated by Google
+===== PAGE 14 =====
+Hình  16.  So  sánh  kết  quả  dự  đoán  Chỉ  số  HSI.
+Hình  15.  So  sánh  kết  quả  dự  đoán  của  Chỉ  số  FTSE.
+Hình  17.  So  sánh  kết  quả  dự  đoán  của  Chỉ  số  JKSE.
+14  trong  số  18Toán  học  2023,  11,  1985
+Machine Translated by Google
+===== PAGE 15 =====
+được  tính  toán  bằng  Phương  trình  (3)–(5)  cho  bốn  mô  hình  với  mỗi  chỉ  số  được  thể  hiện  trong  Bảng  3.
+thô.  Để  định  lượng  sự  so  sánh  các  kết  quả  dự  đoán,  các  giá  trị  của  ba  số  lượng
+Bảng  3  cho  thấy  mô  hình  CNN-BiLSTM-Attention  vượt  trội  hơn  các  mô  hình  LSTM,  CNN-  
+LSTM  và  CNN-LSTM-Attention  trong  việc  dự  đoán  giá  chỉ  số  chứng  khoán,  với  giá  trị  nhỏ  nhất
+giá  trị  thứ  hai;  giá  trị  RMSE  của  mô  hình  ATX  thấp  hơn  giá  trị  thứ  hai  5,9%;
+giá  trị  RMSE  của  mô  hình  FCHI  thấp  hơn  5,9%  so  với  giá  trị  thứ  hai;  và  RMSE
+giá  trị  của  mô  hình  CNN-BiLSTM-Attention  thấp  hơn  7,6%  so  với  giá  trị  thứ  hai.  Là  một
+lỗi  phần  trăm  tuyệt  đối  trung  bình  và  lỗi  bình  phương  trung  bình  căn  bậc  hai  và  hệ  số  xác  định  gần  nhất  với  
+1.  Phân  tích  kết  quả  dự  đoán  AEX  cho  thấy  giá  trị  RMSE  của  mô  hình  CNN-BiLSTM-  Attention  thấp  hơn  7,6%  so  với  
+giá  trị  thứ  hai  và  dự  đoán  ATX
+Một  lần  nữa,  những  so  sánh  trên  với  các  con  số  rất  trực  quan  nhưng  cũng  khá
+2  kết  quả,  giá  trị  RMSE  thấp  hơn  32,8%  so  với  giá  trị  thứ  hai  và  R giá  trị  tăng  lên
+thấp  hơn  3,3%  so  với  giá  trị  thứ  hai;  phân  tích  kết  quả  dự  đoán  của  JKSE  cho  thấy
+kết  quả  cho  thấy  giá  trị  RMSE  của  mô  hình  CNN-BiLSTM-Attention  thấp  hơn  7,6%  so  với
+Hình  19.  So  sánh  kết  quả  dự  đoán  của  Chỉ  số  OEX.
+Hình  18.  So  sánh  kết  quả  dự  đoán  Chỉ  số  KLSE.
+15  trong  số  18Toán  học  2023,  11,  1985
+từ  0,967  đến  0,985;  phân  tích  kết  quả  dự  đoán  FTSE  cho  thấy  giá  trị  RMSE
+kết  quả  dự  đoán  cho  thấy  giá  trị  RMSE  của  mô  hình  CNN-BiLSTM-Attention
+của  mô  hình  CNN-BiLSTM-Attention  thấp  hơn  10,7%  so  với  giá  trị  thứ  hai;  nghiên  cứu  về
+giá  trị  thứ  hai.  Giá  trị  RMSE  của  mô  hình  CNN-BiLSTM-Attention  thấp  hơn  7,6%  so  với
+Machine Translated by Google
+===== PAGE 16 =====
+2.216
+RMSE  2
+0,898
+R
+0,937
+0,978
+ATX
+0,937
+1.112
+0,991
+0,940
+0,967
+1.350
+1.682  
+543.748
+1.587  
+33.193
+CNN-LSTM-Chú  ý  CNN-BiLSTM-Chú  ý
+16.789
+R
+R
+19.782
+BẢN  ĐỒ
+Trường  JKSE
+1.404
+0,903
+BẢN  ĐỒ
+162.568
+2.873
+0,919
+1.282
+CNN-LSTM
+0,912
+R
+1.473
+0,963
+OEX
+HSI
+0,941
+RMSE
+BẢN  ĐỒ
+481.974
+RMSE  2
+1.807
+88.527265.854
+1.380
+51.087
+7.548
+1.552
+0,947
+1.617
+1.360
+BẢN  ĐỒ
+BẢN  ĐỒ 1.501
+FTSE
+RMSE  2
+0,924
+R
+146.146
+0,866 0,950
+101.035
+48.055
+60,953
+110.962
+11.958
+0,726
+58.111
+RMSE  2
+RMSE
+Bảng  3.  So  sánh  sai  số  của  kết  quả  dự  báo  chỉ  số  chứng  khoán  quốc  tế
+32.278
+R
+1,238  
+97,471  
+0,965
+1.141
+FCHI
+0,958
+0,985
+BẢN  ĐỒ
+0,980
+0,991
+0,516
+0,982.
+0,976
+11.733
+0,989
+R
+0,983
+bằng  nhiều  mô  hình  khác  nhau.
+1,163  
+93,177  
+0,968
+KLSE
+84.538
+BẢN  ĐỒ
+0,864
+0,914
+RMSE  2
+0,929
+1.368
+0,992
+0,953
+0,981
+1.866
+1.609  
+519.059
+Mục  lục
+2.873  
+57.432
+LSTM
+1,075  
+86,936  
+0,972.
+BẢN  ĐỒ
+0,986
+20.477
+RMSE  2
+77.576
+R
+20.453
+2.186
+54.533
+20.043
+0,982
+131.868
+6.217  
+130.388
+1.431  
+498.572
+AEX
+dữ  liệu  giao  dịch  chứng  khoán  và  có  nhiều  yếu  tố  ảnh  hưởng  đến  giá  cổ  phiếu  hoặc  chỉ  số  trong  tài  chính
+2
+2
+16  trong  số  18Toán  học  2023,  11,  1985
+Các  con  số  in  đậm  chỉ  ra  kết  quả  tốt  nhất  trong  số  các  mô  hình.
+kết  quả  thử  nghiệm  cho  thấy  mô  hình  đề  xuất  có  thể  dự  đoán  hiệu  quả  các  chỉ  số  chứng  khoán  của
+rằng  giá  trị  RMSE  của  mô  hình  CNN-BiLSTM-Attention  thấp  hơn  16,3%  so  với  giá  trị  thứ  hai
+Mô  hình  CNN-BiLSTM-Attention  được  đề  xuất  để  dự  đoán  giá  trong  bài  báo  này  đầu  tiên  sử  dụng
+đạt  được  độ  chính  xác  tốt  nhất  trong  dự  đoán  chỉ  số  giá  cổ  phiếu  trong  bốn  mô  hình—LSTM,
+từ  RNN,  LSTM,  CNN-LSTM,  biLSTM,  CNN-biLSTM,  v.v.  Quá  trình  này  sẽ  tiếp  tục
+dự  đoán,  sự  kết  hợp  của  CNN-BiLSTM  và  cơ  chế  chú  ý,  tức  là,
+dữ  liệu  chỉ  số  CSI  300.  Kết  quả  thử  nghiệm  cho  thấy  mô  hình  CNN-BiLSTM-Attention
+thị  trường  chứng  khoán  ở  Trung  Quốc  và  các  nước  khác,  cho  thấy  mô  hình  đề  xuất  có
+các  phương  pháp  và  công  nghệ  tiên  tiến  nhất  hiện  có  được  sử  dụng  để  dự  đoán  giá  tài  sản,
+khi  các  phương  pháp  hoặc  công  nghệ  mới  xuất  hiện.  Để  cải  thiện  độ  chính  xác  của  giá  cổ  phiếu
+Dự  báo  giá  tài  sản  (như  cổ  phiếu)  rất  quan  trọng  trong  các  hoạt  động  đầu  tư  tài  chính .  
+Dự  đoán  chính  xác  là  một  thách  thức  do  tính  phức  tạp  của  vấn  đề.  Do  đó,
+giá  trị;  nghiên  cứu  kết  quả  dự  đoán  KLSE  cho  thấy  giá  trị  RMSE  của  mô  hình  CNN-BiLSTM-
+Attention  thấp  hơn  1,3%  so  với  giá  trị  thứ  hai;  và  phân  tích  OEX
+mức  độ  khái  quát  nhất  định.  Tuy  nhiên,  chỉ  số  đánh  giá  được  sử  dụng  trong  bài  báo  này  là
+kết  quả  dự  đoán  cho  thấy  giá  trị  RMSE  của  CNN-BiLSTM-Attention  giảm  2,7%
+mô  hình  so  với  giá  trị  tiếp  theo.  Điều  này  chỉ  ra  rằng  độ  chính  xác  dự  đoán  của  mô  hình
+CNN-LSTM,  CNN-LAST-Attention  và  CNN-BiLSTM-Attention.  Để  tiến  hành  mô  hình
+phân  tích  tính  ổn  định  của  mô  hình  đề  xuất,  bốn  mô  hình  trên  đã  được  sử  dụng  để  dự  đoán  cổ  phiếu
+6.  Kết  luận  và  công  việc  tương  lai
+đã  được  cải  thiện.
+giá  hoặc  chỉ  số  sử  dụng  12  dữ  liệu  chỉ  số  thị  trường  chứng  khoán  được  chọn  từ  Trung  Quốc  và  nước  ngoài.  Một  lần  nữa,
+Machine Translated by Google
+===== PAGE 17 =====
+2008,  387,  1585–1592.
+6.  Xiang,  Y.  Sử  dụng  mô  hình  ARIMA-GARCH  để  phân  tích  quy  luật  biến  động  của  giá  dầu  quốc  tế.  Toán.  Xác  suất.  Kỹ  thuật.  2022,  2022,  3936414.  https://
+doi.org/10.1155/2022/3936414.
+10.  Hochreiter,  S.;  Schmidhuber,  J.  Bộ  nhớ  dài  hạn  ngắn  hạn.  Máy  tính  thần  kinh.  1997,  9,  1735–1780.
+11.  Moghar,  A.;  Hamiche,  M.  Dự  đoán  thị  trường  chứng  khoán  bằng  mạng  nơ-ron  hồi  quy  LSTM.  Procedia  Comput.  Sci.  2020,  170,
+12.  Vidal,  A.;  Kristjanpoller,  W.  Dự  đoán  biến  động  vàng  bằng  CNN-LSTM.  Expert  Syst.  Appl.  2020,  157,  113481.
+Đóng  góp  của  tác  giả:  Phương  pháp  luận,  YL;  Phần  mềm,  LY;  Xác  thực,  LY;  Phân  tích  chính  thức,  YL;  Điều  tra,  JZ  
+và  LY;  Quản  lý  dữ  liệu,  LY;  Viết—bản  thảo  gốc,  LY;  Viết—đánh  giá  và  biên  tập,  YL;  Giám  sát,  JZ;  Quản  lý  dự  án,  
+JZ  và  YL;  Thu  hút  tài  trợ,  JZ  và  YL
+2.  Wang,  P.;  Lou,  Y.;  Lei,  L.  Nghiên  cứu  về  Dự  đoán  giá  cổ  phiếu  dựa  trên  Mạng  nơ-ron  BP  Wavelet  với  Cơ  sở  Mexico  Hat  Wavelet.  Trong  Biên  bản  báo  
+cáo  Hội  nghị  quốc  tế  năm  2017  về  Nghiên  cứu  giáo  dục,  kinh  tế  và  quản  lý  (ICEEMR  2017),  Singapore,  29–31  tháng  5  năm  2017;  trang  99–102.
+13.  Nelson,  D.;  Pereira,  A.;  Oliveira,  R.  Dự  đoán  biến  động  giá  của  thị  trường  chứng  khoán  bằng  mạng  nơ-ron  LSTM.  Trong  Biên  bản  báo  cáo  Hội  nghị  
+chung  quốc  tế  về  mạng  nơ-ron  năm  2017  (IJCNN),  Anchorage,  AL,  Hoa  Kỳ,  14–19  tháng  5  năm  2017;  IEEE:  New  York,  NY,  Hoa  Kỳ,  2017;  tr.  1419.  
+[CrossRef]
+3.  Hao,  Y.;  Gao,  Q.  Dự  đoán  xu  hướng  của  chỉ  số  thị  trường  chứng  khoán  bằng  mạng  nơ-ron  lai  dựa  trên  tính  năng  thang  thời  gian  đa
+Tất  cả  các  tác  giả  đã  đọc  và  đồng  ý  với  phiên  bản  bản  thảo  đã  xuất  bản.
+Công  nghệ.  2021,  8,  274–284.  https://doi.org/10.1049/cit2.12067.
+9.  Sun,  L.;  Xu,  W.;  Liu,  J.  Mô  hình  hợp  nhất  cơ  chế  chú  ý  hai  kênh  để  dự  đoán  giá  cổ  phiếu  dựa  trên  cnn-lstm.  ACM  Trans.
+Nguồn  tài  trợ:  Nghiên  cứu  này  được  hỗ  trợ  bởi  Hội  đồng  nghiên  cứu  khoa  học  tự  nhiên  và  kỹ  thuật  (NSERC)  của  
+Canada  (RGPIN-2019-05906)  và  Quỹ  khoa  học  quốc  gia  của  tỉnh  Phúc  Kiến  (Số:  2020J01892).
+học  tập.  Khoa  học  ứng  dụng.  2020,  10,  3961.
+14.  Jia,  M.;  Huang,  J.;  Pang,  L.;  Zhao,  Q.  Phân  tích  và  nghiên  cứu  về  giá  cổ  phiếu  của  LSTM  và  mạng  nơ-ron  LSTM  hai  chiều.
+Tuyên  bố  về  tính  khả  dụng  của  dữ  liệu:  Dữ  liệu  được  sử  dụng  trong  bài  báo  có  thể  được  cung  cấp  theo  yêu  cầu.
+4.  Dwivedi,  SA;  Attry,  A.;  Parekh,  D.;  Singla,  K.  Phân  tích  và  dự  báo  dữ  liệu  chuỗi  thời  gian  sử  dụng  S-ARIMA,  CNN  và  LSTM.  Trong  Biên  bản  báo  cáo  
+Hội  nghị  quốc  tế  năm  2021  về  máy  tính,  truyền  thông  và  hệ  thống  thông  minh  (ICCCIS),  Greater  Noida,  Ấn  Độ,  19–20  tháng  2  năm  2021;  trang  131–
+136.
+7.
+5.  Parmar,  K.;  Singh,  S.;  Kumar,  J.  Các  mô  hình  tính  toán  mềm  kết  hợp  với  các  mô  hình  thống  kê  ước  tính  tương  lai  của  thị  trường  chứng  khoán.
+Lời  cảm  ơn:  Các  tác  giả  rất  biết  ơn  Biên  tập  viên  và  ba  Người  đánh  giá  ẩn  danh  vì  sự  giúp  đỡ,  những  gợi  ý  có  
+giá  trị  và  những  bình  luận.
+8.
+15.  Wang,  H.;  Wang,  J.;  Cao,  L.;  Li,  Y.;  Sun,  Q.;  Wang,  J.  Một  mô  hình  dự  đoán  giá  đóng  cửa  cổ  phiếu  dựa  trên  CNN-biLSTM.  Độ  phức  tạp
+Quy  trình  thông  tin  ngôn  ngữ  -  Tài  nguyên  thấp  của  Châu  Á.  2021,  20,  1–12.
+Xung  đột  lợi  ích:  Các  tác  giả  tuyên  bố  không  có  xung  đột  lợi  ích.
+1.  Yu,  W.;  Peng,  W.  Dự  báo  biến  động  của  ssec  trên  thị  trường  chứng  khoán  Trung  Quốc  bằng  cách  sử  dụng  phân  tích  đa  phân  số.  Phys.  Stat.  Mech.  Appl.
+Neural  Comput.  Appl.  2021,  33,  7629–7647.
+2021,  2021,  5360828.  [Tham  chiếu  chéo]  [PubMed]
+Tài  liệu  tham  khảo
+thị  trường.  Vì  vậy,  giống  như  các  mô  hình  khác,  mô  hình  được  đề  xuất  cũng  có  những  hạn  chế,  chủ  yếu  là  do  cấu  trúc  
+mô  hình.  Để  cải  thiện  độ  chính  xác  của  dự  đoán,  có  thể  thực  hiện  nhiều  công  việc  hơn,  chẳng  hạn  như  tích  hợp  thông  
+tin  không  đồng  nhất  từ  nhiều  nguồn  cổ  phiếu  vào  chỉ  số  hoặc  kết  hợp  các  mô  hình  mới  nhất  hoặc  thậm  chí  phát  triển  
+các  mô  hình  mới,  tất  nhiên  là  rất  khó.  Do  hạn  chế  về  thời  gian  và  không  gian,  các  tác  giả  đã  không  thực  hiện  thử  
+nghiệm  các  phương  pháp  được  sử  dụng  trong  nghiên  cứu  này  với  dữ  liệu  ở  các  thị  trường  Bắc  Mỹ,  mặc  dù  người  ta  tin  
+rằng  có  thể  thu  được  kết  luận  tương  tự.  Tất  cả  những  điều  này  có  thể  được  xem  xét  trong  các  công  trình  trong  tương  
+lai.
+04CH37541;  Tập  3,  trang  2053–2058.  [CrossRef]
+17  trong  số  18Toán  học  2023,  11,  1985
+1168–1173.  [Tham  khảo  chéo]
+Ince,  H.;  Trafalis,  TB  Phân  tích  thành  phần  chính  của  hạt  nhân  và  máy  vectơ  hỗ  trợ  để  dự  đoán  giá  cổ  phiếu.  Trong  Biên  
+bản  báo  cáo  của  Hội  nghị  chung  quốc  tế  IEEE  năm  2004  về  mạng  nơ-ron,  Budapest,  Hungary,  25–29  tháng  7  năm  2004;  IEEE  Cat.  No.
+Yin,  L.;  Li,  B.;  Li,  P.;  Zhang,  R.  Nghiên  cứu  về  phương  pháp  dự  đoán  xu  hướng  cổ  phiếu  dựa  trên  rừng  ngẫu  nhiên  tối  ưu.  CAAI  Trans.  Intell.
+Trong  Biên  bản  Hội  nghị  quốc  tế  lần  thứ  3  về  Kỹ  thuật  máy  tính,  Khoa  học  thông  tin  và  Công  nghệ  ứng  dụng  (ICCIA  2019),  Trùng  
+Khánh,  Trung  Quốc,  ngày  30–31  tháng  5  năm  2019;  trang  467–473.  [CrossRef]
+Machine Translated by Google
+===== PAGE 18 =====
+2278–2324.  [Tham  chiếu  chéo]
+Toán  học  2023,  11,  1985 18  trong  số  18
+Appl.  Intell.  Int.  J.  Artif.  Intell.  Neural  Netw.  Complex-Probl.-Solving  Technol.  2022,  52,  1076–1091.  [CrossRef]
+16.  Cinar,  YG;  Mirisaee,  H.;  Goswami,  P.;  Gaussier,  E.;  Strijov,  V.  Sự  chú  ý  nội  dung  dựa  trên  vị  trí  để  dự  báo  chuỗi  thời  gian  với  RNN  chuỗi-sang-chuỗi.  Trong  Xử  lý  
+thông  tin  thần  kinh:  Hội  nghị  quốc  tế  lần  thứ  24,  ICONIP  2017,  Quảng  Châu,  Trung  Quốc,  14–18  tháng  11  năm  2017;  Springer:  Berlin/Heidelberg,  Đức,  2017;  tr.  533–
+544.  [CrossRef]
+27.  Xu,  Y.;  Prince,  H.;  Wu,  Z.  Dự  đoán  xu  hướng  cổ  phiếu  bằng  mô  hình  tích  hợp  đa  tính  năng  dựa  trên  CNN-Bi  LSTM.  Phân  tích  dữ  liệu.  Kiến  thức.
+28.  Eapen,  J.;  Bein,  D.;  Verma,  A.  Mô  hình  học  sâu  mới  với  CNN  và  LSTM  hai  chiều  để  cải  thiện  dự  đoán  chỉ  số  thị  trường  chứng  khoán.  Trong  Biên  bản  báo  cáo  Hội  thảo  và  
+Hội  nghị  về  máy  tính  và  truyền  thông  thường  niên  lần  thứ  9  của  IEEE  (CCWC),  Las  Vegas,  NV,  Hoa  Kỳ,  7–9  tháng  1  năm  2019;  IEEE:  New  York,  NY,  Hoa  Kỳ,  2019;  
+trang  264–270.
+Tuyên  bố  miễn  trừ  trách  nhiệm/Ghi  chú  của  Nhà  xuất  bản:  Các  tuyên  bố,  ý  kiến  và  dữ  liệu  có  trong  tất  cả  các  ấn  phẩm  chỉ  là  của  cá  nhân  tác  giả  và  người  đóng  góp  chứ  
+không  phải  của  MDPI  và/hoặc  biên  tập  viên.  MDPI  và/hoặc  biên  tập  viên  từ  chối  trách  nhiệm  đối  với  bất  kỳ  thương  tích  nào  đối  với  người  hoặc  tài  sản  phát  sinh  từ  bất  
+kỳ  ý  tưởng,  phương  pháp,  hướng  dẫn  hoặc  sản  phẩm  nào  được  đề  cập  trong  nội  dung.
+17.  Wang,  J.;  Cui,  Q.;  Sun,  X.;  He,  M.  Dự  báo  chỉ  số  đóng  cửa  của  thị  trường  chứng  khoán  châu  Á  dựa  trên  phân  tích  thứ  cấp,  phân  tích  đa  yếu  tố  và  mô  hình  LSTM  dựa  
+trên  sự  chú  ý.  Eng.  Appl.  Artif.  Intell.  2022,  113,  104908.  [CrossRef]
+23.  Selvin,  S.;  Vijayakumar,  R.;  Gopalakrishnan,  EA;  Menon,  VK;  Soman,  KP  Dự  đoán  giá  cổ  phiếu  bằng  mô  hình  LSTM,  RNN  và  CNN-sliding  window.  Trong  Biên  bản  báo  cáo  Hội  
+nghị  quốc  tế  về  những  tiến  bộ  trong  truyền  thông  máy  tính  và  tin  học  (ICACCI),  Manipal,  Ấn  Độ,  13–16  tháng  9  năm  2017;  IEEE:  New  York,  NY,  Hoa  Kỳ,  2017;  tr.  
+1643–1647.
+24.  Wu,  Q.;  Guan,  F.;  Lv,  C.;  Huang,  Y.  Dự  báo  năng  lượng  gió  nhiều  bước  cực  ngắn  hạn  dựa  trên  cnn-lstm.  IET  Renew.  Power
+18.  Chen,  Y.;  Fang,  R.;  Liang,  T.;  Sha,  Z.;  Li,  S.;  Yi,  Y.;  Zhou,  W.;  Song,  H.  Dự  báo  giá  cổ  phiếu  dựa  trên  mô  hình  CNN-BiLSTM-ECA.  Sci.
+19.  Lu,  W.;  Li,  J.;  Wang,  J.;  Qin,  L.  Một  phương  pháp  CNN-BiLSTM-AM  để  dự  đoán  giá  cổ  phiếu.  Neural  Comput.  Appl.  2020,  33,  4741–4753.
+Tháng  Giêng.  2021,  15,  1019–1029.
+20.  Zhao,  H.;  Xue,  L.  Nghiên  cứu  về  dự  báo  cổ  phiếu  dựa  trên  mô  hình  LSTM-CNN-CBAM.  Comput.  Eng.  Appl.  2021,  57,  203–207.
+25.  Sun,  Y.;  Sun,  Q.;  Zhu,  S.  Dự  đoán  chỉ  số  chứng  khoán  Thượng  Hải  dựa  trên  tâm  lý  nhà  đầu  tư  và  mô  hình  cnn-lstm.  J.  Syst.  Sci.  Inf.
+Công  nghệ.  Anh.  Ed.  2022,  10,  620–632.
+21.  Lecun,  Y.;  Botou,  L.;  Bengio,  Y.;  Haffner,  P.  Học  tập  dựa  trên  độ  dốc  được  áp  dụng  vào  nhận  dạng  tài  liệu.  IEEE  Proc.  1998,  86,
+Chương  trình.  2021,  2021,  2446543.  https://doi.org/10.1155/2021/2446543.
+22.  Luo,  J.;  Zhang,  X.  Mạng  nơ-ron  tích  chập  dựa  trên  cơ  chế  chú  ý  và  bi-lstm  để  dự  đoán  tuổi  thọ  còn  lại.
+26.  Lu,  W.;  Li,  J.;  Li,  Y.;  Sun,  A.;  Wang,  J.  Một  mô  hình  dựa  trên  cnn-lstm  để  dự  báo  giá  cổ  phiếu.  Độ  phức  tạp  2020,  2020,  1–10.
+Nhạc  disco.  2021,  7,  126–137.
+Machine Translated by Google

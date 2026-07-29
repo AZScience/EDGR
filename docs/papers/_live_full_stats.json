@@ -1,0 +1,207 @@
+﻿{
+  "means": {
+    "n_questions": 52,
+    "excluded_ood_abstain": true,
+    "methods": [
+      {
+        "method": "RAG",
+        "mean_faithfulness": 0.5575,
+        "mean_hallucination": 0.4425,
+        "faith_ci": {
+          "mean": 0.5575,
+          "ci_low": 0.5085,
+          "ci_high": 0.6065,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 52,
+        "family_stub": true
+      },
+      {
+        "method": "GraphRAG",
+        "mean_faithfulness": 0.5451,
+        "mean_hallucination": 0.4549,
+        "faith_ci": {
+          "mean": 0.5451,
+          "ci_low": 0.5023,
+          "ci_high": 0.5857,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 52,
+        "family_stub": true
+      },
+      {
+        "method": "LightRAG",
+        "mean_faithfulness": 0.8417,
+        "mean_hallucination": 0.1583,
+        "faith_ci": {
+          "mean": 0.8417,
+          "ci_low": 0.7944,
+          "ci_high": 0.8866,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 52,
+        "family_stub": true
+      },
+      {
+        "method": "HippoRAG",
+        "mean_faithfulness": 0.7423,
+        "mean_hallucination": 0.2577,
+        "faith_ci": {
+          "mean": 0.7423,
+          "ci_low": 0.7003,
+          "ci_high": 0.7826,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 52,
+        "family_stub": true
+      },
+      {
+        "method": "Self-RAG",
+        "mean_faithfulness": 0.4714,
+        "mean_hallucination": 0.5286,
+        "faith_ci": {
+          "mean": 0.4714,
+          "ci_low": 0.4264,
+          "ci_high": 0.5141,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 52,
+        "family_stub": true
+      },
+      {
+        "method": "Corrective-RAG",
+        "mean_faithfulness": 0.4709,
+        "mean_hallucination": 0.5291,
+        "faith_ci": {
+          "mean": 0.4709,
+          "ci_low": 0.4254,
+          "ci_high": 0.5183,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 52,
+        "family_stub": true
+      },
+      {
+        "method": "EDGR",
+        "mean_faithfulness": 0.6976,
+        "mean_hallucination": 0.3024,
+        "faith_ci": {
+          "mean": 0.6976,
+          "ci_low": 0.6488,
+          "ci_high": 0.7449,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n": 52,
+        "family_stub": false
+      }
+    ],
+    "disclosure_vi": "Mß╗ìi baseline Γëá EDGR l├á family stub tr├¬n c├╣ng evidence store.",
+    "disclosure_en": "All non-EDGR methods are family stubs on the same evidence store."
+  },
+  "ablation": {
+    "n_questions": 52,
+    "variants": [
+      {
+        "variant": "full",
+        "mean_faithfulness": 0.6976,
+        "ci": {
+          "mean": 0.6976,
+          "ci_low": 0.6488,
+          "ci_high": 0.7449,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": 0.0,
+        "n": 52
+      },
+      {
+        "variant": "w/o Temporal",
+        "mean_faithfulness": 0.6973,
+        "ci": {
+          "mean": 0.6973,
+          "ci_low": 0.6526,
+          "ci_high": 0.7403,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": -0.0003,
+        "n": 52
+      },
+      {
+        "variant": "w/o Graph",
+        "mean_faithfulness": 0.5941,
+        "ci": {
+          "mean": 0.5941,
+          "ci_low": 0.5505,
+          "ci_high": 0.638,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": -0.1035,
+        "n": 52
+      },
+      {
+        "variant": "w/o Trust Score",
+        "mean_faithfulness": 0.6771,
+        "ci": {
+          "mean": 0.6771,
+          "ci_low": 0.6213,
+          "ci_high": 0.7295,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": -0.0205,
+        "n": 52
+      },
+      {
+        "variant": "w/o Evidence Ranking",
+        "mean_faithfulness": 0.699,
+        "ci": {
+          "mean": 0.699,
+          "ci_low": 0.6507,
+          "ci_high": 0.7455,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": 0.0014,
+        "n": 52
+      },
+      {
+        "variant": "w/o Hallucination Scoring",
+        "mean_faithfulness": 0.6976,
+        "ci": {
+          "mean": 0.6976,
+          "ci_low": 0.6488,
+          "ci_high": 0.7449,
+          "n": 52,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": 0.0,
+        "n": 52
+      }
+    ],
+    "hypothesis_link": "H3",
+    "interpretation_vi": "╬öFaith ├óm khi gß╗í module ΓçÆ module ─æ├│ng g├│p nh├ón quß║ú ß╗ƒ mß╗⌐c trung b├¼nh dataset (kh├┤ng chß╗ë mß╗Öt query).",
+    "interpretation_en": "Negative ╬öFaith when removing a module ΓçÆ causal contribution at dataset-mean level (not a single query)."
+  }
+}

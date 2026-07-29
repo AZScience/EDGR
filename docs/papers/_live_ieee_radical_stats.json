@@ -1,0 +1,766 @@
+{
+  "scale": {
+    "qa": 212,
+    "evidence": 106,
+    "kg": {
+      "nodes": 97,
+      "edges": 123,
+      "entity_types": {
+        "technique": 41,
+        "tactic": 13,
+        "cve": 17,
+        "actor": 10,
+        "malware": 7,
+        "software": 2,
+        "concept": 5,
+        "dataset": 2
+      },
+      "last_updated": "2026-07-21T14:28:34.836249+00:00",
+      "sources": [
+        "MITRE ATT&CK",
+        "CVE/NVD",
+        "CWE/CAPEC",
+        "CISA/CERT",
+        "Threat Feeds",
+        "IDS/NIDS"
+      ]
+    }
+  },
+  "kappa_g": {
+    "kappa": 0.9217,
+    "p_o": 0.95,
+    "p_e": 0.3618,
+    "n": 100,
+    "agree": 95,
+    "formula": "κ=(p_o-p_e)/(1-p_e)"
+  },
+  "eval": {
+    "accuracy": 0.6604,
+    "precision": 0.1644,
+    "recall": 0.4234,
+    "f1": 0.2311,
+    "faithfulness": 0.6221,
+    "hallucination_rate": 0.3779,
+    "p_at_k": 0.2321,
+    "r_at_k": 0.6706,
+    "mrr": 0.6064,
+    "avg_latency_ms": 136.6456
+  },
+  "paired_rag": {
+    "n": 212,
+    "tas_ci_a": {
+      "mean": 0.7521,
+      "ci_low": 0.7318,
+      "ci_high": 0.7723,
+      "n": 212,
+      "n_boot": 1000,
+      "alpha": 0.05
+    },
+    "tas_ci_b": {
+      "mean": 0.5205,
+      "ci_low": 0.4846,
+      "ci_high": 0.5555,
+      "n": 212,
+      "n_boot": 1000,
+      "alpha": 0.05
+    },
+    "delta_tas_ci": {
+      "mean": 0.2315,
+      "ci_low": 0.18,
+      "ci_high": 0.2828,
+      "n": 212,
+      "n_boot": 1000,
+      "alpha": 0.05
+    },
+    "wilcoxon_signed_rank_tas": {
+      "n_nonzero": 212,
+      "w_positive": 19591.0,
+      "w_negative": 2987.0,
+      "statistic_w": 2987.0,
+      "z_approx": -9.284,
+      "p_value_approx": 0.0,
+      "significant_0_05": true,
+      "median_delta": 0.0555,
+      "note_en": "Wilcoxon signed-rank on faithfulness deltas (normal approx); primary H1 test alongside bootstrap CI.",
+      "note_vi": "Wilcoxon signed-rank trên delta faithfulness (xấp xỉ chuẩn); bổ sung CI bootstrap cho H1."
+    },
+    "mcnemar": {
+      "b10_edgr_only": 49,
+      "b01_baseline_only": 7,
+      "discordant": 56,
+      "n": 212,
+      "p_value_exact": 0.0,
+      "significant_0_05": true,
+      "note_en": "McNemar exact test on per-QA correctness proxy (not human labels).",
+      "note_vi": "Kiểm định McNemar exact trên proxy đúng/sai theo từng QA (chưa phải nhãn người)."
+    },
+    "delta_faithfulness_ci": {
+      "mean": 0.134,
+      "ci_low": 0.1149,
+      "ci_high": 0.1522,
+      "n": 212,
+      "n_boot": 1000,
+      "alpha": 0.05
+    }
+  },
+  "paired_lightrag": {
+    "n": 212,
+    "tas_ci_a": {
+      "mean": 0.7521,
+      "ci_low": 0.7318,
+      "ci_high": 0.7723,
+      "n": 212,
+      "n_boot": 1000,
+      "alpha": 0.05
+    },
+    "tas_ci_b": {
+      "mean": 0.6099,
+      "ci_low": 0.5642,
+      "ci_high": 0.6526,
+      "n": 212,
+      "n_boot": 1000,
+      "alpha": 0.05
+    },
+    "delta_tas_ci": {
+      "mean": 0.1421,
+      "ci_low": 0.0833,
+      "ci_high": 0.2007,
+      "n": 212,
+      "n_boot": 1000,
+      "alpha": 0.05
+    },
+    "wilcoxon_signed_rank_tas": {
+      "n_nonzero": 211,
+      "w_positive": 10532.0,
+      "w_negative": 11834.0,
+      "statistic_w": 10532.0,
+      "z_approx": -0.7332,
+      "p_value_approx": 0.463452,
+      "significant_0_05": false,
+      "median_delta": -0.0139,
+      "note_en": "Wilcoxon signed-rank on faithfulness deltas (normal approx); primary H1 test alongside bootstrap CI.",
+      "note_vi": "Wilcoxon signed-rank trên delta faithfulness (xấp xỉ chuẩn); bổ sung CI bootstrap cho H1."
+    },
+    "mcnemar": {
+      "b10_edgr_only": 46,
+      "b01_baseline_only": 8,
+      "discordant": 54,
+      "n": 212,
+      "p_value_exact": 0.0,
+      "significant_0_05": true,
+      "note_en": "McNemar exact test on per-QA correctness proxy (not human labels).",
+      "note_vi": "Kiểm định McNemar exact trên proxy đúng/sai theo từng QA (chưa phải nhãn người)."
+    }
+  },
+  "means": {
+    "n_questions_tas": 212,
+    "n_questions_faithfulness": 168,
+    "n_ood": 44,
+    "primary_metric": "trusted_answer_score",
+    "methods": [
+      {
+        "method": "RAG",
+        "mean_tas": 0.5205,
+        "tas_ci": {
+          "mean": 0.5205,
+          "ci_low": 0.4846,
+          "ci_high": 0.5555,
+          "n": 212,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "mean_faithfulness": 0.4378,
+        "mean_hallucination": 0.5622,
+        "faith_ci": {
+          "mean": 0.4378,
+          "ci_low": 0.4112,
+          "ci_high": 0.4648,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n_tas": 212,
+        "n_faithfulness": 168,
+        "family_stub": true,
+        "reference_family_reimplementation": true
+      },
+      {
+        "method": "GraphRAG",
+        "mean_tas": 0.4565,
+        "tas_ci": {
+          "mean": 0.4565,
+          "ci_low": 0.4225,
+          "ci_high": 0.4875,
+          "n": 212,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "mean_faithfulness": 0.303,
+        "mean_hallucination": 0.697,
+        "faith_ci": {
+          "mean": 0.303,
+          "ci_low": 0.2812,
+          "ci_high": 0.3242,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n_tas": 212,
+        "n_faithfulness": 168,
+        "family_stub": true,
+        "reference_family_reimplementation": true
+      },
+      {
+        "method": "LightRAG",
+        "mean_tas": 0.6099,
+        "tas_ci": {
+          "mean": 0.6099,
+          "ci_low": 0.5642,
+          "ci_high": 0.6526,
+          "n": 212,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "mean_faithfulness": 0.6786,
+        "mean_hallucination": 0.3214,
+        "faith_ci": {
+          "mean": 0.6786,
+          "ci_low": 0.6472,
+          "ci_high": 0.7125,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n_tas": 212,
+        "n_faithfulness": 168,
+        "family_stub": true,
+        "reference_family_reimplementation": true
+      },
+      {
+        "method": "HippoRAG",
+        "mean_tas": 0.5103,
+        "tas_ci": {
+          "mean": 0.5103,
+          "ci_low": 0.4722,
+          "ci_high": 0.5455,
+          "n": 212,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "mean_faithfulness": 0.4438,
+        "mean_hallucination": 0.5562,
+        "faith_ci": {
+          "mean": 0.4438,
+          "ci_low": 0.4262,
+          "ci_high": 0.461,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n_tas": 212,
+        "n_faithfulness": 168,
+        "family_stub": true,
+        "reference_family_reimplementation": true
+      },
+      {
+        "method": "Self-RAG",
+        "mean_tas": 0.4529,
+        "tas_ci": {
+          "mean": 0.4529,
+          "ci_low": 0.4212,
+          "ci_high": 0.4842,
+          "n": 212,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "mean_faithfulness": 0.2827,
+        "mean_hallucination": 0.7173,
+        "faith_ci": {
+          "mean": 0.2827,
+          "ci_low": 0.2573,
+          "ci_high": 0.3105,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n_tas": 212,
+        "n_faithfulness": 168,
+        "family_stub": true,
+        "reference_family_reimplementation": true
+      },
+      {
+        "method": "Corrective-RAG",
+        "mean_tas": 0.4556,
+        "tas_ci": {
+          "mean": 0.4556,
+          "ci_low": 0.4241,
+          "ci_high": 0.4876,
+          "n": 212,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "mean_faithfulness": 0.3035,
+        "mean_hallucination": 0.6965,
+        "faith_ci": {
+          "mean": 0.3035,
+          "ci_low": 0.2788,
+          "ci_high": 0.3299,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n_tas": 212,
+        "n_faithfulness": 168,
+        "family_stub": true,
+        "reference_family_reimplementation": true
+      },
+      {
+        "method": "EDGR",
+        "mean_tas": 0.7521,
+        "tas_ci": {
+          "mean": 0.7521,
+          "ci_low": 0.7318,
+          "ci_high": 0.7723,
+          "n": 212,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "mean_faithfulness": 0.5231,
+        "mean_hallucination": 0.4769,
+        "faith_ci": {
+          "mean": 0.5231,
+          "ci_low": 0.4986,
+          "ci_high": 0.5472,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "n_tas": 212,
+        "n_faithfulness": 168,
+        "family_stub": false,
+        "reference_family_reimplementation": false
+      }
+    ],
+    "safety_stratum_ood": [
+      {
+        "method": "RAG",
+        "mean_tas_ood": 0.0,
+        "n_ood": 44
+      },
+      {
+        "method": "GraphRAG",
+        "mean_tas_ood": 0.0,
+        "n_ood": 44
+      },
+      {
+        "method": "LightRAG",
+        "mean_tas_ood": 0.0,
+        "n_ood": 44
+      },
+      {
+        "method": "HippoRAG",
+        "mean_tas_ood": 0.0,
+        "n_ood": 44
+      },
+      {
+        "method": "Self-RAG",
+        "mean_tas_ood": 0.0,
+        "n_ood": 44
+      },
+      {
+        "method": "Corrective-RAG",
+        "mean_tas_ood": 0.0,
+        "n_ood": 44
+      },
+      {
+        "method": "EDGR",
+        "mean_tas_ood": 1.0,
+        "n_ood": 44
+      }
+    ],
+    "ranking_by_tas": [
+      "EDGR",
+      "LightRAG",
+      "RAG",
+      "HippoRAG",
+      "GraphRAG",
+      "Corrective-RAG",
+      "Self-RAG"
+    ],
+    "ranking_by_ood_safety": [
+      "EDGR",
+      "RAG",
+      "GraphRAG",
+      "LightRAG",
+      "HippoRAG",
+      "Self-RAG",
+      "Corrective-RAG"
+    ],
+    "disclosure_vi": "Metric chính là Trusted Answer Score (TAS) gồm faithfulness + an toàn định danh + abstain OOD. Baseline là reference-family reimplementation trên cùng store, không phải official vendor dump. Faithfulness lexical có thể cao ở stub không cổng; stratum OOD đo an toàn tách riêng.",
+    "disclosure_en": "Primary metric is Trusted Answer Score (TAS): faithfulness + identifier safety + OOD abstain. Baselines are reference-family reimplementations on the same store, not official vendor dumps. Lexical faithfulness alone may favor ungated stubs; OOD safety stratum is reported separately."
+  },
+  "ablation": {
+    "n_questions": 168,
+    "variants": [
+      {
+        "variant": "full",
+        "mean_faithfulness": 0.5231,
+        "ci": {
+          "mean": 0.5231,
+          "ci_low": 0.4986,
+          "ci_high": 0.5472,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": 0.0,
+        "n": 168
+      },
+      {
+        "variant": "w/o Temporal",
+        "mean_faithfulness": 0.5195,
+        "ci": {
+          "mean": 0.5195,
+          "ci_low": 0.4986,
+          "ci_high": 0.5403,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": -0.0036,
+        "n": 168
+      },
+      {
+        "variant": "w/o Graph",
+        "mean_faithfulness": 0.4745,
+        "ci": {
+          "mean": 0.4745,
+          "ci_low": 0.4488,
+          "ci_high": 0.5018,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": -0.0486,
+        "n": 168
+      },
+      {
+        "variant": "w/o Trust Score",
+        "mean_faithfulness": 0.5269,
+        "ci": {
+          "mean": 0.5269,
+          "ci_low": 0.5019,
+          "ci_high": 0.5499,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": 0.0038,
+        "n": 168
+      },
+      {
+        "variant": "w/o Evidence Ranking",
+        "mean_faithfulness": 0.5238,
+        "ci": {
+          "mean": 0.5238,
+          "ci_low": 0.4992,
+          "ci_high": 0.5475,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": 0.0007,
+        "n": 168
+      },
+      {
+        "variant": "w/o Hallucination Scoring",
+        "mean_faithfulness": 0.523,
+        "ci": {
+          "mean": 0.523,
+          "ci_low": 0.4984,
+          "ci_high": 0.547,
+          "n": 168,
+          "n_boot": 1000,
+          "alpha": 0.05
+        },
+        "delta_vs_full": -0.0002,
+        "n": 168
+      }
+    ],
+    "hypothesis_link": "H3",
+    "interpretation_vi": "ΔFaith âm khi gỡ module ⇒ module đóng góp nhân quả ở mức trung bình dataset (không chỉ một query).",
+    "interpretation_en": "Negative ΔFaith when removing a module ⇒ causal contribution at dataset-mean level (not a single query)."
+  },
+  "ood": {
+    "n": 44,
+    "abstain_rate": 1.0,
+    "rows": [
+      {
+        "id": "qa_018",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-99999. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_033",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-11111. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_075",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-55555. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_076",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-66666. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_01",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70001. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_02",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70002. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_03",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70003. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_04",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70004. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_05",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70005. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_06",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70006. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_07",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70007. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_08",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70008. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_09",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70009. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_10",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70010. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_11",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70011. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_12",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70012. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_13",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70013. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_14",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70014. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_15",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70015. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_16",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70016. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_17",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70017. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_18",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70018. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_19",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70019. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_20",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70020. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_21",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70021. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_22",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70022. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_23",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70023. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_24",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70024. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_25",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70025. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_26",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70026. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_27",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70027. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_28",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70028. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_29",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70029. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_30",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70030. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_31",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70031. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_32",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70032. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_33",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70033. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_34",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70034. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_35",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70035. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_36",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70036. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_37",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70037. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_38",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70038. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_39",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70039. EDGR abstains instead of guessing. CVE không có trong"
+      },
+      {
+        "id": "qa_w4_ood_40",
+        "abstained": true,
+        "faithfulness": 1.0,
+        "answer_preview": "[ABSTAIN / TỪ CHỐI TRẢ LỜI] Unknown CVE identifier(s) not present in the knowledge base or retrieved evidence: CVE-2099-70040. EDGR abstains instead of guessing. CVE không có trong"
+      }
+    ],
+    "hypothesis_link": "H2",
+    "pass_h2": true
+  }
+}
