@@ -518,6 +518,68 @@ section[data-testid="stSidebar"] label {
   background: rgba(255,255,255,0.92);
   color: #0f1c24;
 }
+/* React-parity child task rail (pills under parent step) */
+.rx-task-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0.35rem 0 0.85rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed rgba(15,28,36,0.14);
+}
+.rx-task-chip {
+  --step-color: #0d7377;
+  border: 1px solid color-mix(in srgb, var(--step-color) 30%, rgba(15,28,36,0.12));
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 12px 8px 8px;
+  text-decoration: none !important;
+  color: #3a5160 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(100%, 340px);
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.rx-task-chip:hover {
+  border-color: var(--step-color);
+  color: #0f1c24 !important;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--step-color) 18%, transparent);
+}
+.rx-task-chip.active {
+  background: var(--step-color);
+  border-color: var(--step-color);
+  color: #fff !important;
+}
+.rx-task-chip.overview { border-style: dashed; font-weight: 700; }
+.rx-task-chip.done:not(.active) {
+  border-color: color-mix(in srgb, var(--step-color) 45%, #1f7a4c);
+  color: #1f7a4c !important;
+}
+.rx-task-dot {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--step-color);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.rx-task-chip.active .rx-task-dot {
+  background: #fff;
+  color: var(--step-color);
+}
+.rx-task-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .surface {
   background: rgba(255,255,255,0.72);
   border: 1px solid rgba(15, 28, 36, 0.10);
@@ -1328,6 +1390,54 @@ def _step_badge(step_id: int, title: str) -> None:
     )
 
 
+def _task_rail_html(
+    lang: str,
+    step_id: int,
+    tasks: list[dict[str, Any]],
+    active_task: str,
+) -> None:
+    """Child-task pills matching React `.task-rail` / `.task-chip`."""
+    color = STEP_COLORS.get(step_id, "#0d7377")
+    chips: list[str] = []
+    ov_active = active_task == STEP_OVERVIEW
+    ov_cls = "rx-task-chip overview active" if ov_active else "rx-task-chip overview"
+    ov_label = _t("Tổng quan bước", "Step overview", lang)
+    chips.append(
+        f'<a class="{ov_cls}" href="?step={step_id}&task={STEP_OVERVIEW}" '
+        f'style="--step-color:{color}" title="{ov_label}">'
+        f'<span class="rx-task-dot">Σ</span>'
+        f'<span class="rx-task-label">{ov_label}</span></a>'
+    )
+    for i, t in enumerate(tasks):
+        tid = str(t.get("id") or "")
+        raw_title = t.get("title") if lang == "vi" else t.get("title_en")
+        label = f"{i + 1}. {raw_title}"
+        label_esc = (
+            str(label)
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+        )
+        done = f"{step_id}:{tid}" in st.session_state.result_cache
+        is_active = active_task == tid
+        cls = "rx-task-chip active" if is_active else "rx-task-chip"
+        if done and not is_active:
+            cls += " done"
+        mark = "✓" if done else str(i + 1)
+        chips.append(
+            f'<a class="{cls}" href="?step={step_id}&task={tid}" '
+            f'style="--step-color:{color}" title="{label_esc}">'
+            f'<span class="rx-task-dot">{mark}</span>'
+            f'<span class="rx-task-label">{label_esc}</span></a>'
+        )
+    st.markdown(
+        f'<nav class="rx-task-rail" aria-label="{_t("Công việc trong bước", "Tasks in this step", lang)}">'
+        f'{"".join(chips)}</nav>',
+        unsafe_allow_html=True,
+    )
+
+
 def page_overview(core: dict[str, Any], lang: str) -> None:
     definition = core["pipeline"].definition()
     topic = _pick(definition, "topic_vi", "topic", lang, definition.get("topic", ""))
@@ -1456,32 +1566,25 @@ def page_step(core: dict[str, Any], lang: str, step_id: int) -> None:
     )
 
     tasks = step.get("tasks") or []
-    task_options = [STEP_OVERVIEW] + [t["id"] for t in tasks]
-    labels = {
-        STEP_OVERVIEW: _t("▸ Tổng quan bước", "▸ Step overview", lang),
-    }
-    for i, t in enumerate(tasks):
-        tid = t["id"]
-        done_mark = "✓ " if f"{step_id}:{tid}" in st.session_state.result_cache else ""
-        ttitle = t.get("title") if lang == "vi" else t.get("title_en")
-        labels[tid] = f"{done_mark}{i+1}. {ttitle}"
+    task_options = [STEP_OVERVIEW] + [str(t["id"]) for t in tasks]
+    # Sync child tab from ?task=… (React-style pill links)
+    try:
+        qp_task = st.query_params.get("task")
+        if qp_task is not None:
+            tid = str(qp_task)
+            if tid in task_options and tid != st.session_state.task_id:
+                st.session_state.task_id = tid
+                st.session_state.last_payload = st.session_state.result_cache.get(
+                    f"{step_id}:{tid}"
+                )
+    except (TypeError, ValueError):
+        pass
     current = st.session_state.task_id
     if current not in task_options:
         current = STEP_OVERVIEW
         st.session_state.task_id = current
 
-    picked = st.radio(
-        _t("Công việc trong bước", "Tasks in this step", lang),
-        options=task_options,
-        format_func=lambda x: labels.get(x, x),
-        horizontal=True,
-        key=f"task_radio_{step_id}",
-        index=task_options.index(current),
-    )
-    if picked != st.session_state.task_id:
-        st.session_state.task_id = picked
-        st.session_state.last_payload = st.session_state.result_cache.get(f"{step_id}:{picked}")
-        st.rerun()
+    _task_rail_html(lang, step_id, tasks, current)
 
     task_id = st.session_state.task_id
     is_overview = task_id == STEP_OVERVIEW
@@ -1982,14 +2085,17 @@ def main() -> None:
         f"{len(steps)} steps · {stats.nodes} nodes · {len(core['vector_store'].chunks)} evidence",
         lang,
     )
-    # Sync step from React-style rail links (?step=N)
+    # Sync step/task from React-style rail links (?step=N&task=…)
     try:
         qp_step = st.query_params.get("step")
         if qp_step is not None:
             sid = int(str(qp_step))
             if sid != st.session_state.step_id:
                 st.session_state.step_id = sid
-                st.session_state.task_id = STEP_OVERVIEW
+                qp_task = st.query_params.get("task")
+                st.session_state.task_id = (
+                    str(qp_task) if qp_task is not None else STEP_OVERVIEW
+                )
                 st.session_state.last_payload = None
     except (TypeError, ValueError):
         pass
