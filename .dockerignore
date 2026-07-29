@@ -1,0 +1,16 @@
+.git
+.gitignore
+.cursor
+**/__pycache__
+**/*.pyc
+**/.venv
+**/venv
+**/node_modules
+frontend/node_modules
+frontend/src
+**/.pytest_cache
+**/.mypy_cache
+agent-transcripts
+*.md
+!README.md
+backend/app/data/human_annotations.json

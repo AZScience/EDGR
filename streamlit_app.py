@@ -54,10 +54,25 @@ def _public_ui_url() -> str | None:
     Public React SPA URL for Cloud iframe (same UI as local :5180 / :8016/ui/).
 
     Secrets / env:
-      EDGR_PUBLIC_UI_URL = https://your-api-host.example/ui/
+      EDGR_PUBLIC_UI_URL = https://your-real-host.onrender.com/ui/
     """
     raw = _secret_or_env("EDGR_PUBLIC_UI_URL")
     if not raw:
+        return None
+    low = raw.lower()
+    # Reject doc placeholders users often copy-paste literally
+    if any(
+        bad in low
+        for bad in (
+            "xxxx",
+            "your-host",
+            "your-service",
+            "your-real-host",
+            "edgr-xxxx",
+            "example.com",
+            "truyhoidothidong.streamlit.app",
+        )
+    ):
         return None
     url = raw.rstrip("/") + "/"
     # Allow bare host → append /ui/
@@ -840,6 +855,17 @@ def _embed_iframe(src: str) -> None:
 def page_react_setup(lang: str) -> None:
     """Cloud without EDGR_PUBLIC_UI_URL — explain how to get pixel-perfect React."""
     st.title(_t("Cần host React giống local", "Host React to match local", lang))
+    raw_secret = _secret_or_env("EDGR_PUBLIC_UI_URL")
+    if raw_secret and _public_ui_url() is None:
+        st.warning(
+            _t(
+                f"Secrets hiện có giá trị mẫu/không hợp lệ: `{raw_secret}`. "
+                "Phải thay bằng URL thật từ Render (không dùng xxxx / YOUR-HOST).",
+                f"Secrets currently has a placeholder/invalid value: `{raw_secret}`. "
+                "Replace it with the real Render URL (do not use xxxx / YOUR-HOST).",
+                lang,
+            )
+        )
     st.error(
         _t(
             "Không thể chỉnh Streamlit native cho giống 100% React. "
